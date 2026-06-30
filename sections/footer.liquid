@@ -1,0 +1,70 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        {%- if section.settings.logo != blank -%}
+          <img class="mark" src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}">
+        {%- else -%}
+          <img class="mark" src="{{ 'kyn-logo.png' | asset_url }}" alt="{{ shop.name }}">
+        {%- endif -%}
+        {%- if section.settings.tagline != blank -%}<p>{{ section.settings.tagline }}</p>{%- endif -%}
+        <div class="site-footer__social">
+          {%- if section.settings.instagram != blank -%}<a href="{{ section.settings.instagram }}" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a>{%- endif -%}
+          {%- if section.settings.tiktok != blank -%}<a href="{{ section.settings.tiktok }}" aria-label="TikTok">{% render 'icon', name: 'tiktok' %}</a>{%- endif -%}
+          {%- if section.settings.youtube != blank -%}<a href="{{ section.settings.youtube }}" aria-label="YouTube">{% render 'icon', name: 'youtube' %}</a>{%- endif -%}
+        </div>
+      </div>
+
+      {%- for block in section.blocks -%}
+        <div {{ block.shopify_attributes }}>
+          <h5>{{ block.settings.title }}</h5>
+          <ul>
+            {%- for link in linklists[block.settings.menu].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <div class="site-footer__bottom">
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }} · {{ section.settings.bottom_left | default: 'Made by hand, in small batches.' }}</span>
+      <span>{{ section.settings.bottom_right | default: 'Terms · Privacy · Accessibility' }}</span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo (white background)" },
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Handmade dog walk gear. Original biothane & solid brass — strong, durable, fully waterproof." },
+    { "type": "header", "content": "Social" },
+    { "type": "url", "id": "instagram", "label": "Instagram URL" },
+    { "type": "url", "id": "tiktok", "label": "TikTok URL" },
+    { "type": "url", "id": "youtube", "label": "YouTube URL" },
+    { "type": "header", "content": "Bottom row" },
+    { "type": "text", "id": "bottom_left", "label": "Bottom left text" },
+    { "type": "text", "id": "bottom_right", "label": "Bottom right text" }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Link column",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Heading", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu" }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "menu", "settings": { "title": "Shop" } },
+      { "type": "menu", "settings": { "title": "Help" } },
+      { "type": "menu", "settings": { "title": "About" } }
+    ]
+  }
+}
+{% endschema %}

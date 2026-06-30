@@ -1,0 +1,53 @@
+{%- comment -%}
+  Product card snippet. Usage: {% render 'product-card', product: product %}
+  Falls back to a placeholder if product is nil.
+{%- endcomment -%}
+{%- if product == blank or product == nil -%}
+  <a class="kyn-product" href="#" aria-hidden="true">
+    <div class="kyn-product__media">
+      <div class="hero__media--placeholder" style="position:absolute;inset:0;border-radius:0;border:0;"><span>{{ placeholder_label | default: 'product' }}</span></div>
+    </div>
+    <div class="kyn-product__body">
+      <h3 class="kyn-product__name">Product name</h3>
+      <p class="kyn-product__desc">Add products to a collection to populate this grid.</p>
+      <div class="kyn-product__row"><span class="kyn-product__price">$—</span></div>
+    </div>
+  </a>
+{%- else -%}
+  <a class="kyn-product" href="{{ product.url }}">
+    <div class="kyn-product__media">
+      {%- if product.featured_image -%}
+        <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="600" height="600">
+      {%- else -%}
+        <div class="hero__media--placeholder" style="position:absolute;inset:0;border-radius:0;border:0;"><span>{{ product.title | escape }}</span></div>
+      {%- endif -%}
+
+      {%- if product.tags contains 'new' -%}
+        <span class="kyn-badge kyn-badge--pop"><span>&#xF00E;e&#xF031;</span></span>
+      {%- elsif product.tags contains 'best-seller' or product.tags contains 'Best Seller' -%}
+        <span class="kyn-badge kyn-badge--brand">Best Seller</span>
+      {%- elsif product.tags contains 'personalize' -%}
+        <span class="kyn-badge kyn-badge--soft">Personalize</span>
+      {%- endif -%}
+    </div>
+
+    <div class="kyn-product__body">
+      <h3 class="kyn-product__name">{{ product.title }}</h3>
+      {%- if product.metafields.kyn.short_desc != blank -%}
+        <p class="kyn-product__desc">{{ product.metafields.kyn.short_desc }}</p>
+      {%- elsif product.description != blank -%}
+        <p class="kyn-product__desc">{{ product.description | strip_html | truncate: 80 }}</p>
+      {%- endif -%}
+      <div class="kyn-product__row">
+        <span class="kyn-product__price">{{ product.price | money }}</span>
+        {%- if product.options_by_name['Color'] != blank -%}
+          <span class="kyn-product__swatches">
+            {%- for value in product.options_by_name['Color'].values limit: 4 -%}
+              <i style="background:{{ value | downcase | replace: ' ', '-' | prepend: '#' | default: '#8795D2' }}" title="{{ value }}"></i>
+            {%- endfor -%}
+          </span>
+        {%- endif -%}
+      </div>
+    </div>
+  </a>
+{%- endif -%}

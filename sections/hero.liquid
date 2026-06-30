@@ -1,0 +1,87 @@
+{%- assign title = section.settings.title -%}
+{%- assign spark = section.settings.spark_word -%}
+{%- if spark != blank -%}
+  {%- capture spark_html -%}<span class="spark">{{ spark }}</span>{%- endcapture -%}
+  {%- assign title = title | replace: spark, spark_html -%}
+{%- endif -%}
+
+<section class="hero">
+  <div class="hero__inner">
+    <div>
+      {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h1 class="hero__title">{{ title }}</h1>
+      {%- if section.settings.lead != blank -%}<p class="hero__lead">{{ section.settings.lead }}</p>{%- endif -%}
+
+      {%- if section.settings.cta1_label != blank or section.settings.cta2_label != blank -%}
+      <div class="hero__ctas">
+        {%- if section.settings.cta1_label != blank -%}<a class="kyn-btn kyn-btn--primary kyn-btn--lg" href="{{ section.settings.cta1_link | default: '#' }}">{{ section.settings.cta1_label }}</a>{%- endif -%}
+        {%- if section.settings.cta2_label != blank -%}<a class="kyn-btn kyn-btn--secondary kyn-btn--lg" href="{{ section.settings.cta2_link | default: '#' }}">{{ section.settings.cta2_label }}</a>{%- endif -%}
+      </div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+      <div class="hero__trust">
+        {%- for block in section.blocks -%}
+          <div {{ block.shopify_attributes }}><b>{{ block.settings.label }}</b>{{ block.settings.sub }}</div>
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+    </div>
+
+    <div class="hero__stage">
+      <div class="hero__blob1"></div>
+      <div class="hero__blob2"></div>
+      <div class="hero__media{% if section.settings.image == blank %} hero__media--placeholder{% endif %}">
+        {%- if section.settings.image != blank -%}
+          <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.image.alt | escape }}" width="400" height="480">
+        {%- else -%}
+          <span>{{ section.settings.placeholder_label | default: 'product shot — collar + leash set' }}</span>
+        {%- endif -%}
+        {%- if section.settings.show_badge -%}
+          <div class="hero__badge"><span>&#xF00E;e&#xF031;</span> ♥</div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "header", "content": "Copy" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Handmade · Biothane & brass" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Gear up for the good walks." },
+    { "type": "text", "id": "spark_word", "label": "Spark word (rendered in Friendship)", "info": "Word inside the title to render as the brand spark.", "default": "good" },
+    { "type": "textarea", "id": "lead", "label": "Lead", "default": "Strong, waterproof, and built by hand from original biothane and solid brass — for the dogs who go everywhere." },
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "cta1_label", "label": "Primary button label", "default": "Shop the collection" },
+    { "type": "url",  "id": "cta1_link",  "label": "Primary button link" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary button label", "default": "Build a set" },
+    { "type": "url",  "id": "cta2_link",  "label": "Secondary button link" },
+    { "type": "header", "content": "Image" },
+    { "type": "image_picker", "id": "image", "label": "Product image" },
+    { "type": "text", "id": "placeholder_label", "label": "Placeholder label (when no image)" },
+    { "type": "checkbox", "id": "show_badge", "label": "Show ‘new ♥’ script badge", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "trust",
+      "name": "Trust feature",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Waterproof" },
+        { "type": "text", "id": "sub",   "label": "Subtitle", "default": "Rinse & go" }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "trust", "settings": { "label": "Waterproof", "sub": "Rinse & go" } },
+      { "type": "trust", "settings": { "label": "Solid brass", "sub": "Built tough" } },
+      { "type": "trust", "settings": { "label": "Small batch", "sub": "By hand" } }
+    ]
+  },
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

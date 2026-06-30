@@ -1,0 +1,31 @@
+{%- if section.blocks.size > 0 -%}
+<div class="announcement" role="region" aria-label="Announcements">
+  {%- for block in section.blocks -%}
+    <span {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+    {%- unless forloop.last -%}<span class="sep">·</span>{%- endunless -%}
+  {%- endfor -%}
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Message",
+      "settings": [
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p><strong>Free shipping over $60</strong></p>" }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "item", "settings": { "text": "<p><strong>Free shipping over $60</strong></p>" } },
+      { "type": "item", "settings": { "text": "<p>One-year warranty</p>" } },
+      { "type": "item", "settings": { "text": "<p><strong>New drop:</strong> the Blush Collar is here</p>" } }
+    ]
+  }
+}
+{% endschema %}

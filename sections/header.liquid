@@ -1,0 +1,33 @@
+<header class="site-header">
+  <div class="site-header__row">
+    <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+      {%- if section.settings.logo != blank -%}
+        <img class="site-header__logo" src="{{ section.settings.logo | image_url: width: 240 }}" alt="{{ shop.name }}" width="120" height="30">
+      {%- else -%}
+        <img class="site-header__logo" src="{{ 'kyn-logo.png' | asset_url }}" alt="{{ shop.name }}" width="120" height="30">
+      {%- endif -%}
+    </a>
+
+    <ul class="site-header__menu">
+      {%- for link in linklists[section.settings.menu].links -%}
+        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+      {%- endfor -%}
+    </ul>
+
+    <div class="site-header__right">
+      <a class="kyn-iconbtn kyn-iconbtn--sm" href="{{ routes.search_url }}" aria-label="Search">{% render 'icon', name: 'search' %}</a>
+      <a class="kyn-iconbtn kyn-iconbtn--sm" href="{{ routes.account_url }}" aria-label="Account">{% render 'icon', name: 'user' %}</a>
+      <a class="kyn-btn kyn-btn--primary kyn-btn--sm" href="{{ routes.cart_url }}" style="margin-left:6px;">{% render 'icon', name: 'shopping-bag' %} Cart · {{ cart.item_count }}</a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo (leave blank to use bundled KYN logo)" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" }
+  ]
+}
+{% endschema %}

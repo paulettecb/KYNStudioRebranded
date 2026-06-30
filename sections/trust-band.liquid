@@ -1,0 +1,50 @@
+<section class="trust-band">
+  <div class="trust-band__row">
+    {%- for block in section.blocks -%}
+      <div class="trust-feat" {{ block.shopify_attributes }}>
+        <span class="trust-feat__icon">{% render 'icon', name: block.settings.icon %}</span>
+        <div>
+          <h4>{{ block.settings.title }}</h4>
+          <p>{{ block.settings.subtitle }}</p>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust band",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "select", "id": "icon", "label": "Icon", "default": "droplets",
+          "options": [
+            { "value": "droplets", "label": "Waterproof (droplets)" },
+            { "value": "gem", "label": "Premium (gem)" },
+            { "value": "hand", "label": "Handmade (hand)" },
+            { "value": "truck", "label": "Shipping (truck)" },
+            { "value": "heart", "label": "Loved (heart)" },
+            { "value": "star",  "label": "Reviewed (star)" }
+          ]
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Fully waterproof" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Original biothane — rinse, ride home, dry." }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "feature", "settings": { "icon": "droplets", "title": "Fully waterproof", "subtitle": "Original biothane — rinse, ride home, dry." } },
+      { "type": "feature", "settings": { "icon": "gem", "title": "Solid brass hardware", "subtitle": "Built to outlast a thousand walks." } },
+      { "type": "feature", "settings": { "icon": "hand", "title": "Made by hand", "subtitle": "Small batches, cut & riveted in-house." } },
+      { "type": "feature", "settings": { "icon": "truck", "title": "Free shipping $60+", "subtitle": "1-year warranty on every piece." } }
+    ]
+  },
+  "presets": [{ "name": "Trust band" }]
+}
+{% endschema %}

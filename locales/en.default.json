@@ -1,0 +1,17 @@
+{
+  "general": {
+    "currency": "{{ shop_currency }}",
+    "shop_name": "KYN"
+  },
+  "products": {
+    "general": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Cart"
+    }
+  }
+}
