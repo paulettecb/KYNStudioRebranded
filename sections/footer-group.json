@@ -1,0 +1,20 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "tagline": "Handmade dog walk gear. Original biothane & solid brass — strong, durable, fully waterproof.",
+        "instagram": "https://www.instagram.com/kynstudiomx",
+        "tiktok": "https://www.tiktok.com/@kynstudiomx"
+      },
+      "blocks": {
+        "col1": { "type": "menu", "settings": { "title": "Shop", "menu": "main-menu" } },
+        "col2": { "type": "menu", "settings": { "title": "Nosotros", "menu": "footer" } }
+      },
+      "block_order": ["col1", "col2"]
+    }
+  },
+  "order": ["footer"]
+}
