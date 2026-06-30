@@ -1,8 +1,12 @@
 {
   "sections": {
-    "hero":      { "type": "hero",      "settings": {} },
-    "trust":     { "type": "trust-band","settings": {} },
-    "featured":  { "type": "featured-products", "settings": {} }
+    "hero":         { "type": "hero",              "settings": {} },
+    "trust":        { "type": "trust-band",        "settings": {} },
+    "featured":     { "type": "featured-products", "settings": {} },
+    "color-story":  { "type": "color-story",       "settings": {} },
+    "story":        { "type": "story",             "settings": {} },
+    "reviews":      { "type": "reviews",           "settings": {} },
+    "newsletter":   { "type": "newsletter",        "settings": {} }
   },
-  "order": ["hero", "trust", "featured"]
+  "order": ["hero", "trust", "featured", "color-story", "story", "reviews", "newsletter"]
 }

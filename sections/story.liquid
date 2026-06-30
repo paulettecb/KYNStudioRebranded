@@ -1,0 +1,104 @@
+{%- comment -%}
+  KYN — Brand story section (image + text, alternating layout)
+{%- endcomment -%}
+
+<section class="section story" style="background: {{ section.settings.bg }};">
+  <div class="container">
+    <div class="story__grid {% if section.settings.image_right %}story__grid--reverse{% endif %}">
+      <div class="story__media">
+        {%- if section.settings.image != blank -%}
+          <img src="{{ section.settings.image | image_url: width: 1200 }}"
+               srcset="{{ section.settings.image | image_url: width: 600 }} 600w,
+                       {{ section.settings.image | image_url: width: 1200 }} 1200w"
+               sizes="(min-width: 900px) 50vw, 100vw"
+               alt="{{ section.settings.image.alt | default: section.settings.title | escape }}"
+               loading="lazy" width="1200" height="1500">
+        {%- else -%}
+          <div class="story__media-placeholder">{{ 'lifestyle' | placeholder_svg_tag: 'placeholder' }}</div>
+        {%- endif -%}
+      </div>
+
+      <div class="story__body">
+        <span class="eyebrow">{{ section.settings.eyebrow | escape }}</span>
+        <h2 class="h-display">
+          {{ section.settings.title | escape }}
+          {%- if section.settings.spark_word != blank -%}
+            <span class="spark">{{ section.settings.spark_word | escape }}</span>
+          {%- endif -%}
+        </h2>
+        <div class="story__text rte">
+          {{ section.settings.body }}
+        </div>
+
+        {%- if section.blocks.size > 0 -%}
+          <ul class="story__pillars">
+            {%- for block in section.blocks -%}
+              <li {{ block.shopify_attributes }}>
+                {%- if block.settings.icon != 'none' -%}
+                  {% render 'icon', name: block.settings.icon %}
+                {%- endif -%}
+                <div>
+                  <strong>{{ block.settings.title | escape }}</strong>
+                  <span>{{ block.settings.text | escape }}</span>
+                </div>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if section.settings.cta_label != blank -%}
+          <a class="btn btn--primary" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand story",
+  "settings": [
+    { "type": "color", "id": "bg", "label": "Background", "default": "#FFFDF8" },
+    { "type": "checkbox", "id": "image_right", "label": "Image on right", "default": false },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text",  "id": "eyebrow", "label": "Eyebrow", "default": "Hecho a mano" },
+    { "type": "text",  "id": "title", "label": "Title", "default": "Built by hand, made to" },
+    { "type": "text",  "id": "spark_word", "label": "Spark word", "default": "last." },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Cada collar y correa de KYN se corta, perfora y remacha a mano con biothane original y latón sólido. No es producción en masa — es una pieza para la vida de tu perro.</p>" },
+    { "type": "text",  "id": "cta_label", "label": "Button label", "default": "Conoce la historia" },
+    { "type": "url",   "id": "cta_link",  "label": "Button link" }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Pillar",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "sparkle", "label": "Sparkle" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "paw", "label": "Paw" },
+            { "value": "leaf", "label": "Leaf" }
+          ],
+          "default": "sparkle"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Biothane original" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Resistente al agua y al barro." }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Brand story",
+      "blocks": [
+        { "type": "pillar", "settings": { "icon": "sparkle", "title": "Biothane original", "text": "Resistente al agua y al barro." } },
+        { "type": "pillar", "settings": { "icon": "shield", "title": "Latón sólido", "text": "Hardware que no se oxida." } },
+        { "type": "pillar", "settings": { "icon": "heart", "title": "Hecho a mano", "text": "En lotes pequeños, con tiempo." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

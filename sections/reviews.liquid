@@ -1,0 +1,77 @@
+{%- comment -%}
+  KYN — Reviews / testimonials section
+{%- endcomment -%}
+
+<section class="section reviews" style="background: {{ section.settings.bg }};">
+  <div class="container">
+    <header class="reviews__head">
+      <span class="eyebrow">{{ section.settings.eyebrow | escape }}</span>
+      <h2 class="h-display">
+        {{ section.settings.title | escape }}
+        {%- if section.settings.spark_word != blank -%}
+          <span class="spark">{{ section.settings.spark_word | escape }}</span>
+        {%- endif -%}
+      </h2>
+    </header>
+
+    <div class="reviews__grid">
+      {%- for block in section.blocks -%}
+        <figure class="review-card" {{ block.shopify_attributes }}>
+          <div class="review-card__stars" aria-label="{{ block.settings.stars }} stars">
+            {%- for i in (1..block.settings.stars) -%}★{%- endfor -%}
+          </div>
+          <blockquote class="review-card__quote">
+            {{ block.settings.quote | escape }}
+          </blockquote>
+          <figcaption class="review-card__author">
+            {%- if block.settings.avatar != blank -%}
+              <img src="{{ block.settings.avatar | image_url: width: 80 }}" alt="" width="40" height="40" loading="lazy">
+            {%- endif -%}
+            <div>
+              <strong>{{ block.settings.name | escape }}</strong>
+              {%- if block.settings.dog != blank -%}
+                <span>&amp; {{ block.settings.dog | escape }}</span>
+              {%- endif -%}
+            </div>
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Reviews",
+  "settings": [
+    { "type": "color", "id": "bg", "label": "Background", "default": "#F4F0E8" },
+    { "type": "text",  "id": "eyebrow", "label": "Eyebrow", "default": "Loved by their humans" },
+    { "type": "text",  "id": "title", "label": "Title", "default": "Real walks, real" },
+    { "type": "text",  "id": "spark_word", "label": "Spark word", "default": "tails." }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "range", "id": "stars", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "textarea", "id": "quote", "label": "Quote", "default": "Pasamos del clásico collar que se decoloraba al baño, a uno KYN que sigue intacto después de meses. El latón pesa lo justo. Vale cada peso." },
+        { "type": "text", "id": "name", "label": "Name", "default": "Andrea M." },
+        { "type": "text", "id": "dog", "label": "Dog's name", "default": "Luna" },
+        { "type": "image_picker", "id": "avatar", "label": "Avatar (optional)" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Reviews",
+      "blocks": [
+        { "type": "review", "settings": { "name": "Andrea M.", "dog": "Luna" } },
+        { "type": "review", "settings": { "name": "Diego R.", "dog": "Maple", "quote": "La calidad del biothane es notoria desde que abres la caja. Mi perra ama el paseo y yo amo cómo se ve." } },
+        { "type": "review", "settings": { "name": "Sofía P.", "dog": "Bruno", "quote": "Ya tengo 3 collares de KYN. La paleta de colores está hermosa y el hardware nunca falla. Premium real." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

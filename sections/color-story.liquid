@@ -1,0 +1,72 @@
+{%- comment -%}
+  KYN — Color Story section
+  Editorial color swatches grid. No products required.
+{%- endcomment -%}
+
+<section class="section color-story" style="background: {{ section.settings.bg }};">
+  <div class="container">
+    <header class="color-story__head">
+      <span class="eyebrow">{{ section.settings.eyebrow | escape }}</span>
+      <h2 class="h-display">
+        {{ section.settings.title | escape }}
+        {%- if section.settings.spark_word != blank -%}
+          <span class="spark">{{ section.settings.spark_word | escape }}</span>
+        {%- endif -%}
+      </h2>
+      {%- if section.settings.lead != blank -%}
+        <p class="lead">{{ section.settings.lead | escape }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="color-story__grid">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.link }}" class="color-swatch" {{ block.shopify_attributes }}>
+          <span class="color-swatch__dot" style="background: {{ block.settings.color }};"></span>
+          <span class="color-swatch__name">{{ block.settings.name | escape }}</span>
+          {%- if block.settings.note != blank -%}
+            <span class="color-swatch__note">{{ block.settings.note | escape }}</span>
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Color story",
+  "settings": [
+    { "type": "color", "id": "bg", "label": "Background", "default": "#F4F0E8" },
+    { "type": "text",  "id": "eyebrow", "label": "Eyebrow", "default": "Colors that suit them" },
+    { "type": "text",  "id": "title", "label": "Title", "default": "Made in shades they look" },
+    { "type": "text",  "id": "spark_word", "label": "Spark word (Friendship font)", "default": "good in." },
+    { "type": "text",  "id": "lead", "label": "Lead", "default": "Every color is hand-picked, small-batch, and looks like it belongs on them." }
+  ],
+  "blocks": [
+    {
+      "type": "swatch",
+      "name": "Color",
+      "settings": [
+        { "type": "color", "id": "color", "label": "Color", "default": "#8795D2" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Periwinkle" },
+        { "type": "text", "id": "note", "label": "Note (optional)", "default": "the original" },
+        { "type": "url", "id": "link", "label": "Link to collection / product" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Color story",
+      "blocks": [
+        { "type": "swatch", "settings": { "color": "#8795D2", "name": "Periwinkle", "note": "the original" } },
+        { "type": "swatch", "settings": { "color": "#D4B89E", "name": "Sand", "note": "warm neutral" } },
+        { "type": "swatch", "settings": { "color": "#1F1F23", "name": "Onyx", "note": "everyday classic" } },
+        { "type": "swatch", "settings": { "color": "#C9A4B8", "name": "Blush", "note": "soft & quiet" } },
+        { "type": "swatch", "settings": { "color": "#6F8C7A", "name": "Sage", "note": "outdoors-ready" } },
+        { "type": "swatch", "settings": { "color": "#E6DACB", "name": "Bone", "note": "minimal & clean" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

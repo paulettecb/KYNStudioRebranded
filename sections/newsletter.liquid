@@ -1,0 +1,60 @@
+{%- comment -%}
+  KYN — Newsletter signup section
+{%- endcomment -%}
+
+<section class="section newsletter" style="background: {{ section.settings.bg }};">
+  <div class="container">
+    <div class="newsletter__card">
+      <span class="eyebrow">{{ section.settings.eyebrow | escape }}</span>
+      <h2 class="h-display">
+        {{ section.settings.title | escape }}
+        {%- if section.settings.spark_word != blank -%}
+          <span class="spark">{{ section.settings.spark_word | escape }}</span>
+        {%- endif -%}
+      </h2>
+      {%- if section.settings.lead != blank -%}
+        <p class="lead">{{ section.settings.lead | escape }}</p>
+      {%- endif -%}
+
+      {%- form 'customer', class: 'newsletter__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <label class="visually-hidden" for="newsletter-email">Email</label>
+        <input id="newsletter-email"
+               type="email"
+               name="contact[email]"
+               placeholder="{{ section.settings.placeholder | escape }}"
+               autocomplete="email"
+               required>
+        <button type="submit" class="btn btn--primary">{{ section.settings.button | escape }}</button>
+        {%- if form.posted_successfully? -%}
+          <p class="newsletter__success">{{ section.settings.success | escape }}</p>
+        {%- endif -%}
+        {%- if form.errors -%}
+          <p class="newsletter__error">{{ form.errors | default_errors }}</p>
+        {%- endif -%}
+      {%- endform -%}
+
+      {%- if section.settings.fineprint != blank -%}
+        <small class="newsletter__fineprint">{{ section.settings.fineprint | escape }}</small>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "color", "id": "bg", "label": "Background", "default": "#E5E9F4" },
+    { "type": "text",  "id": "eyebrow", "label": "Eyebrow", "default": "Más que amigos del parque" },
+    { "type": "text",  "id": "title", "label": "Title", "default": "Lanzamientos, colores y cosas" },
+    { "type": "text",  "id": "spark_word", "label": "Spark word", "default": "lindas." },
+    { "type": "text",  "id": "lead", "label": "Lead", "default": "Sé la primera en saber cuándo soltamos un color nuevo o un drop limitado." },
+    { "type": "text",  "id": "placeholder", "label": "Placeholder", "default": "tu correo" },
+    { "type": "text",  "id": "button", "label": "Button label", "default": "Suscribirme" },
+    { "type": "text",  "id": "success", "label": "Success message", "default": "¡Bienvenida a la manada! 🐾" },
+    { "type": "text",  "id": "fineprint", "label": "Fine print", "default": "Sin spam. Solo cosas buenas." }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}
