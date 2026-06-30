@@ -1,6 +1,6 @@
 {
   "general": {
-    "currency": "{{ shop_currency }}",
+    "currency": "MXN",
     "shop_name": "KYN"
   },
   "products": {
