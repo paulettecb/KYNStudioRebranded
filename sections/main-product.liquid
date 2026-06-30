@@ -1,0 +1,536 @@
+{{ 'kyn-pdp.css' | asset_url | stylesheet_tag }}
+
+<div class="pdp-wrap" id="MainProduct-{{ section.id }}">
+
+  <!-- ═══════════════════════════════════════════
+       GALLERY
+  ═══════════════════════════════════════════ -->
+  <div class="pdp-gallery">
+
+    <!-- Thumbnails -->
+    <div class="pdp-thumbs" id="pdp-thumbs-{{ section.id }}">
+      {%- for media in product.media limit: 8 -%}
+        <button
+          class="pdp-thumb{% if forloop.first %} active{% endif %}"
+          data-index="{{ forloop.index0 }}"
+          data-src="{{ media | image_url: width: 900 }}"
+          aria-label="Ver imagen {{ forloop.index }}"
+          type="button"
+        >
+          <img
+            src="{{ media | image_url: width: 120 }}"
+            alt="{{ media.alt | default: product.title | escape }}"
+            width="72"
+            height="86"
+            loading="lazy"
+          >
+        </button>
+      {%- endfor -%}
+    </div>
+
+    <!-- Main image -->
+    <div class="pdp-main-wrap">
+      <div class="pdp-main-img">
+        {%- assign featured = product.featured_media -%}
+        <img
+          id="pdp-hero-img-{{ section.id }}"
+          src="{{ featured | image_url: width: 900 }}"
+          alt="{{ featured.alt | default: product.title | escape }}"
+          width="900"
+          height="1125"
+          loading="eager"
+        >
+        <span class="pdp-img-badge" aria-hidden="true">new ♥</span>
+      </div>
+    </div>
+
+  </div><!-- /.pdp-gallery -->
+
+
+  <!-- ═══════════════════════════════════════════
+       PRODUCT INFO
+  ═══════════════════════════════════════════ -->
+  <div class="pdp-info">
+
+    <!-- Breadcrumb -->
+    <nav class="pdp-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Inicio</a>
+      <span class="pdp-breadcrumb__sep" aria-hidden="true">›</span>
+      {%- if collection -%}
+        <a href="{{ collection.url }}">{{ collection.title }}</a>
+        <span class="pdp-breadcrumb__sep" aria-hidden="true">›</span>
+      {%- endif -%}
+      <span>{{ product.title }}</span>
+    </nav>
+
+    <!-- Badges -->
+    <div class="pdp-badge-row">
+      {%- if product.tags contains 'new' or product.tags contains 'new-drop' or product.tags contains 'New Drop' -%}
+        <span class="kyn-badge kyn-badge--pop">new ♥</span>
+      {%- endif -%}
+      <span class="kyn-badge kyn-badge--soft">HANDMADE IN MEXICO</span>
+    </div>
+
+    <!-- Title -->
+    <h1 class="pdp-title">{{ product.title }}</h1>
+
+    <!-- Price -->
+    <div class="pdp-price-row">
+      <span class="pdp-price" id="pdp-price-{{ section.id }}">
+        {{- product.selected_or_first_available_variant.price | money -}}
+      </span>
+      {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+        <span class="pdp-price--compare">
+          {{ product.selected_or_first_available_variant.compare_at_price | money }}
+        </span>
+      {%- endif -%}
+    </div>
+
+    <p class="pdp-installments">
+      o 6 pagos de
+      <strong id="pdp-installment-{{ section.id }}">
+        {{- product.selected_or_first_available_variant.price | divided_by: 6 | money -}}
+      </strong>
+      sin intereses con Mercado Pago
+    </p>
+
+    <!-- Short tagline -->
+    {%- if product.metafields.custom.tagline != blank -%}
+      <p class="pdp-tagline">{{ product.metafields.custom.tagline }}</p>
+    {%- else -%}
+      <p class="pdp-tagline">
+        {{- product.description | strip_html | truncate: 200 -}}
+      </p>
+    {%- endif -%}
+
+    <hr class="pdp-divider">
+
+    <!-- ─── Product Form ─── -->
+    <form
+      id="product-form-{{ section.id }}"
+      action="/cart/add"
+      method="post"
+      enctype="multipart/form-data"
+      novalidate
+    >
+      <!-- Hidden variant ID — updated by JS -->
+      <input
+        type="hidden"
+        name="id"
+        id="variant-id-{{ section.id }}"
+        value="{{ product.selected_or_first_available_variant.id }}"
+      >
+
+      <!-- ── Color / option swatches ── -->
+      {%- for option in product.options_with_values -%}
+        {% render 'product-swatches',
+          option: option,
+          option_index: forloop.index0
+        %}
+      {%- endfor -%}
+
+      <!-- ── Name engraving (line item property) ── -->
+      {%- if section.settings.show_engraving -%}
+        <div class="pdp-engraving">
+          <button
+            type="button"
+            class="pdp-engraving__toggle"
+            aria-expanded="false"
+            id="engraving-toggle-{{ section.id }}"
+          >
+            <div class="pdp-engraving__header">
+              <span class="pdp-engraving__title">Personalizar nombre</span>
+              <span class="pdp-engraving__sub">
+                Graba el nombre de tu perro — sin costo adicional
+              </span>
+            </div>
+            <span class="pdp-engraving__icon" aria-hidden="true">+</span>
+          </button>
+
+          <div
+            class="pdp-engraving__body"
+            id="engraving-body-{{ section.id }}"
+            hidden
+          >
+            <input
+              type="text"
+              name="properties[Nombre del perro]"
+              class="kyn-input pdp-engraving__input"
+              placeholder="Nombre de tu perro"
+              maxlength="12"
+              id="engraving-input-{{ section.id }}"
+              autocomplete="off"
+            >
+            <div class="pdp-engraving__preview">
+              <span class="pdp-engraving__preview-label">Vista previa</span>
+              <span class="pdp-engraving__preview-text" id="engraving-preview-{{ section.id }}">Max</span>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <!-- ── Buy buttons ── -->
+      <div class="pdp-buy">
+        <button
+          type="submit"
+          name="add"
+          class="kyn-btn kyn-btn--primary kyn-btn--lg pdp-atc"
+          id="atc-btn-{{ section.id }}"
+          {%- unless product.selected_or_first_available_variant.available %} disabled{%- endunless %}
+        >
+          <svg width="18" height="18" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          {%- if product.selected_or_first_available_variant.available -%}
+            Agregar al carrito
+          {%- else -%}
+            Agotado
+          {%- endif -%}
+        </button>
+
+        {%- if section.settings.show_buy_now -%}
+          {{ form | payment_button }}
+        {%- endif -%}
+      </div>
+
+      <p class="pdp-secure">
+        🔒 Pago seguro &middot; <strong>6 meses sin intereses</strong> con Mercado Pago
+      </p>
+
+    </form><!-- /#product-form -->
+
+    <hr class="pdp-divider">
+
+    <!-- ── Trust icons ── -->
+    <div class="pdp-trust">
+      <div class="pdp-trust__item">
+        <div class="pdp-trust__icon">
+          <svg width="20" height="20" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+               viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <span class="pdp-trust__label">Latón sólido</span>
+      </div>
+
+      <div class="pdp-trust__item">
+        <div class="pdp-trust__icon">
+          <svg width="20" height="20" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+               viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <span class="pdp-trust__label">Waterproof</span>
+      </div>
+
+      <div class="pdp-trust__item">
+        <div class="pdp-trust__icon">
+          <svg width="20" height="20" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+               viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="1" y="3" width="15" height="13"/>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <span class="pdp-trust__label">Envío express</span>
+      </div>
+
+      <div class="pdp-trust__item">
+        <div class="pdp-trust__icon">
+          <svg width="20" height="20" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+               viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+        <span class="pdp-trust__label">Hecho a mano</span>
+      </div>
+    </div>
+
+    <hr class="pdp-divider">
+
+    <!-- ── Accordion tabs ── -->
+    <div class="pdp-tabs" id="pdp-tabs-{{ section.id }}">
+
+      {%- if product.description != blank -%}
+        <div class="pdp-tab">
+          <button type="button" class="pdp-tab__header" aria-expanded="false">
+            <span>Descripción</span>
+            <svg class="pdp-tab__icon" width="16" height="16" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="pdp-tab__body" hidden>
+            <div class="pdp-tab__content rte">
+              {{ product.description }}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <div class="pdp-tab">
+        <button type="button" class="pdp-tab__header" aria-expanded="false">
+          <span>Materiales</span>
+          <svg class="pdp-tab__icon" width="16" height="16" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               viewBox="0 0 24 24" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="pdp-tab__body" hidden>
+          <div class="pdp-tab__content">
+            {%- if product.metafields.custom.materials != blank -%}
+              {{ product.metafields.custom.materials }}
+            {%- else -%}
+              <ul>
+                <li><strong>Biothane original</strong> — flexible, impermeable y resistente a UV</li>
+                <li><strong>Herraje de latón sólido</strong> — anticorrosión, sin zinc ni metales blandos</li>
+                <li><strong>Costura reforzada</strong> — doble hilo encerado en los puntos de carga</li>
+              </ul>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+
+      <div class="pdp-tab">
+        <button type="button" class="pdp-tab__header" aria-expanded="false">
+          <span>Cuidado</span>
+          <svg class="pdp-tab__icon" width="16" height="16" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               viewBox="0 0 24 24" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="pdp-tab__body" hidden>
+          <div class="pdp-tab__content">
+            {%- if product.metafields.custom.care != blank -%}
+              {{ product.metafields.custom.care }}
+            {%- else -%}
+              <p>Limpia con un trapo húmedo. No requiere acondicionadores ni aceites. El biothane no absorbe olores ni bacterias — solo enjuaga y seca al aire.</p>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+
+      <div class="pdp-tab">
+        <button type="button" class="pdp-tab__header" aria-expanded="false">
+          <span>Envío y devoluciones</span>
+          <svg class="pdp-tab__icon" width="16" height="16" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               viewBox="0 0 24 24" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="pdp-tab__body" hidden>
+          <div class="pdp-tab__content">
+            <p>Envío estándar 5–8 días hábiles · Express 2–3 días.</p>
+            <p>Producto personalizado con nombre grabado no acepta cambios ni devoluciones salvo defecto de fabricación.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.pdp-tabs -->
+
+  </div><!-- /.pdp-info -->
+</div><!-- /.pdp-wrap -->
+
+
+<!-- ═══════════════════════════════════════════
+     VARIANT PICKER + GALLERY JS
+═══════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Data ── */
+  var PRODUCT = {{ product | json }};
+  var VARIANTS = PRODUCT.variants;
+  var OPTIONS  = PRODUCT.options;
+  var S_ID     = {{ section.id | json }};
+
+  /* ── State: option index → selected value ── */
+  var selected = {};
+  var first = VARIANTS[0] || {};
+  OPTIONS.forEach(function (_, i) {
+    selected[i] = first['option' + (i + 1)] || '';
+  });
+
+  /* ── Helpers ── */
+  function findVariant() {
+    return VARIANTS.find(function (v) {
+      return OPTIONS.every(function (_, i) {
+        return v['option' + (i + 1)] === selected[i];
+      });
+    });
+  }
+
+  function formatMoney(cents) {
+    /* Shopify stores prices in cents */
+    return '$' + (cents / 100).toLocaleString('es-MX', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }) + ' MXN';
+  }
+
+  function updateVariantUI() {
+    var v       = findVariant();
+    var priceEl = document.getElementById('pdp-price-' + S_ID);
+    var instEl  = document.getElementById('pdp-installment-' + S_ID);
+    var inputEl = document.getElementById('variant-id-' + S_ID);
+    var atcBtn  = document.getElementById('atc-btn-' + S_ID);
+
+    if (!v) {
+      if (atcBtn) {
+        atcBtn.disabled = true;
+        atcBtn.textContent = 'No disponible';
+      }
+      return;
+    }
+
+    if (inputEl) inputEl.value = v.id;
+    if (priceEl) priceEl.textContent = formatMoney(v.price);
+    if (instEl)  instEl.textContent  = formatMoney(Math.round(v.price / 6));
+
+    if (atcBtn) {
+      if (v.available) {
+        atcBtn.disabled = false;
+        atcBtn.innerHTML =
+          '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Agregar al carrito';
+      } else {
+        atcBtn.disabled = true;
+        atcBtn.textContent = 'Agotado';
+      }
+    }
+  }
+
+  /* ── Swatch clicks ── */
+  document.querySelectorAll('#MainProduct-' + S_ID + ' .kyn-swatch').forEach(function (swatch) {
+    swatch.addEventListener('click', function () {
+      var idx = parseInt(this.dataset.optionIndex, 10);
+      var val = this.dataset.value;
+
+      selected[idx] = val;
+
+      /* Update active state */
+      document.querySelectorAll(
+        '#MainProduct-' + S_ID + ' .kyn-swatch[data-option-index="' + idx + '"]'
+      ).forEach(function (s) {
+        s.classList.remove('selected');
+        s.setAttribute('aria-pressed', 'false');
+      });
+      this.classList.add('selected');
+      this.setAttribute('aria-pressed', 'true');
+
+      /* Update displayed label */
+      var label = document.getElementById('option-value-' + idx);
+      if (label) label.textContent = val;
+
+      updateVariantUI();
+    });
+  });
+
+  /* ── Gallery thumbnails ── */
+  var thumbs  = document.querySelectorAll('#pdp-thumbs-' + S_ID + ' .pdp-thumb');
+  var heroImg = document.getElementById('pdp-hero-img-' + S_ID);
+
+  thumbs.forEach(function (thumb) {
+    thumb.addEventListener('click', function () {
+      thumbs.forEach(function (t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      if (heroImg) {
+        heroImg.style.opacity = '0.6';
+        heroImg.src = this.dataset.src;
+        heroImg.onload = function () { heroImg.style.opacity = '1'; };
+      }
+    });
+  });
+
+  /* ── Engraving toggle ── */
+  var engToggle = document.getElementById('engraving-toggle-' + S_ID);
+  var engBody   = document.getElementById('engraving-body-' + S_ID);
+
+  if (engToggle && engBody) {
+    engToggle.addEventListener('click', function () {
+      var open = engToggle.getAttribute('aria-expanded') === 'true';
+      engToggle.setAttribute('aria-expanded', String(!open));
+      if (open) {
+        engBody.setAttribute('hidden', '');
+      } else {
+        engBody.removeAttribute('hidden');
+      }
+    });
+
+    /* Live preview */
+    var engInput   = document.getElementById('engraving-input-' + S_ID);
+    var engPreview = document.getElementById('engraving-preview-' + S_ID);
+    if (engInput && engPreview) {
+      engInput.addEventListener('input', function () {
+        engPreview.textContent = this.value.trim() || 'Max';
+      });
+    }
+  }
+
+  /* ── Accordion tabs ── */
+  document.querySelectorAll('#pdp-tabs-' + S_ID + ' .pdp-tab__header').forEach(function (header) {
+    header.addEventListener('click', function () {
+      var body   = this.nextElementSibling;
+      var isOpen = this.getAttribute('aria-expanded') === 'true';
+
+      /* Close all */
+      document.querySelectorAll('#pdp-tabs-' + S_ID + ' .pdp-tab__header').forEach(function (h) {
+        h.setAttribute('aria-expanded', 'false');
+        h.nextElementSibling.setAttribute('hidden', '');
+      });
+
+      /* Toggle clicked */
+      if (!isOpen) {
+        this.setAttribute('aria-expanded', 'true');
+        body.removeAttribute('hidden');
+      }
+    });
+  });
+
+  /* ── Run on load ── */
+  updateVariantUI();
+
+}());
+</script>
+
+
+{% schema %}
+{
+  "name": "Product information",
+  "tag": "section",
+  "class": "section-main-product",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_engraving",
+      "label": "Mostrar campo de nombre grabado",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buy_now",
+      "label": "Mostrar botón \"Comprar ahora\"",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product information"
+    }
+  ]
+}
+{% endschema %}

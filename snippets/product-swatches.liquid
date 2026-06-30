@@ -1,0 +1,87 @@
+{%- comment -%}
+  Renders a KYN color swatch row for one product option.
+
+  Accepts:
+    - option        {Object}  — product.options_with_values item
+    - option_index  {Number}  — forloop.index0 (0-based)
+
+  Usage:
+    {% render 'product-swatches', option: option, option_index: forloop.index0 %}
+{%- endcomment -%}
+
+{%- assign option_name  = option.name -%}
+{%- assign option_val   = option.selected_value -%}
+
+<div class="kyn-option" data-option-index="{{ option_index }}">
+  <div class="kyn-option__label">
+    <span class="kyn-option__name">{{ option_name }}</span>
+    <span class="kyn-option__value" id="option-value-{{ option_index }}">{{ option_val }}</span>
+  </div>
+
+  <div class="kyn-swatches" role="group" aria-label="{{ option_name }}">
+    {%- for value in option.values -%}
+
+      {%- comment -%} Map colour names → hex {%- endcomment -%}
+      {%- assign _v = value | downcase | strip -%}
+      {%- assign _hex = '#cccccc' -%}
+      {%- assign _dark = false -%}
+
+      {%- case _v -%}
+        {%- when 'skyline blue','azul','blue','periwinkle','periwinkle blue' -%}
+          {%- assign _hex = '#8795d2' -%}{%- assign _dark = true -%}
+        {%- when 'forest green','forest','verde','green' -%}
+          {%- assign _hex = '#3a5c40' -%}{%- assign _dark = true -%}
+        {%- when 'ink','negro','black','tinta' -%}
+          {%- assign _hex = '#1a1a1a' -%}{%- assign _dark = true -%}
+        {%- when 'rose','rosa','pink','magenta' -%}
+          {%- assign _hex = '#e8427c' -%}{%- assign _dark = true -%}
+        {%- when 'arena','sand','beige','camel' -%}
+          {%- assign _hex = '#c9b99a' -%}
+        {%- when 'latón','laton','brass','gold','dorado','bronce' -%}
+          {%- assign _hex = '#b8965a' -%}
+        {%- when 'oat','avena','cream','crema','marfil','ivory' -%}
+          {%- assign _hex = '#f4f0e8' -%}
+        {%- when 'white','blanco' -%}
+          {%- assign _hex = '#ffffff' -%}
+        {%- when 'red','rojo' -%}
+          {%- assign _hex = '#c94040' -%}{%- assign _dark = true -%}
+        {%- when 'navy','marino','dark blue' -%}
+          {%- assign _hex = '#2f3658' -%}{%- assign _dark = true -%}
+        {%- when 'olive','olivo' -%}
+          {%- assign _hex = '#6b7a3a' -%}{%- assign _dark = true -%}
+        {%- when 'lilac','lila','lavender','lavanda' -%}
+          {%- assign _hex = '#c9b8e8' -%}
+      {%- endcase -%}
+
+      {%- assign _check_stroke = 'white' -%}
+      {%- unless _dark -%}
+        {%- assign _check_stroke = '#555' -%}
+      {%- endunless -%}
+
+      {%- assign _selected = false -%}
+      {%- if value == option_val -%}{%- assign _selected = true -%}{%- endif -%}
+
+      <button
+        type="button"
+        class="kyn-swatch{% if _selected %} selected{% endif %}"
+        style="background:{{ _hex }};"
+        data-option-index="{{ option_index }}"
+        data-value="{{ value | escape }}"
+        aria-label="{{ value }}"
+        aria-pressed="{{ _selected }}"
+        title="{{ value }}"
+      >
+        <span class="kyn-swatch__check" aria-hidden="true">
+          <svg viewBox="0 0 12 12" fill="none"
+               stroke="{{ _check_stroke }}"
+               stroke-width="2.5"
+               stroke-linecap="round"
+               stroke-linejoin="round">
+            <polyline points="2,6 5,9 10,3"/>
+          </svg>
+        </span>
+      </button>
+
+    {%- endfor -%}
+  </div>
+</div>
