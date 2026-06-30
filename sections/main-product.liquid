@@ -193,7 +193,7 @@
         </button>
 
         {%- if section.settings.show_buy_now -%}
-          {{ form | payment_button }}
+          {{- content_for_additional_checkout_buttons -}}
         {%- endif -%}
       </div>
 
