@@ -1,0 +1,24 @@
+<section class="section">
+  <div class="container" style="max-width:780px;">
+    <h1 class="page-title">{{ page.title }}</h1>
+    <div class="rte page-content">
+      {{ page.content }}
+    </div>
+  </div>
+</section>
+
+<style>
+.page-title { font-size: clamp(24px,4vw,40px); margin-bottom: 28px; }
+.page-content { color: var(--ink-700, #3d3d3d); line-height: 1.8; font-size: 16px; }
+.page-content h2 { font-size: 22px; margin: 32px 0 12px; }
+.page-content p { margin-bottom: 16px; }
+.page-content ul, .page-content ol { padding-left: 20px; margin-bottom: 16px; }
+</style>
+
+{% schema %}
+{
+  "name": "Page",
+  "settings": [],
+  "presets": [{ "name": "Page" }]
+}
+{% endschema %}
