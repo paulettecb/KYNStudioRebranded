@@ -19,7 +19,7 @@
 
     <div class="product-grid">
       {%- assign source = collections[section.settings.collection] -%}
-      {%- if source.products_count > 0 -%}
+      {%- if section.settings.collection != blank and source.products_count > 0 -%}
         {%- for product in source.products limit: section.settings.product_limit -%}
           {% render 'product-card', product: product %}
         {%- endfor -%}
