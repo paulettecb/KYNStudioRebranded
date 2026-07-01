@@ -1,12 +1,40 @@
 {
   "sections": {
-    "hero":         { "type": "hero",              "settings": {} },
-    "trust":        { "type": "trust-band",        "settings": {} },
-    "featured":     { "type": "featured-products", "settings": {} },
-    "color-story":  { "type": "color-story",       "settings": {} },
-    "story":        { "type": "story",             "settings": {} },
-    "reviews":      { "type": "reviews",           "settings": {} },
-    "newsletter":   { "type": "newsletter",        "settings": {} }
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "Handmade · Biothane & brass",
+        "title": "Gear up for the good walks.",
+        "spark_word": "good",
+        "lead": "Strong, waterproof, and built by hand from original biothane and solid brass — for the dogs who go everywhere.",
+        "cta1_label": "Shop the collection",
+        "cta2_label": "Build a set",
+        "placeholder_label": "product shot — collar + leash set",
+        "show_badge": true
+      },
+      "blocks": {
+        "waterproof": { "type": "trust", "settings": { "label": "Waterproof", "sub": "Rinse & go" } },
+        "brass": { "type": "trust", "settings": { "label": "Solid brass", "sub": "Built tough" } },
+        "small_batch": { "type": "trust", "settings": { "label": "Small batch", "sub": "By hand" } }
+      },
+      "block_order": ["waterproof", "brass", "small_batch"]
+    },
+    "trust": {
+      "type": "trust-band",
+      "settings": {},
+      "blocks": {
+        "waterproof": { "type": "feature", "settings": { "icon": "droplets", "title": "Fully waterproof", "subtitle": "Original biothane — rinse, ride home, dry." } },
+        "brass": { "type": "feature", "settings": { "icon": "gem", "title": "Solid brass hardware", "subtitle": "Built to outlast a thousand walks." } },
+        "handmade": { "type": "feature", "settings": { "icon": "hand", "title": "Made by hand", "subtitle": "Small batches, cut & riveted in-house." } },
+        "shipping": { "type": "feature", "settings": { "icon": "truck", "title": "Free shipping $60+", "subtitle": "1-year warranty on every piece." } }
+      },
+      "block_order": ["waterproof", "brass", "handmade", "shipping"]
+    },
+    "featured": { "type": "featured-products", "settings": { "eyebrow": "Best sellers", "heading": "The pieces our pack loves most.", "spark_word": "loves", "product_limit": 4, "cta_label": "View all" } },
+    "color-story": { "type": "color-story", "settings": {}, "blocks": { "periwinkle": { "type": "swatch", "settings": { "color": "#8795D2", "name": "Periwinkle", "note": "the original" } }, "sand": { "type": "swatch", "settings": { "color": "#D4B89E", "name": "Sand", "note": "warm neutral" } }, "onyx": { "type": "swatch", "settings": { "color": "#1F1F23", "name": "Onyx", "note": "everyday classic" } } }, "block_order": ["periwinkle", "sand", "onyx"] },
+    "story": { "type": "story", "settings": {} },
+    "reviews": { "type": "reviews", "settings": {} },
+    "newsletter": { "type": "newsletter", "settings": {} }
   },
   "order": ["hero", "trust", "featured", "color-story", "story", "reviews", "newsletter"]
 }
