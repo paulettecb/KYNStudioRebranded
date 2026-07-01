@@ -48,7 +48,7 @@
         "cta1_link": "shopify://collections/the-kyn-training-bundle",
         "cta2_label": "Build a set",
         "cta2_link": "",
-        "image": "shopify://shop_images/6F4CF500-CF02-47C6-A48C-69CC23DFCEFE.png",
+        "image": "shopify://shop_images/animals-pet-supplies-minimal-3.jpg",
         "placeholder_label": "product shot — collar + leash set",
         "show_badge": true
       }
@@ -60,32 +60,32 @@
           "type": "feature",
           "settings": {
             "icon": "droplets",
-            "title": "Fully waterproof",
-            "subtitle": "Original biothane — rinse, ride home, dry."
+            "title": "100% waterproof",
+            "subtitle": "Biothane® — enjuaga y seca."
           }
         },
         "brass": {
           "type": "feature",
           "settings": {
             "icon": "gem",
-            "title": "Solid brass hardware",
-            "subtitle": "Built to outlast a thousand walks."
+            "title": "Latón Sólido bajo en plomo",
+            "subtitle": "Elegido para acompañarte en miles de paseos."
           }
         },
         "handmade": {
           "type": "feature",
           "settings": {
             "icon": "hand",
-            "title": "Made by hand",
-            "subtitle": "Small batches, cut & riveted in-house."
+            "title": "Hecho a mano",
+            "subtitle": "Batches pequeños, cortado & ensamblado in-house."
           }
         },
         "shipping": {
           "type": "feature",
           "settings": {
             "icon": "truck",
-            "title": "Free shipping $60+",
-            "subtitle": "1-year warranty on every piece."
+            "title": "Envíos gratis en todos nuestros productos",
+            "subtitle": "1 año de garantía en defectos de construcción."
           }
         }
       },
