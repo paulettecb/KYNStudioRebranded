@@ -14,6 +14,25 @@
 
   {%- if page_description -%}
     <meta name="description" content="{{ page_description | escape }}">
+    <meta property="og:description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  {%- assign kyn_social_image = settings.social_share_image -%}
+  {%- if kyn_social_image != blank -%}
+    <meta property="og:image" content="{{ kyn_social_image | image_url: width: 1200 }}">
+    <meta name="twitter:image" content="{{ kyn_social_image | image_url: width: 1200 }}">
+  {%- else -%}
+    <meta property="og:image" content="{{ 'kyn-preview.svg' | asset_url }}">
+    <meta name="twitter:image" content="{{ 'kyn-preview.svg' | asset_url }}">
+  {%- endif -%}
+  <meta property="og:title" content="{{ page_title | escape }}">
+  <meta property="og:site_name" content="{{ shop.name | escape }}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  {%- if settings.favicon != blank -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+  {%- else -%}
+    <link rel="icon" type="image/png" href="{{ 'kyn-logo.png' | asset_url }}">
   {%- endif -%}
 
   {{ content_for_header }}
