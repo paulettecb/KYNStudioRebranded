@@ -29,17 +29,24 @@
     </div>
 
     <div class="hero__stage">
-      <div class="hero__blob1"></div>
-      <div class="hero__blob2"></div>
-      <div class="hero__media{% if section.settings.image == blank %} hero__media--placeholder{% endif %}">
-        {%- if section.settings.image != blank -%}
-          <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.image.alt | escape }}" width="400" height="480">
-        {%- else -%}
-          <span>{{ section.settings.placeholder_label | default: 'product shot — collar + leash set' }}</span>
-        {%- endif -%}
-        {%- if section.settings.show_badge -%}
-          <div class="hero__badge"><span>&#xF00E;e&#xF031;</span> ♥</div>
-        {%- endif -%}
+      <div class="hero__visual">
+        <div class="hero__blob1"></div>
+        <div class="hero__blob2"></div>
+        <div class="hero__media{% if section.settings.image == blank %} hero__media--placeholder{% endif %}">
+          {%- if section.settings.image != blank -%}
+            <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.image.alt | escape }}" width="400" height="480">
+          {%- endif -%}
+          {%- assign hero_caption = section.settings.image_caption -%}
+          {%- if section.settings.image == blank and hero_caption == blank -%}
+            {%- assign hero_caption = section.settings.placeholder_label | default: 'product shot — collar + leash set' -%}
+          {%- endif -%}
+          {%- if hero_caption != blank -%}
+            <span class="hero__caption">{{ hero_caption }}</span>
+          {%- endif -%}
+          {%- if section.settings.show_badge -%}
+            <div class="hero__badge"><span>&#xF00E;e&#xF031;</span> ♥</div>
+          {%- endif -%}
+        </div>
       </div>
     </div>
   </div>
@@ -61,7 +68,8 @@
     { "type": "url",  "id": "cta2_link",  "label": "Secondary button link" },
     { "type": "header", "content": "Image" },
     { "type": "image_picker", "id": "image", "label": "Product image" },
-    { "type": "text", "id": "placeholder_label", "label": "Placeholder label (when no image)" },
+    { "type": "text", "id": "image_caption", "label": "Photo caption", "info": "Small label shown over the photo — with or without an image set. Leave blank to hide." },
+    { "type": "text", "id": "placeholder_label", "label": "Placeholder label (when no image)", "info": "Fallback text shown only while no photo and no caption are set." },
     { "type": "checkbox", "id": "show_badge", "label": "Show ‘new ♥’ script badge", "default": true }
   ],
   "blocks": [

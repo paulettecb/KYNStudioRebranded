@@ -5,7 +5,7 @@
 {%- if product == blank or product == nil -%}
   <a class="kyn-product" href="#" aria-hidden="true">
     <div class="kyn-product__media">
-      <div class="hero__media--placeholder" style="position:absolute;inset:0;border-radius:0;border:0;"><span>{{ placeholder_label | default: 'product' }}</span></div>
+      <div class="hero__media--placeholder" style="position:absolute;inset:0;border-radius:0;border:0;"><span class="hero__caption">{{ placeholder_label | default: 'product' }}</span></div>
     </div>
     <div class="kyn-product__body">
       <h3 class="kyn-product__name">Product name</h3>
@@ -19,7 +19,7 @@
       {%- if product.featured_image -%}
         <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="600" height="600">
       {%- else -%}
-        <div class="hero__media--placeholder" style="position:absolute;inset:0;border-radius:0;border:0;"><span>{{ product.title | escape }}</span></div>
+        <div class="hero__media--placeholder" style="position:absolute;inset:0;border-radius:0;border:0;"><span class="hero__caption">{{ product.title | escape }}</span></div>
       {%- endif -%}
 
       {%- if product.tags contains 'new' -%}
