@@ -19,10 +19,111 @@
         "type": "image_picker",
         "id": "social_share_image",
         "label": "Social sharing image"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent color",
+        "info": "Buttons, links, and highlights",
+        "default": "#8795D2"
       },
       {
-        "type": "paragraph",
-        "content": "Brand colors live in `assets/theme.css` under `:root`. Edit there to change the palette globally."
+        "type": "color",
+        "id": "color_accent_hover",
+        "label": "Accent color (hover)",
+        "default": "#6B7AC1"
+      },
+      {
+        "type": "color",
+        "id": "color_pop",
+        "label": "Whimsy accent color",
+        "info": "Used sparingly for badges and playful details",
+        "default": "#E85DA0"
+      },
+      {
+        "type": "color",
+        "id": "color_page_bg",
+        "label": "Page background",
+        "default": "#FBFAF7"
+      },
+      {
+        "type": "color",
+        "id": "color_card_bg",
+        "label": "Card background",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_text_primary",
+        "label": "Text — primary",
+        "default": "#2A2933"
+      },
+      {
+        "type": "color",
+        "id": "color_text_secondary",
+        "label": "Text — secondary",
+        "default": "#4A4955"
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "container_width",
+        "label": "Content width",
+        "min": 1000,
+        "max": 1440,
+        "step": 20,
+        "unit": "px",
+        "default": 1200
+      },
+      {
+        "type": "range",
+        "id": "corner_radius",
+        "label": "Corner roundness",
+        "info": "Applies to buttons, cards, and images",
+        "min": 0,
+        "max": 32,
+        "step": 2,
+        "unit": "px",
+        "default": 16
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "social_tiktok",
+        "label": "TikTok"
+      },
+      {
+        "type": "url",
+        "id": "social_youtube",
+        "label": "YouTube"
+      },
+      {
+        "type": "url",
+        "id": "social_facebook",
+        "label": "Facebook"
+      },
+      {
+        "type": "url",
+        "id": "social_pinterest",
+        "label": "Pinterest"
       }
     ]
   }

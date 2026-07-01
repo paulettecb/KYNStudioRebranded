@@ -1,11 +1,11 @@
 <section class="section">
   <div class="container">
-    <h1 class="section__title">Tu carrito</h1>
+    <h1 class="section__title">{{ section.settings.title }}</h1>
 
     {%- if cart.item_count == 0 -%}
       <div style="text-align:center;padding:60px 0;">
-        <p style="color:var(--ink-700);font-size:18px;margin-bottom:24px;">Tu carrito está vacío.</p>
-        <a class="kyn-btn kyn-btn--primary" href="{{ routes.root_url }}">Seguir comprando</a>
+        <p style="color:var(--ink-700);font-size:18px;margin-bottom:24px;">{{ section.settings.empty_message }}</p>
+        <a class="kyn-btn kyn-btn--primary" href="{{ routes.root_url }}">{{ section.settings.continue_shopping_label }}</a>
       </div>
     {%- else -%}
       <form action="{{ routes.cart_url }}" method="post" id="cart-form">
@@ -52,12 +52,14 @@
             <span>Subtotal</span>
             <span class="cart-totals__price">{{ cart.total_price | money }}</span>
           </div>
-          <p style="font-size:13px;color:var(--ink-400);margin-bottom:20px;">Impuestos y envío calculados al finalizar la compra.</p>
+          {%- if section.settings.show_shipping_note -%}
+            <p style="font-size:13px;color:var(--ink-400);margin-bottom:20px;">{{ section.settings.shipping_note }}</p>
+          {%- endif -%}
           <button type="submit" name="checkout" class="kyn-btn kyn-btn--primary kyn-btn--lg" style="width:100%;">
-            Finalizar compra
+            {{ section.settings.checkout_label }}
           </button>
           <a href="{{ routes.root_url }}" class="kyn-btn kyn-btn--ghost kyn-btn--sm" style="width:100%;margin-top:10px;text-align:center;">
-            Seguir comprando
+            {{ section.settings.continue_shopping_label }}
           </a>
         </div>
 
@@ -102,7 +104,14 @@
 {% schema %}
 {
   "name": "Cart",
-  "settings": [],
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Tu carrito" },
+    { "type": "text", "id": "empty_message", "label": "Empty cart message", "default": "Tu carrito está vacío." },
+    { "type": "text", "id": "continue_shopping_label", "label": "Continue shopping button label", "default": "Seguir comprando" },
+    { "type": "text", "id": "checkout_label", "label": "Checkout button label", "default": "Finalizar compra" },
+    { "type": "checkbox", "id": "show_shipping_note", "label": "Show shipping/taxes note", "default": true },
+    { "type": "text", "id": "shipping_note", "label": "Shipping/taxes note", "default": "Impuestos y envío calculados al finalizar la compra." }
+  ],
   "presets": [{ "name": "Cart" }]
 }
 {% endschema %}

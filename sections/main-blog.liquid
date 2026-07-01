@@ -1,10 +1,10 @@
-{%- paginate blog.articles by 12 -%}
+{%- paginate blog.articles by section.settings.posts_per_page -%}
 
 <section class="section">
   <div class="container">
 
     <div class="blog-header">
-      <p class="eyebrow">Journal</p>
+      <p class="eyebrow">{{ section.settings.eyebrow }}</p>
       <h1>{{ blog.title }}</h1>
     </div>
 
@@ -32,7 +32,7 @@
           </div>
         </a>
       {%- else -%}
-        <p style="color:var(--ink-500);">No posts yet — check back soon.</p>
+        <p style="color:var(--ink-500);">{{ section.settings.empty_message }}</p>
       {%- endfor -%}
     </div>
 
@@ -64,7 +64,11 @@
 {% schema %}
 {
   "name": "Blog",
-  "settings": [],
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Journal" },
+    { "type": "range", "id": "posts_per_page", "label": "Posts per page", "min": 6, "max": 24, "step": 6, "default": 12 },
+    { "type": "text", "id": "empty_message", "label": "Empty state message", "default": "No posts yet — check back soon." }
+  ],
   "presets": [{ "name": "Blog" }]
 }
 {% endschema %}

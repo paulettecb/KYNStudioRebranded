@@ -1,6 +1,14 @@
+{%- case section.settings.content_width -%}
+  {%- when 'narrow' -%}{%- assign page_max_width = 560 -%}
+  {%- when 'wide' -%}{%- assign page_max_width = 1000 -%}
+  {%- else -%}{%- assign page_max_width = 780 -%}
+{%- endcase -%}
+
 <section class="section">
-  <div class="container" style="max-width:780px;">
-    <h1 class="page-title">{{ page.title }}</h1>
+  <div class="container" style="max-width:{{ page_max_width }}px;">
+    {%- if section.settings.show_title -%}
+      <h1 class="page-title">{{ page.title }}</h1>
+    {%- endif -%}
     <div class="rte page-content">
       {{ page.content }}
     </div>
@@ -18,7 +26,20 @@
 {% schema %}
 {
   "name": "Page",
-  "settings": [],
+  "settings": [
+    { "type": "checkbox", "id": "show_title", "label": "Show page title", "default": true },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "Content width",
+      "options": [
+        { "value": "narrow", "label": "Narrow" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "wide", "label": "Wide" }
+      ],
+      "default": "normal"
+    }
+  ],
   "presets": [{ "name": "Page" }]
 }
 {% endschema %}

@@ -1,11 +1,11 @@
-{%- paginate collections by 12 -%}
+{%- paginate collections by section.settings.collections_per_page -%}
 
 <section class="section">
   <div class="container">
 
     <div class="collist-header">
-      <p class="eyebrow">Everything KYN</p>
-      <h1>Shop by Collection</h1>
+      <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      <h1>{{ section.settings.heading }}</h1>
     </div>
 
     <div class="collist-grid">
@@ -42,7 +42,7 @@
           </a>
         {%- endunless -%}
       {%- else -%}
-        <p style="color:var(--ink-500);">No collections yet.</p>
+        <p style="color:var(--ink-500);">{{ section.settings.empty_message }}</p>
       {%- endfor -%}
     </div>
 
@@ -75,7 +75,12 @@
 {% schema %}
 {
   "name": "Collections list",
-  "settings": [],
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Everything KYN" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by Collection" },
+    { "type": "range", "id": "collections_per_page", "label": "Collections per page", "min": 4, "max": 24, "step": 4, "default": 12 },
+    { "type": "text", "id": "empty_message", "label": "Empty state message", "default": "No collections yet." }
+  ],
   "presets": [{ "name": "Collections list" }]
 }
 {% endschema %}
