@@ -1,6 +1,10 @@
 {
-  "current": "Default",
+  "current": {
+    "sections": {}
+  },
   "presets": {
-    "Default": {}
+    "Default": {
+      "sections": {}
+    }
   }
 }
