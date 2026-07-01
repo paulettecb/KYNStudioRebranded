@@ -8,10 +8,15 @@
           <img class="mark" src="{{ 'kyn-logo.png' | asset_url }}" alt="{{ shop.name }}">
         {%- endif -%}
         {%- if section.settings.tagline != blank -%}<p>{{ section.settings.tagline }}</p>{%- endif -%}
+        {%- assign footer_instagram = section.settings.instagram | default: settings.social_instagram -%}
+        {%- assign footer_tiktok = section.settings.tiktok | default: settings.social_tiktok -%}
+        {%- assign footer_youtube = section.settings.youtube | default: settings.social_youtube -%}
         <div class="site-footer__social">
-          {%- if section.settings.instagram != blank -%}<a href="{{ section.settings.instagram }}" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a>{%- endif -%}
-          {%- if section.settings.tiktok != blank -%}<a href="{{ section.settings.tiktok }}" aria-label="TikTok">{% render 'icon', name: 'tiktok' %}</a>{%- endif -%}
-          {%- if section.settings.youtube != blank -%}<a href="{{ section.settings.youtube }}" aria-label="YouTube">{% render 'icon', name: 'youtube' %}</a>{%- endif -%}
+          {%- if footer_instagram != blank -%}<a href="{{ footer_instagram }}" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a>{%- endif -%}
+          {%- if footer_tiktok != blank -%}<a href="{{ footer_tiktok }}" aria-label="TikTok">{% render 'icon', name: 'tiktok' %}</a>{%- endif -%}
+          {%- if footer_youtube != blank -%}<a href="{{ footer_youtube }}" aria-label="YouTube">{% render 'icon', name: 'youtube' %}</a>{%- endif -%}
+          {%- if settings.social_facebook != blank -%}<a href="{{ settings.social_facebook }}" aria-label="Facebook">{% render 'icon', name: 'facebook' %}</a>{%- endif -%}
+          {%- if settings.social_pinterest != blank -%}<a href="{{ settings.social_pinterest }}" aria-label="Pinterest">{% render 'icon', name: 'pinterest' %}</a>{%- endif -%}
         </div>
       </div>
 
@@ -42,6 +47,7 @@
     { "type": "image_picker", "id": "logo", "label": "Logo (white background)" },
     { "type": "text", "id": "tagline", "label": "Tagline", "default": "Handmade dog walk gear. Original biothane & solid brass — strong, durable, fully waterproof." },
     { "type": "header", "content": "Social" },
+    { "type": "paragraph", "content": "Leave blank to use the links set in Theme settings > Social media." },
     { "type": "url", "id": "instagram", "label": "Instagram URL" },
     { "type": "url", "id": "tiktok", "label": "TikTok URL" },
     { "type": "url", "id": "youtube", "label": "YouTube URL" },

@@ -1,4 +1,4 @@
-{%- paginate collection.products by 24 -%}
+{%- paginate collection.products by section.settings.products_per_page -%}
 
 <section class="section">
   <div class="container">
@@ -13,7 +13,7 @@
       {%- else -%}
         <h1>{{ collection.title }}</h1>
       {%- endif -%}
-      {%- if collection.description != blank -%}
+      {%- if section.settings.show_description and collection.description != blank -%}
         <p class="collection-desc">{{ collection.description }}</p>
       {%- endif -%}
     </div>
@@ -22,7 +22,7 @@
       {%- for product in collection.products -%}
         {% render 'product-card', product: product %}
       {%- else -%}
-        <p style="color:var(--ink-400);">No hay productos en esta colección todavía.</p>
+        <p style="color:var(--ink-400);">{{ section.settings.empty_message }}</p>
       {%- endfor -%}
     </div>
 
@@ -49,7 +49,11 @@
 {% schema %}
 {
   "name": "Collection",
-  "settings": [],
+  "settings": [
+    { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
+    { "type": "text", "id": "empty_message", "label": "Empty collection message", "default": "No hay productos en esta colección todavía." }
+  ],
   "presets": [{ "name": "Collection" }]
 }
 {% endschema %}

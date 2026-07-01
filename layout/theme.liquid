@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#8795d2">
+  <meta name="theme-color" content="{{ settings.color_accent }}">
 
   <title>
     {{ page_title }}
@@ -61,6 +61,28 @@
   </style>
 
   {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+  <!-- KYN: Theme settings overrides -->
+  <style>
+    :root {
+      --periwinkle-500: {{ settings.color_accent }};
+      --periwinkle-600: {{ settings.color_accent_hover }};
+      --pop-magenta: {{ settings.color_pop }};
+      --surface-page: {{ settings.color_page_bg }};
+      --surface-card: {{ settings.color_card_bg }};
+      --text-primary: {{ settings.color_text_primary }};
+      --text-secondary: {{ settings.color_text_secondary }};
+      --paper: {{ settings.color_page_bg }};
+      --white: {{ settings.color_card_bg }};
+      --ink-900: {{ settings.color_text_primary }};
+      --ink-700: {{ settings.color_text_secondary }};
+      --container-max: {{ settings.container_width }}px;
+      --radius-md: {{ settings.corner_radius }}px;
+      --radius-sm: {{ settings.corner_radius | times: 0.6 | round }}px;
+      --radius-lg: {{ settings.corner_radius | times: 1.5 | round }}px;
+      --radius-xl: {{ settings.corner_radius | times: 2 | round }}px;
+    }
+  </style>
 
   {%- if template.name == 'product' -%}
     {{ 'kyn-pdp.css' | asset_url | stylesheet_tag }}

@@ -2,14 +2,16 @@
   <div class="container">
 
     {%- comment -%} Breadcrumb {%- endcomment -%}
-    <nav class="article-breadcrumb" aria-label="Breadcrumb">
-      <a href="{{ blog.url }}">{{ blog.title }}</a>
-      <span aria-hidden="true"> / </span>
-      <span>{{ article.title }}</span>
-    </nav>
+    {%- if section.settings.show_breadcrumb -%}
+      <nav class="article-breadcrumb" aria-label="Breadcrumb">
+        <a href="{{ blog.url }}">{{ blog.title }}</a>
+        <span aria-hidden="true"> / </span>
+        <span>{{ article.title }}</span>
+      </nav>
+    {%- endif -%}
 
     {%- comment -%} Hero image {%- endcomment -%}
-    {%- if article.image -%}
+    {%- if section.settings.show_image and article.image -%}
       <div class="article-hero">
         <img
           src="{{ article.image | image_url: width: 1200 }}"
@@ -26,12 +28,14 @@
       <p class="eyebrow">{{ blog.title }}</p>
       <h1 class="article-title">{{ article.title }}</h1>
       <div class="article-meta">
-        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
-        {%- if article.author -%}
+        {%- if section.settings.show_date -%}
+          <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
+        {%- endif -%}
+        {%- if section.settings.show_author and article.author -%}
           <span>·</span>
           <span>{{ article.author }}</span>
         {%- endif -%}
-        {%- if article.tags.size > 0 -%}
+        {%- if section.settings.show_tags and article.tags.size > 0 -%}
           <span>·</span>
           <span>
             {%- for tag in article.tags -%}
@@ -48,20 +52,22 @@
     </div>
 
     {%- comment -%} Next / Prev {%- endcomment -%}
-    <div class="article-nav">
-      {%- if blog.previous_article -%}
-        <a href="{{ blog.previous_article }}" class="article-nav__link article-nav__link--prev">
-          <span class="article-nav__dir">← Previous</span>
-          <span class="article-nav__t">{{ blog.previous_article.title | truncate: 60 }}</span>
-        </a>
-      {%- endif -%}
-      {%- if blog.next_article -%}
-        <a href="{{ blog.next_article }}" class="article-nav__link article-nav__link--next">
-          <span class="article-nav__dir">Next →</span>
-          <span class="article-nav__t">{{ blog.next_article.title | truncate: 60 }}</span>
-        </a>
-      {%- endif -%}
-    </div>
+    {%- if section.settings.show_article_nav -%}
+      <div class="article-nav">
+        {%- if blog.previous_article -%}
+          <a href="{{ blog.previous_article }}" class="article-nav__link article-nav__link--prev">
+            <span class="article-nav__dir">← Previous</span>
+            <span class="article-nav__t">{{ blog.previous_article.title | truncate: 60 }}</span>
+          </a>
+        {%- endif -%}
+        {%- if blog.next_article -%}
+          <a href="{{ blog.next_article }}" class="article-nav__link article-nav__link--next">
+            <span class="article-nav__dir">Next →</span>
+            <span class="article-nav__t">{{ blog.next_article.title | truncate: 60 }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
 
     <div style="text-align:center;margin-top:56px;">
       <a href="{{ blog.url }}" class="kyn-btn kyn-btn--ghost">Back to {{ blog.title }}</a>
@@ -99,7 +105,14 @@
 {% schema %}
 {
   "name": "Article",
-  "settings": [],
+  "settings": [
+    { "type": "checkbox", "id": "show_breadcrumb", "label": "Show breadcrumb", "default": true },
+    { "type": "checkbox", "id": "show_image", "label": "Show featured image", "default": true },
+    { "type": "checkbox", "id": "show_date", "label": "Show date", "default": true },
+    { "type": "checkbox", "id": "show_author", "label": "Show author", "default": true },
+    { "type": "checkbox", "id": "show_tags", "label": "Show tags", "default": true },
+    { "type": "checkbox", "id": "show_article_nav", "label": "Show previous/next article links", "default": true }
+  ],
   "presets": [{ "name": "Article" }]
 }
 {% endschema %}

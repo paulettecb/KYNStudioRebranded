@@ -1,4 +1,4 @@
-{%- paginate search.results by 16 -%}
+{%- paginate search.results by section.settings.results_per_page -%}
 
 <section class="section">
   <div class="container">
@@ -31,9 +31,9 @@
     {%- if search.performed -%}
       {%- if search.results_count == 0 -%}
         <div class="search-empty">
-          <p class="eyebrow">No results</p>
-          <p>We couldn't find anything for &ldquo;{{ search.terms | escape }}&rdquo;. Try a different term.</p>
-          <a href="{{ routes.all_products_collection_url }}" class="kyn-btn kyn-btn--ghost">Browse all products</a>
+          <p class="eyebrow">{{ section.settings.empty_eyebrow }}</p>
+          <p>{{ section.settings.empty_text | replace: '{{ terms }}', search.terms }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="kyn-btn kyn-btn--ghost">{{ section.settings.empty_button_label }}</a>
         </div>
       {%- else -%}
         <p class="search-count">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %}</p>
@@ -88,7 +88,12 @@
 {% schema %}
 {
   "name": "Search",
-  "settings": [],
+  "settings": [
+    { "type": "range", "id": "results_per_page", "label": "Results per page", "min": 8, "max": 32, "step": 4, "default": 16 },
+    { "type": "text", "id": "empty_eyebrow", "label": "Empty state eyebrow", "default": "No results" },
+    { "type": "text", "id": "empty_text", "label": "Empty state text", "info": "Use {{ terms }} to insert the search term", "default": "We couldn't find anything for “{{ terms }}”. Try a different term." },
+    { "type": "text", "id": "empty_button_label", "label": "Empty state button label", "default": "Browse all products" }
+  ],
   "presets": [{ "name": "Search" }]
 }
 {% endschema %}
