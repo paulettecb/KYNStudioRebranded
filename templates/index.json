@@ -1,40 +1,202 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
       "type": "hero",
+      "blocks": {
+        "waterproof": {
+          "type": "trust",
+          "settings": {
+            "label": "Waterproof",
+            "sub": "Rinse & go"
+          }
+        },
+        "brass": {
+          "type": "trust",
+          "settings": {
+            "label": "Solid brass",
+            "sub": "Built tough"
+          }
+        },
+        "small_batch": {
+          "type": "trust",
+          "settings": {
+            "label": "Small batch",
+            "sub": "By hand"
+          }
+        }
+      },
+      "block_order": [
+        "waterproof",
+        "brass",
+        "small_batch"
+      ],
       "settings": {
         "eyebrow": "Handmade · Biothane & brass",
         "title": "Gear up for the good walks.",
         "spark_word": "good",
         "lead": "Strong, waterproof, and built by hand from original biothane and solid brass — for the dogs who go everywhere.",
         "cta1_label": "Shop the collection",
+        "cta1_link": "shopify://collections/the-kyn-training-bundle",
         "cta2_label": "Build a set",
+        "cta2_link": "",
+        "image": "shopify://shop_images/6F4CF500-CF02-47C6-A48C-69CC23DFCEFE.png",
         "placeholder_label": "product shot — collar + leash set",
         "show_badge": true
-      },
-      "blocks": {
-        "waterproof": { "type": "trust", "settings": { "label": "Waterproof", "sub": "Rinse & go" } },
-        "brass": { "type": "trust", "settings": { "label": "Solid brass", "sub": "Built tough" } },
-        "small_batch": { "type": "trust", "settings": { "label": "Small batch", "sub": "By hand" } }
-      },
-      "block_order": ["waterproof", "brass", "small_batch"]
+      }
     },
     "trust": {
       "type": "trust-band",
-      "settings": {},
       "blocks": {
-        "waterproof": { "type": "feature", "settings": { "icon": "droplets", "title": "Fully waterproof", "subtitle": "Original biothane — rinse, ride home, dry." } },
-        "brass": { "type": "feature", "settings": { "icon": "gem", "title": "Solid brass hardware", "subtitle": "Built to outlast a thousand walks." } },
-        "handmade": { "type": "feature", "settings": { "icon": "hand", "title": "Made by hand", "subtitle": "Small batches, cut & riveted in-house." } },
-        "shipping": { "type": "feature", "settings": { "icon": "truck", "title": "Free shipping $60+", "subtitle": "1-year warranty on every piece." } }
+        "waterproof": {
+          "type": "feature",
+          "settings": {
+            "icon": "droplets",
+            "title": "Fully waterproof",
+            "subtitle": "Original biothane — rinse, ride home, dry."
+          }
+        },
+        "brass": {
+          "type": "feature",
+          "settings": {
+            "icon": "gem",
+            "title": "Solid brass hardware",
+            "subtitle": "Built to outlast a thousand walks."
+          }
+        },
+        "handmade": {
+          "type": "feature",
+          "settings": {
+            "icon": "hand",
+            "title": "Made by hand",
+            "subtitle": "Small batches, cut & riveted in-house."
+          }
+        },
+        "shipping": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "title": "Free shipping $60+",
+            "subtitle": "1-year warranty on every piece."
+          }
+        }
       },
-      "block_order": ["waterproof", "brass", "handmade", "shipping"]
+      "block_order": [
+        "waterproof",
+        "brass",
+        "handmade",
+        "shipping"
+      ],
+      "settings": {}
     },
-    "featured": { "type": "featured-products", "settings": { "eyebrow": "Best sellers", "heading": "The pieces our pack loves most.", "spark_word": "loves", "product_limit": 4, "cta_label": "View all" } },
-    "color-story": { "type": "color-story", "settings": {}, "blocks": { "periwinkle": { "type": "swatch", "settings": { "color": "#8795D2", "name": "Periwinkle", "note": "the original" } }, "sand": { "type": "swatch", "settings": { "color": "#D4B89E", "name": "Sand", "note": "warm neutral" } }, "onyx": { "type": "swatch", "settings": { "color": "#1F1F23", "name": "Onyx", "note": "everyday classic" } } }, "block_order": ["periwinkle", "sand", "onyx"] },
-    "story": { "type": "story", "settings": {} },
-    "reviews": { "type": "reviews", "settings": {} },
-    "newsletter": { "type": "newsletter", "settings": {} }
+    "featured": {
+      "type": "featured-products",
+      "settings": {
+        "eyebrow": "Best sellers",
+        "heading": "The pieces our pack loves most.",
+        "spark_word": "loves",
+        "collection": "",
+        "product_limit": 4,
+        "cta_label": "View all",
+        "cta_link": ""
+      }
+    },
+    "color-story": {
+      "type": "color-story",
+      "blocks": {
+        "periwinkle": {
+          "type": "swatch",
+          "settings": {
+            "color": "#8795d2",
+            "name": "Periwinkle",
+            "note": "the original",
+            "link": ""
+          }
+        },
+        "sand": {
+          "type": "swatch",
+          "settings": {
+            "color": "#d4b89e",
+            "name": "Sand",
+            "note": "warm neutral",
+            "link": ""
+          }
+        },
+        "onyx": {
+          "type": "swatch",
+          "settings": {
+            "color": "#1f1f23",
+            "name": "Onyx",
+            "note": "everyday classic",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "periwinkle",
+        "sand",
+        "onyx"
+      ],
+      "settings": {
+        "bg": "#f4f0e8",
+        "eyebrow": "Colors that suit them",
+        "title": "Made in shades they look",
+        "spark_word": "good in.",
+        "lead": "Every color is hand-picked, small-batch, and looks like it belongs on them."
+      }
+    },
+    "story": {
+      "type": "story",
+      "settings": {
+        "bg": "#fffdf8",
+        "image_right": false,
+        "eyebrow": "Hecho a mano",
+        "title": "Built by hand, made to",
+        "spark_word": "last.",
+        "body": "<p>Cada collar y correa de KYN se corta, perfora y remacha a mano con biothane original y latón sólido. No es producción en masa — es una pieza para la vida de tu perro.</p>",
+        "cta_label": "Conoce la historia",
+        "cta_link": ""
+      }
+    },
+    "reviews": {
+      "type": "reviews",
+      "settings": {
+        "bg": "#f4f0e8",
+        "eyebrow": "Loved by their humans",
+        "title": "Real walks, real",
+        "spark_word": "tails."
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "bg": "#e5e9f4",
+        "eyebrow": "Más que amigos del parque",
+        "title": "Lanzamientos, colores y cosas",
+        "spark_word": "lindas.",
+        "lead": "Sé la primera en saber cuándo soltamos un color nuevo o un drop limitado.",
+        "placeholder": "tu correo",
+        "button": "Suscribirme",
+        "success": "¡Bienvenida a la manada! 🐾",
+        "fineprint": "Sin spam. Solo cosas buenas."
+      }
+    }
   },
-  "order": ["hero", "trust", "featured", "color-story", "story", "reviews", "newsletter"]
+  "order": [
+    "hero",
+    "trust",
+    "featured",
+    "color-story",
+    "story",
+    "reviews",
+    "newsletter"
+  ]
 }
