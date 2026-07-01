@@ -40,15 +40,16 @@
         "small_batch"
       ],
       "settings": {
-        "eyebrow": "Handmade · Biothane & brass",
+        "eyebrow": "Hecho a mano · Biothane® & latón solido",
         "title": "Gear up for the good walks.",
         "spark_word": "good",
         "lead": "Strong, waterproof, and built by hand from original biothane and solid brass — for the dogs who go everywhere.",
-        "cta1_label": "Shop the collection",
+        "cta1_label": "Mira la colección completa",
         "cta1_link": "shopify://collections/the-kyn-training-bundle",
         "cta2_label": "Build a set",
         "cta2_link": "",
         "image": "shopify://shop_images/animals-pet-supplies-minimal-3.jpg",
+        "image_caption": "collar de biothane®",
         "placeholder_label": "product shot — collar + leash set",
         "show_badge": true
       }
