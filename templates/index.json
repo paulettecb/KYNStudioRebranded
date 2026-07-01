@@ -102,11 +102,11 @@
       "type": "featured-products",
       "settings": {
         "eyebrow": "Best sellers",
-        "heading": "The pieces our pack loves most.",
-        "spark_word": "loves",
-        "collection": "",
+        "heading": "La manada ama! estas piezas, conócelas",
+        "spark_word": "ama!",
+        "collection": "the-kyn-modular-system",
         "product_limit": 4,
-        "cta_label": "View all",
+        "cta_label": "Ver todo",
         "cta_link": ""
       }
     },
