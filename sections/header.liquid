@@ -8,19 +8,61 @@
       {%- endif -%}
     </a>
 
-    <ul class="site-header__menu">
+    <ul class="site-header__menu" id="site-header-menu">
       {%- for link in linklists[section.settings.menu].links -%}
         <li><a href="{{ link.url }}">{{ link.title }}</a></li>
       {%- endfor -%}
     </ul>
 
     <div class="site-header__right">
+      <button type="button" class="kyn-iconbtn kyn-iconbtn--sm site-header__burger" aria-expanded="false" aria-controls="site-header-menu" aria-label="Menu">
+        {% render 'icon', name: 'menu' %}
+      </button>
       <a class="kyn-iconbtn kyn-iconbtn--sm" href="{{ routes.search_url }}" aria-label="Search">{% render 'icon', name: 'search' %}</a>
       <a class="kyn-iconbtn kyn-iconbtn--sm" href="{{ routes.account_url }}" aria-label="Account">{% render 'icon', name: 'user' %}</a>
-      <a class="kyn-btn kyn-btn--primary kyn-btn--sm" href="{{ routes.cart_url }}" style="margin-left:6px;">{% render 'icon', name: 'shopping-bag' %} Cart · {{ cart.item_count }}</a>
+      <a class="kyn-btn kyn-btn--primary kyn-btn--sm" href="{{ routes.cart_url }}" style="margin-left:6px;">{% render 'icon', name: 'shopping-bag' %} <span class="site-header__cart-label">Cart ·</span> {{ cart.item_count }}</a>
     </div>
   </div>
 </header>
+
+<script>
+(function () {
+  var burger = document.querySelector('.site-header__burger');
+  var menu = document.getElementById('site-header-menu');
+  if (!burger || !menu) return;
+
+  function closeMenu() {
+    menu.classList.remove('is-open');
+    burger.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleMenu() {
+    var isOpen = menu.classList.toggle('is-open');
+    burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }
+
+  burger.addEventListener('click', function (e) {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  menu.addEventListener('click', function (e) {
+    if (e.target.tagName === 'A') closeMenu();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!menu.contains(e.target) && !burger.contains(e.target)) closeMenu();
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 900) closeMenu();
+  });
+}());
+</script>
 
 {% schema %}
 {
