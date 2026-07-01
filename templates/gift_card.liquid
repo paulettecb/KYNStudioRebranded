@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Gift Card — {{ shop.name }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&display=swap">
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+  <style>
+    body {
+      background: var(--oat);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-sans);
+      margin: 0;
+      padding: 24px;
+    }
+    .gc-card {
+      background: var(--paper);
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 40px rgba(42,41,51,.10);
+    }
+    .gc-shop { font-family: var(--font-accent); font-size: 22px; color: var(--ink-900); margin: 0 0 32px; }
+    .gc-label { font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--ink-500); margin: 0 0 4px; }
+    .gc-value { font-size: 52px; font-weight: 600; color: var(--ink-900); line-height: 1; margin: 0 0 6px; }
+    .gc-balance { font-size: 14px; color: var(--ink-500); margin: 0 0 32px; }
+    .gc-qr { display: inline-block; background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 28px; }
+    .gc-code-label { font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--ink-500); margin: 0 0 8px; }
+    .gc-code {
+      font-family: 'Courier New', monospace;
+      font-size: 22px;
+      letter-spacing: .15em;
+      color: var(--ink-900);
+      font-weight: 600;
+      background: var(--oat);
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin: 0 0 8px;
+      display: block;
+    }
+    .gc-hint { font-size: 13px; color: var(--ink-500); margin: 0 0 32px; }
+    .gc-expired { font-size: 13px; color: #c94040; margin: 0 0 32px; }
+    .gc-actions { display: flex; flex-direction: column; gap: 12px; }
+    .gc-print { background: none; border: 1.5px solid var(--border-subtle); border-radius: 8px; padding: 12px 24px; font-family: var(--font-sans); font-size: 14px; color: var(--ink-700); cursor: pointer; }
+    .gc-print:hover { border-color: var(--periwinkle-500); color: var(--periwinkle-600); }
+    @media print {
+      body { background: #fff; display: block; padding: 0; }
+      .gc-card { box-shadow: none; border: 1px solid #eee; }
+      .gc-actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="gc-card">
+    <p class="gc-shop">{{ shop.name }}</p>
+
+    <p class="gc-label">Gift Card</p>
+    <p class="gc-value">{{ gift_card.initial_value | money_without_trailing_zeros }}</p>
+
+    {%- if gift_card.balance != gift_card.initial_value -%}
+      <p class="gc-balance">Balance: {{ gift_card.balance | money_without_trailing_zeros }}</p>
+    {%- else -%}
+      <p class="gc-balance">&nbsp;</p>
+    {%- endif -%}
+
+    <div class="gc-qr">
+      <canvas id="gc-qr-canvas"></canvas>
+    </div>
+
+    <p class="gc-code-label">Code</p>
+    <span class="gc-code">{{ gift_card.code | format_code }}</span>
+
+    {%- if gift_card.expired or gift_card.enabled == false -%}
+      <p class="gc-expired">This gift card is no longer active.</p>
+    {%- else -%}
+      <p class="gc-hint">Enter this code at checkout.</p>
+    {%- endif -%}
+
+    <div class="gc-actions">
+      {%- if gift_card.pass_url -%}
+        <a href="{{ gift_card.pass_url }}">
+          <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" alt="Add to Apple Wallet" width="140" height="44">
+        </a>
+      {%- endif -%}
+      <button class="gc-print" onclick="window.print()">Print this gift card</button>
+      <a href="{{ shop.url }}" class="kyn-btn kyn-btn--primary">Shop KYN</a>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var canvas = document.getElementById('gc-qr-canvas');
+      var qrId = {{ gift_card.qr_identifier | json }};
+      if (!canvas || !qrId) return;
+      // minimal QR via Google Charts fallback image
+      var img = document.createElement('img');
+      img.src = 'https://chart.googleapis.com/chart?chs=160x160&cht=qr&chl=' + encodeURIComponent(qrId) + '&choe=UTF-8';
+      img.width = 160;
+      img.height = 160;
+      img.alt = 'Gift card QR code';
+      canvas.parentNode.replaceChild(img, canvas);
+    })();
+  </script>
+</body>
+</html>

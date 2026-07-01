@@ -1,0 +1,81 @@
+{%- paginate collections by 12 -%}
+
+<section class="section">
+  <div class="container">
+
+    <div class="collist-header">
+      <p class="eyebrow">Everything KYN</p>
+      <h1>Shop by Collection</h1>
+    </div>
+
+    <div class="collist-grid">
+      {%- for collection in collections -%}
+        {%- unless collection.handle == 'frontpage' -%}
+          <a href="{{ collection.url }}" class="collist-card">
+            {%- if collection.image -%}
+              <div class="collist-card__img">
+                <img
+                  src="{{ collection.image | image_url: width: 600 }}"
+                  alt="{{ collection.image.alt | default: collection.title | escape }}"
+                  width="600"
+                  height="600"
+                  loading="lazy"
+                >
+              </div>
+            {%- else -%}
+              <div class="collist-card__img collist-card__img--placeholder">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48" aria-hidden="true">
+                  <rect width="80" height="80" rx="40" fill="var(--periwinkle-100)"/>
+                  <path d="M40 24c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 18c-5.8 0-16 2.9-16 8.7V54h32v-3.3C56 44.9 45.8 42 40 42z" fill="var(--periwinkle-500)"/>
+                </svg>
+              </div>
+            {%- endif -%}
+            <div class="collist-card__body">
+              <h2 class="collist-card__title">{{ collection.title }}</h2>
+              {%- if collection.description != blank -%}
+                <p class="collist-card__desc">{{ collection.description | strip_html | truncate: 80 }}</p>
+              {%- endif -%}
+              <span class="collist-card__cta">
+                {{ collection.products_count }} product{% if collection.products_count != 1 %}s{% endif %} →
+              </span>
+            </div>
+          </a>
+        {%- endunless -%}
+      {%- else -%}
+        <p style="color:var(--ink-500);">No collections yet.</p>
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <div class="pagination">{{ paginate | default_pagination }}</div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{%- endpaginate -%}
+
+<style>
+.collist-header { text-align: center; margin-bottom: 56px; }
+.collist-header h1 { font-size: clamp(32px,5vw,52px); color: var(--ink-900); margin: 0; }
+.collist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px; }
+.collist-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; border-radius: 16px; overflow: hidden; background: var(--paper); transition: transform .2s, box-shadow .2s; }
+.collist-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(42,41,51,.10); }
+.collist-card__img { aspect-ratio: 1; overflow: hidden; }
+.collist-card__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; }
+.collist-card:hover .collist-card__img img { transform: scale(1.04); }
+.collist-card__img--placeholder { display: flex; align-items: center; justify-content: center; background: var(--oat); }
+.collist-card__body { padding: 20px 24px 24px; }
+.collist-card__title { font-size: 20px; font-weight: 600; color: var(--ink-900); margin: 0 0 6px; }
+.collist-card__desc { font-size: 14px; color: var(--ink-500); margin: 0 0 12px; line-height: 1.5; }
+.collist-card__cta { font-size: 13px; font-weight: 500; color: var(--periwinkle-600); letter-spacing: .04em; }
+.pagination { text-align: center; margin-top: 56px; }
+</style>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "settings": [],
+  "presets": [{ "name": "Collections list" }]
+}
+{% endschema %}

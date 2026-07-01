@@ -1,0 +1,94 @@
+{%- paginate search.results by 16 -%}
+
+<section class="section">
+  <div class="container">
+
+    <div class="search-header">
+      <h1>
+        {%- if search.performed -%}
+          Results for &ldquo;{{ search.terms | escape }}&rdquo;
+        {%- else -%}
+          Search
+        {%- endif -%}
+      </h1>
+      <form action="{{ routes.search_url }}" method="get" class="search-form" role="search">
+        <input type="hidden" name="type" value="product,article,page">
+        <div class="search-form__field">
+          <input
+            type="search"
+            name="q"
+            class="kyn-input"
+            value="{{ search.terms | escape }}"
+            placeholder="Search KYN…"
+            aria-label="Search"
+            autocomplete="off"
+          >
+          <button type="submit" class="kyn-btn kyn-btn--primary">Search</button>
+        </div>
+      </form>
+    </div>
+
+    {%- if search.performed -%}
+      {%- if search.results_count == 0 -%}
+        <div class="search-empty">
+          <p class="eyebrow">No results</p>
+          <p>We couldn't find anything for &ldquo;{{ search.terms | escape }}&rdquo;. Try a different term.</p>
+          <a href="{{ routes.all_products_collection_url }}" class="kyn-btn kyn-btn--ghost">Browse all products</a>
+        </div>
+      {%- else -%}
+        <p class="search-count">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %}</p>
+        <div class="search-results">
+          {%- for result in search.results -%}
+            {%- if result.object_type == 'product' -%}
+              {% render 'product-card', product: result %}
+            {%- else -%}
+              <a href="{{ result.url }}" class="search-item">
+                {%- if result.image -%}
+                  <img src="{{ result.image | image_url: width: 200 }}" alt="{{ result.title | escape }}" width="80" height="80" loading="lazy">
+                {%- endif -%}
+                <div class="search-item__body">
+                  <p class="search-item__type">{{ result.object_type | capitalize }}</p>
+                  <p class="search-item__title">{{ result.title }}</p>
+                  <p class="search-item__excerpt">{{ result.body | strip_html | truncate: 120 }}</p>
+                </div>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- if paginate.pages > 1 -%}
+          <div class="pagination">{{ paginate | default_pagination }}</div>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+
+  </div>
+</section>
+
+{%- endpaginate -%}
+
+<style>
+.search-header { max-width: 640px; margin: 0 auto 48px; }
+.search-header h1 { font-size: clamp(28px,4vw,40px); color: var(--ink-900); margin: 0 0 24px; }
+.search-form__field { display: flex; gap: 12px; }
+.search-form__field .kyn-input { flex: 1; }
+.search-count { color: var(--ink-500); font-size: 14px; margin: 0 0 32px; }
+.search-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+.search-item { display: flex; gap: 16px; background: var(--paper); border-radius: 12px; padding: 16px; text-decoration: none; color: inherit; transition: box-shadow .2s; }
+.search-item:hover { box-shadow: 0 4px 16px rgba(42,41,51,.08); }
+.search-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+.search-item__type { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--periwinkle-600); margin: 0 0 4px; }
+.search-item__title { font-size: 16px; font-weight: 500; color: var(--ink-900); margin: 0 0 4px; }
+.search-item__excerpt { font-size: 13px; color: var(--ink-500); margin: 0; line-height: 1.5; }
+.search-empty { text-align: center; padding: 64px 0; }
+.search-empty .eyebrow { margin-bottom: 12px; }
+.search-empty p { color: var(--ink-500); margin: 0 0 24px; }
+.pagination { text-align: center; margin-top: 48px; }
+</style>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": [],
+  "presets": [{ "name": "Search" }]
+}
+{% endschema %}
