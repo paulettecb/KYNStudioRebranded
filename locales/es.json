@@ -7,4 +7,20 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
-{}
+{
+  "general": {
+    "currency": "MXN",
+    "shop_name": "KYN Studio"
+  },
+  "products": {
+    "general": {
+      "add_to_cart": "Agregar al Carrito",
+      "sold_out": "SOLD OUT!"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Carrito"
+    }
+  }
+}
