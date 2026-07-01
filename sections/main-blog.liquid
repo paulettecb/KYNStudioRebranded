@@ -1,0 +1,70 @@
+{%- paginate blog.articles by 12 -%}
+
+<section class="section">
+  <div class="container">
+
+    <div class="blog-header">
+      <p class="eyebrow">Journal</p>
+      <h1>{{ blog.title }}</h1>
+    </div>
+
+    <div class="blog-grid">
+      {%- for article in blog.articles -%}
+        <a href="{{ article.url }}" class="article-card">
+          {%- if article.image -%}
+            <div class="article-card__img">
+              <img
+                src="{{ article.image | image_url: width: 600 }}"
+                alt="{{ article.image.alt | default: article.title | escape }}"
+                width="600"
+                height="400"
+                loading="lazy"
+              >
+            </div>
+          {%- endif -%}
+          <div class="article-card__body">
+            <p class="article-card__date">{{ article.published_at | date: '%B %d, %Y' }}</p>
+            <h2 class="article-card__title">{{ article.title }}</h2>
+            {%- if article.excerpt != blank -%}
+              <p class="article-card__excerpt">{{ article.excerpt | strip_html | truncate: 130 }}</p>
+            {%- endif -%}
+            <span class="article-card__cta">Read more →</span>
+          </div>
+        </a>
+      {%- else -%}
+        <p style="color:var(--ink-500);">No posts yet — check back soon.</p>
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <div class="pagination">{{ paginate | default_pagination }}</div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{%- endpaginate -%}
+
+<style>
+.blog-header { text-align: center; margin-bottom: 56px; }
+.blog-header h1 { font-size: clamp(32px,5vw,52px); color: var(--ink-900); margin: 0; }
+.blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 32px; }
+.article-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; border-radius: 16px; overflow: hidden; background: var(--paper); transition: transform .2s, box-shadow .2s; }
+.article-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(42,41,51,.10); }
+.article-card__img { aspect-ratio: 3/2; overflow: hidden; }
+.article-card__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.article-card__body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.article-card__date { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-500); margin: 0 0 8px; }
+.article-card__title { font-size: 20px; font-weight: 600; color: var(--ink-900); margin: 0 0 10px; line-height: 1.3; }
+.article-card__excerpt { font-size: 14px; color: var(--ink-700); line-height: 1.6; margin: 0 0 16px; flex: 1; }
+.article-card__cta { font-size: 13px; font-weight: 500; color: var(--periwinkle-600); letter-spacing: .04em; }
+.pagination { text-align: center; margin-top: 56px; }
+</style>
+
+{% schema %}
+{
+  "name": "Blog",
+  "settings": [],
+  "presets": [{ "name": "Blog" }]
+}
+{% endschema %}

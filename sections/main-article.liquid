@@ -1,0 +1,105 @@
+<article class="section">
+  <div class="container">
+
+    {%- comment -%} Breadcrumb {%- endcomment -%}
+    <nav class="article-breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ blog.url }}">{{ blog.title }}</a>
+      <span aria-hidden="true"> / </span>
+      <span>{{ article.title }}</span>
+    </nav>
+
+    {%- comment -%} Hero image {%- endcomment -%}
+    {%- if article.image -%}
+      <div class="article-hero">
+        <img
+          src="{{ article.image | image_url: width: 1200 }}"
+          alt="{{ article.image.alt | default: article.title | escape }}"
+          width="1200"
+          height="600"
+          loading="eager"
+        >
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Header {%- endcomment -%}
+    <header class="article-header">
+      <p class="eyebrow">{{ blog.title }}</p>
+      <h1 class="article-title">{{ article.title }}</h1>
+      <div class="article-meta">
+        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
+        {%- if article.author -%}
+          <span>·</span>
+          <span>{{ article.author }}</span>
+        {%- endif -%}
+        {%- if article.tags.size > 0 -%}
+          <span>·</span>
+          <span>
+            {%- for tag in article.tags -%}
+              <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article-tag">{{ tag }}</a>
+            {%- endfor -%}
+          </span>
+        {%- endif -%}
+      </div>
+    </header>
+
+    {%- comment -%} Body {%- endcomment -%}
+    <div class="article-body rte">
+      {{ article.content }}
+    </div>
+
+    {%- comment -%} Next / Prev {%- endcomment -%}
+    <div class="article-nav">
+      {%- if blog.previous_article -%}
+        <a href="{{ blog.previous_article }}" class="article-nav__link article-nav__link--prev">
+          <span class="article-nav__dir">← Previous</span>
+          <span class="article-nav__t">{{ blog.previous_article.title | truncate: 60 }}</span>
+        </a>
+      {%- endif -%}
+      {%- if blog.next_article -%}
+        <a href="{{ blog.next_article }}" class="article-nav__link article-nav__link--next">
+          <span class="article-nav__dir">Next →</span>
+          <span class="article-nav__t">{{ blog.next_article.title | truncate: 60 }}</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div style="text-align:center;margin-top:56px;">
+      <a href="{{ blog.url }}" class="kyn-btn kyn-btn--ghost">Back to {{ blog.title }}</a>
+    </div>
+
+  </div>
+</article>
+
+<style>
+.article-breadcrumb { font-size: 13px; color: var(--ink-500); margin-bottom: 32px; }
+.article-breadcrumb a { color: var(--periwinkle-600); text-decoration: none; }
+.article-breadcrumb a:hover { text-decoration: underline; }
+.article-hero { border-radius: 16px; overflow: hidden; margin-bottom: 48px; }
+.article-hero img { width: 100%; height: 480px; object-fit: cover; display: block; }
+.article-header { max-width: 720px; margin: 0 auto 48px; text-align: center; }
+.article-header .eyebrow { margin-bottom: 12px; }
+.article-title { font-size: clamp(28px,4vw,48px); color: var(--ink-900); line-height: 1.2; margin: 0 0 16px; }
+.article-meta { font-size: 13px; color: var(--ink-500); display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.article-tag { color: var(--periwinkle-600); text-decoration: none; background: var(--periwinkle-50); border-radius: 100px; padding: 2px 10px; font-size: 12px; }
+.article-body { max-width: 720px; margin: 0 auto 64px; line-height: var(--leading-relaxed, 1.7); color: var(--ink-700); font-size: 17px; }
+.rte h2 { font-size: 24px; color: var(--ink-900); margin: 40px 0 16px; }
+.rte h3 { font-size: 20px; color: var(--ink-900); margin: 32px 0 12px; }
+.rte p { margin: 0 0 20px; }
+.rte a { color: var(--periwinkle-600); }
+.rte img { border-radius: 12px; max-width: 100%; height: auto; }
+.rte ul, .rte ol { padding-left: 24px; margin: 0 0 20px; }
+.rte li { margin-bottom: 8px; }
+.article-nav { display: flex; justify-content: space-between; gap: 16px; padding-top: 48px; border-top: 1px solid var(--border-subtle); margin-top: 48px; }
+.article-nav__link { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: inherit; max-width: 45%; }
+.article-nav__link--next { text-align: right; margin-left: auto; }
+.article-nav__dir { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-500); }
+.article-nav__t { font-size: 15px; font-weight: 500; color: var(--ink-900); }
+</style>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": [],
+  "presets": [{ "name": "Article" }]
+}
+{% endschema %}
