@@ -290,5 +290,3 @@ p{margin:0;}
   .color-story__grid{grid-template-columns:repeat(2,1fr);gap:14px;}
   .color-swatch__dot{width:64px;height:64px;}
 }
-  .section{padding:64px 0;}
-}
