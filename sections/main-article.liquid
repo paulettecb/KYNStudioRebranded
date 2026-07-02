@@ -1,3 +1,8 @@
+{%- if section.settings.show_reading_controls -%}
+  {{ 'kyn-reading.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'kyn-reading.js' | asset_url }}" defer></script>
+{%- endif -%}
+
 <article class="section">
   <div class="container">
 
@@ -45,6 +50,11 @@
         {%- endif -%}
       </div>
     </header>
+
+    {%- comment -%} Reading options panel {%- endcomment -%}
+    {%- if section.settings.show_reading_controls -%}
+      {% render 'reading-controls', enable_bionic: section.settings.enable_bionic %}
+    {%- endif -%}
 
     {%- comment -%} Body {%- endcomment -%}
     <div class="article-body rte">
@@ -111,7 +121,10 @@
     { "type": "checkbox", "id": "show_date", "label": "Show date", "default": true },
     { "type": "checkbox", "id": "show_author", "label": "Show author", "default": true },
     { "type": "checkbox", "id": "show_tags", "label": "Show tags", "default": true },
-    { "type": "checkbox", "id": "show_article_nav", "label": "Show previous/next article links", "default": true }
+    { "type": "checkbox", "id": "show_article_nav", "label": "Show previous/next article links", "default": true },
+    { "type": "header", "content": "Reading options" },
+    { "type": "checkbox", "id": "show_reading_controls", "label": "Show reading options panel", "info": "Lets readers adjust text size, line height, spacing and font.", "default": true },
+    { "type": "checkbox", "id": "enable_bionic", "label": "Enable bionic highlighting (experimental)", "info": "Evidence for this technique is limited. Off by default for readers.", "default": true }
   ],
   "presets": [{ "name": "Article" }]
 }

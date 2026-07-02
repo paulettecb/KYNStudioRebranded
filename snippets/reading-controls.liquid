@@ -1,0 +1,51 @@
+{%- comment -%}
+  Reading controls panel — evidence-based readability options for blog articles.
+  Renders above .article-body. Requires kyn-reading.css + kyn-reading.js.
+  Params: enable_bionic (boolean)
+{%- endcomment -%}
+
+<details class="rd-panel" data-rd-panel>
+  <summary class="rd-panel__summary">
+    <span class="rd-panel__icon" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V5h16v2M9 20h6M12 5v15"/></svg>
+    </span>
+    {{ 'reading.title' | t }}
+  </summary>
+
+  <div class="rd-panel__body" role="group" aria-label="{{ 'reading.title' | t }}">
+
+    <div class="rd-group">
+      <span class="rd-group__label" id="rd-label-size">{{ 'reading.size' | t }}</span>
+      <div class="rd-seg" role="group" aria-labelledby="rd-label-size">
+        <button type="button" class="rd-btn" data-rd="size" data-value="0" aria-pressed="false" aria-label="{{ 'reading.size_small' | t }}">A<span aria-hidden="true">−</span></button>
+        <button type="button" class="rd-btn" data-rd="size" data-value="1" aria-pressed="true" aria-label="{{ 'reading.size_default' | t }}">A</button>
+        <button type="button" class="rd-btn" data-rd="size" data-value="2" aria-pressed="false" aria-label="{{ 'reading.size_large' | t }}">A<span aria-hidden="true">+</span></button>
+      </div>
+    </div>
+
+    <div class="rd-group">
+      <span class="rd-group__label" id="rd-label-leading">{{ 'reading.leading' | t }}</span>
+      <div class="rd-seg" role="group" aria-labelledby="rd-label-leading">
+        <button type="button" class="rd-btn" data-rd="leading" data-value="normal" aria-pressed="true">{{ 'reading.leading_normal' | t }}</button>
+        <button type="button" class="rd-btn" data-rd="leading" data-value="wide" aria-pressed="false">{{ 'reading.leading_wide' | t }}</button>
+      </div>
+    </div>
+
+    <div class="rd-group">
+      <button type="button" class="rd-btn rd-btn--toggle" data-rd="spaced" aria-pressed="false">{{ 'reading.spaced' | t }}</button>
+      <button type="button" class="rd-btn rd-btn--toggle" data-rd="sans" aria-pressed="false">{{ 'reading.sans' | t }}</button>
+      {%- if enable_bionic -%}
+        <button type="button" class="rd-btn rd-btn--toggle" data-rd="bionic" aria-pressed="false">
+          {{ 'reading.bionic' | t }}
+          <span class="rd-badge">{{ 'reading.experimental' | t }}</span>
+        </button>
+      {%- endif -%}
+    </div>
+
+    {%- if enable_bionic -%}
+      <p class="rd-note">{{ 'reading.bionic_note' | t }}</p>
+    {%- endif -%}
+
+    <button type="button" class="rd-reset" data-rd="reset">{{ 'reading.reset' | t }}</button>
+  </div>
+</details>

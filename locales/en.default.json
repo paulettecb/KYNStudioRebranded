@@ -13,5 +13,21 @@
     "general": {
       "title": "Cart"
     }
+  },
+  "reading": {
+    "title": "Reading options",
+    "size": "Text size",
+    "size_small": "Smaller text",
+    "size_default": "Default size",
+    "size_large": "Larger text",
+    "leading": "Line height",
+    "leading_normal": "Normal",
+    "leading_wide": "Wide",
+    "spaced": "Spaced text",
+    "sans": "Simple font",
+    "bionic": "Guided highlighting",
+    "experimental": "Experimental",
+    "bionic_note": "Scientific evidence for this technique is limited — try it and keep what works for you.",
+    "reset": "Reset"
   }
 }
