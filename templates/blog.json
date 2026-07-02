@@ -11,8 +11,14 @@
   "sections": {
     "main": {
       "type": "main-blog",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Blogs",
+        "posts_per_page": 12,
+        "empty_message": "No posts yet — check back soon."
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }
