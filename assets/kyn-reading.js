@@ -126,4 +126,17 @@
     save(prefs);
     apply(prefs);
   });
+
+  /* ---- Popover behavior: close on outside click / Escape ---- */
+  document.addEventListener('click', function (e) {
+    if (panel.hasAttribute('open') && !panel.contains(e.target)) {
+      panel.removeAttribute('open');
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && panel.hasAttribute('open')) {
+      panel.removeAttribute('open');
+      panel.querySelector('summary').focus();
+    }
+  });
 })();

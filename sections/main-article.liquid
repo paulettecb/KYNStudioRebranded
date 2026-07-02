@@ -3,7 +3,30 @@
   <script src="{{ 'kyn-reading.js' | asset_url }}" defer></script>
 {%- endif -%}
 
-<article class="section">
+{%- comment -%} Layout tokens driven by section settings {%- endcomment -%}
+{%- case section.settings.content_width -%}
+  {%- when 'narrow' -%} {%- assign article_max_w = 600 -%}
+  {%- when 'wide' -%} {%- assign article_max_w = 880 -%}
+  {%- else -%} {%- assign article_max_w = 720 -%}
+{%- endcase -%}
+
+{%- case section.settings.title_size -%}
+  {%- when 'large' -%} {%- assign article_title_size = 'clamp(32px,5.5vw,56px)' -%}
+  {%- else -%} {%- assign article_title_size = 'clamp(28px,4vw,48px)' -%}
+{%- endcase -%}
+
+{%- case section.settings.body_font_size -%}
+  {%- when 'compact' -%} {%- assign article_body_size = '15.5px' -%}
+  {%- when 'comfortable' -%} {%- assign article_body_size = '18.5px' -%}
+  {%- else -%} {%- assign article_body_size = '17px' -%}
+{%- endcase -%}
+
+{%- assign header_align_class = '' -%}
+{%- if section.settings.header_alignment == 'left' -%}
+  {%- assign header_align_class = ' article-header--left' -%}
+{%- endif -%}
+
+<article class="section" style="--article-max-w: {{ article_max_w }}px; --article-title-size: {{ article_title_size }}; --article-body-size: {{ article_body_size }};">
   <div class="container">
 
     {%- comment -%} Breadcrumb {%- endcomment -%}
@@ -28,33 +51,36 @@
       </div>
     {%- endif -%}
 
-    {%- comment -%} Header {%- endcomment -%}
-    <header class="article-header">
-      <p class="eyebrow">{{ blog.title }}</p>
-      <h1 class="article-title">{{ article.title }}</h1>
-      <div class="article-meta">
-        {%- if section.settings.show_date -%}
-          <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
+    {%- comment -%} Header + floating reading-options toggle {%- endcomment -%}
+    <div class="article-top">
+      <header class="article-header{{ header_align_class }}">
+        {%- if section.settings.show_eyebrow -%}
+          <p class="eyebrow">{{ blog.title }}</p>
         {%- endif -%}
-        {%- if section.settings.show_author and article.author -%}
-          <span>·</span>
-          <span>{{ article.author }}</span>
-        {%- endif -%}
-        {%- if section.settings.show_tags and article.tags.size > 0 -%}
-          <span>·</span>
-          <span>
-            {%- for tag in article.tags -%}
-              <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article-tag">{{ tag }}</a>
-            {%- endfor -%}
-          </span>
-        {%- endif -%}
-      </div>
-    </header>
+        <h1 class="article-title">{{ article.title }}</h1>
+        <div class="article-meta">
+          {%- if section.settings.show_date -%}
+            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
+          {%- endif -%}
+          {%- if section.settings.show_author and article.author -%}
+            <span>·</span>
+            <span>{{ article.author }}</span>
+          {%- endif -%}
+          {%- if section.settings.show_tags and article.tags.size > 0 -%}
+            <span>·</span>
+            <span>
+              {%- for tag in article.tags -%}
+                <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article-tag">{{ tag }}</a>
+              {%- endfor -%}
+            </span>
+          {%- endif -%}
+        </div>
+      </header>
 
-    {%- comment -%} Reading options panel {%- endcomment -%}
-    {%- if section.settings.show_reading_controls -%}
-      {% render 'reading-controls', enable_bionic: section.settings.enable_bionic %}
-    {%- endif -%}
+      {%- if section.settings.show_reading_controls -%}
+        {% render 'reading-controls', enable_bionic: section.settings.enable_bionic %}
+      {%- endif -%}
+    </div>
 
     {%- comment -%} Body {%- endcomment -%}
     <div class="article-body rte">
@@ -92,12 +118,15 @@
 .article-breadcrumb a:hover { text-decoration: underline; }
 .article-hero { border-radius: 16px; overflow: hidden; margin-bottom: 48px; }
 .article-hero img { width: 100%; height: 480px; object-fit: cover; display: block; }
-.article-header { max-width: 720px; margin: 0 auto 48px; text-align: center; }
+.article-top { position: relative; max-width: var(--article-max-w, 720px); margin: 0 auto 48px; }
+.article-header { text-align: center; }
+.article-header--left { text-align: left; }
+.article-header--left .article-meta { justify-content: flex-start; }
 .article-header .eyebrow { margin-bottom: 12px; }
-.article-title { font-size: clamp(28px,4vw,48px); color: var(--ink-900); line-height: 1.2; margin: 0 0 16px; }
+.article-title { font-size: var(--article-title-size, clamp(28px,4vw,48px)); color: var(--ink-900); line-height: 1.2; margin: 0 0 16px; }
 .article-meta { font-size: 13px; color: var(--ink-500); display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; }
 .article-tag { color: var(--periwinkle-600); text-decoration: none; background: var(--periwinkle-50); border-radius: 100px; padding: 2px 10px; font-size: 12px; }
-.article-body { max-width: 720px; margin: 0 auto 64px; line-height: var(--leading-relaxed, 1.7); color: var(--ink-700); font-size: 17px; }
+.article-body { max-width: var(--article-max-w, 720px); margin: 0 auto 64px; line-height: var(--leading-relaxed, 1.7); color: var(--ink-700); font-size: var(--article-body-size, 17px); }
 .rte h2 { font-size: 24px; color: var(--ink-900); margin: 40px 0 16px; }
 .rte h3 { font-size: 20px; color: var(--ink-900); margin: 32px 0 12px; }
 .rte p { margin: 0 0 20px; }
@@ -116,14 +145,35 @@
 {
   "name": "Article",
   "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "content_width", "label": "Content width", "options": [
+        { "value": "narrow", "label": "Narrow" },
+        { "value": "standard", "label": "Standard" },
+        { "value": "wide", "label": "Wide" }
+      ], "default": "standard" },
+    { "type": "select", "id": "header_alignment", "label": "Eyebrow, title & meta alignment", "options": [
+        { "value": "center", "label": "Center" },
+        { "value": "left", "label": "Left" }
+      ], "default": "center" },
     { "type": "checkbox", "id": "show_breadcrumb", "label": "Show breadcrumb", "default": true },
     { "type": "checkbox", "id": "show_image", "label": "Show featured image", "default": true },
+    { "type": "checkbox", "id": "show_eyebrow", "label": "Show eyebrow (blog name above title)", "default": true },
     { "type": "checkbox", "id": "show_date", "label": "Show date", "default": true },
     { "type": "checkbox", "id": "show_author", "label": "Show author", "default": true },
     { "type": "checkbox", "id": "show_tags", "label": "Show tags", "default": true },
     { "type": "checkbox", "id": "show_article_nav", "label": "Show previous/next article links", "default": true },
+    { "type": "header", "content": "Typography" },
+    { "type": "select", "id": "title_size", "label": "Title size", "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "large", "label": "Large" }
+      ], "default": "default" },
+    { "type": "select", "id": "body_font_size", "label": "Body text size", "options": [
+        { "value": "compact", "label": "Compact" },
+        { "value": "default", "label": "Default" },
+        { "value": "comfortable", "label": "Comfortable" }
+      ], "default": "default" },
     { "type": "header", "content": "Reading options" },
-    { "type": "checkbox", "id": "show_reading_controls", "label": "Show reading options panel", "info": "Lets readers adjust text size, line height, spacing and font.", "default": true },
+    { "type": "checkbox", "id": "show_reading_controls", "label": "Show reading options button", "info": "Small floating button, top-right of the article, that lets readers adjust text size, line height, spacing and font.", "default": true },
     { "type": "checkbox", "id": "enable_bionic", "label": "Enable bionic highlighting (experimental)", "info": "Evidence for this technique is limited. Off by default for readers.", "default": true }
   ],
   "presets": [{ "name": "Article" }]
