@@ -19,7 +19,7 @@
         "hero_ratio": "21-9",
         "title_on_hero": true,
         "hero_overlay": 45,
-        "title_max": 75,
+        "title_max": 95,
         "show_category_badge": true,
         "eyebrow_text": "",
         "show_lead": false,
