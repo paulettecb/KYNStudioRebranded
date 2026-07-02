@@ -1,181 +1,365 @@
+{%- comment -%}
+  KYN — Article (layout "Revista con sidebar" / 1b)
+  Every piece is editable from the theme customizer.
+  Sidebar "used in this article" products are section blocks.
+{%- endcomment -%}
+
 {%- if section.settings.show_reading_controls -%}
   {{ 'kyn-reading.css' | asset_url | stylesheet_tag }}
   <script src="{{ 'kyn-reading.js' | asset_url }}" defer></script>
 {%- endif -%}
 
-{%- comment -%} Layout tokens driven by section settings {%- endcomment -%}
-{%- case section.settings.content_width -%}
-  {%- when 'narrow' -%} {%- assign article_max_w = 600 -%}
-  {%- when 'wide' -%} {%- assign article_max_w = 880 -%}
-  {%- else -%} {%- assign article_max_w = 720 -%}
-{%- endcase -%}
+{%- liquid
+  assign accent = section.settings.accent_color
+  assign eyebrow_c = section.settings.eyebrow_color
 
-{%- case section.settings.title_size -%}
-  {%- when 'large' -%} {%- assign article_title_size = 'clamp(32px,5.5vw,56px)' -%}
-  {%- else -%} {%- assign article_title_size = 'clamp(28px,4vw,48px)' -%}
-{%- endcase -%}
+  # Eyebrow / category text: custom override, else first tag, else blog title
+  assign eyebrow = section.settings.eyebrow_text
+  if eyebrow == blank
+    if article.tags.size > 0
+      assign eyebrow = article.tags.first
+    else
+      assign eyebrow = blog.title
+    endif
+  endif
 
-{%- case section.settings.body_font_size -%}
-  {%- when 'compact' -%} {%- assign article_body_size = '15.5px' -%}
-  {%- when 'comfortable' -%} {%- assign article_body_size = '18.5px' -%}
-  {%- else -%} {%- assign article_body_size = '17px' -%}
-{%- endcase -%}
+  # Reading time (words / wpm)
+  assign words = article.content | strip_html | strip_newlines | split: ' ' | size
+  assign rtime = words | divided_by: section.settings.words_per_minute
+  if rtime < 1
+    assign rtime = 1
+  endif
 
-{%- assign header_align_class = '' -%}
-{%- if section.settings.header_alignment == 'left' -%}
-  {%- assign header_align_class = ' article-header--left' -%}
-{%- endif -%}
+  # Author initials
+  assign name_parts = article.author | strip | split: ' '
+  assign ini = name_parts.first | slice: 0
+  if name_parts.size > 1
+    assign ini2 = name_parts.last | slice: 0
+    assign ini = ini | append: ini2
+  endif
+  assign ini = ini | upcase
+-%}
 
-<article class="section" style="--article-max-w: {{ article_max_w }}px; --article-title-size: {{ article_title_size }}; --article-body-size: {{ article_body_size }};">
-  <div class="container">
+<article class="kyn-article" style="--kyn-accent: {{ accent }}; --kyn-eyebrow: {{ eyebrow_c }};">
 
-    {%- comment -%} Breadcrumb {%- endcomment -%}
-    {%- if section.settings.show_breadcrumb -%}
-      <nav class="article-breadcrumb" aria-label="Breadcrumb">
-        <a href="{{ blog.url }}">{{ blog.title }}</a>
-        <span aria-hidden="true"> / </span>
-        <span>{{ article.title }}</span>
-      </nav>
-    {%- endif -%}
+  {%- if section.settings.show_breadcrumb -%}
+    <nav class="kyn-article__breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ blog.url }}">{{ blog.title }}</a>
+      <span aria-hidden="true"> / </span>
+      <span>{{ article.title }}</span>
+    </nav>
+  {%- endif -%}
 
-    {%- comment -%} Hero image {%- endcomment -%}
-    {%- if section.settings.show_image and article.image -%}
-      <div class="article-hero">
-        <img
-          src="{{ article.image | image_url: width: 1200 }}"
-          alt="{{ article.image.alt | default: article.title | escape }}"
-          width="1200"
-          height="600"
-          loading="eager"
-        >
-      </div>
-    {%- endif -%}
+  {%- comment -%} ---------- HERO ---------- {%- endcomment -%}
+  {%- if section.settings.show_hero -%}
+    <header class="kyn-hero kyn-hero--ratio-{{ section.settings.hero_ratio }}{% if section.settings.title_on_hero %} kyn-hero--overlaytitle{% endif %}">
+      {%- if article.image -%}
+        <img class="kyn-hero__img" src="{{ article.image | image_url: width: 1920 }}"
+             srcset="{{ article.image | image_url: width: 960 }} 960w, {{ article.image | image_url: width: 1920 }} 1920w"
+             sizes="100vw" alt="{{ article.image.alt | default: article.title | escape }}"
+             width="1920" height="820" loading="eager">
+      {%- else -%}
+        <div class="kyn-hero__img kyn-hero__img--placeholder" aria-hidden="true"></div>
+      {%- endif -%}
 
-    {%- comment -%} Header + floating reading-options toggle {%- endcomment -%}
-    <div class="article-top">
-      <header class="article-header{{ header_align_class }}">
-        {%- if section.settings.show_eyebrow -%}
-          <p class="eyebrow">{{ blog.title }}</p>
-        {%- endif -%}
-        <h1 class="article-title">{{ article.title }}</h1>
-        <div class="article-meta">
-          {%- if section.settings.show_date -%}
-            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
+      {%- if section.settings.title_on_hero -%}
+        <div class="kyn-hero__overlay" style="--kyn-ov: {{ section.settings.hero_overlay | divided_by: 100.0 }};"></div>
+        <div class="kyn-hero__content" style="--kyn-title-max: {{ section.settings.title_max }}%;">
+          {%- if section.settings.show_category_badge and eyebrow != blank -%}
+            <span class="kyn-badge-pop">{{ eyebrow }}</span>
           {%- endif -%}
-          {%- if section.settings.show_author and article.author -%}
-            <span>·</span>
-            <span>{{ article.author }}</span>
-          {%- endif -%}
-          {%- if section.settings.show_tags and article.tags.size > 0 -%}
-            <span>·</span>
-            <span>
-              {%- for tag in article.tags -%}
-                <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article-tag">{{ tag }}</a>
-              {%- endfor -%}
-            </span>
-          {%- endif -%}
+          <h1 class="kyn-hero__title">{{ article.title }}</h1>
         </div>
-      </header>
+      {%- endif -%}
+    </header>
+  {%- endif -%}
 
-      {%- if section.settings.show_reading_controls -%}
+  {%- comment -%} Title below hero (when not overlaid) {%- endcomment -%}
+  {%- unless section.settings.title_on_hero -%}
+    <div class="kyn-article__titlebelow">
+      {%- if section.settings.show_category_badge and eyebrow != blank -%}
+        <div class="kyn-eyebrow">{{ eyebrow }}</div>
+      {%- endif -%}
+      <h1 class="kyn-article__h1">{{ article.title }}</h1>
+    </div>
+  {%- endunless -%}
+
+  {%- comment -%} ---------- BODY + SIDEBAR ---------- {%- endcomment -%}
+  <div class="kyn-article__grid{% unless section.settings.show_sidebar %} kyn-article__grid--nosidebar{% endunless %}">
+
+    <div class="kyn-article__main">
+      {%- if section.settings.reading_controls_position == 'body' and section.settings.show_reading_controls -%}
         {% render 'reading-controls', enable_bionic: section.settings.enable_bionic %}
+      {%- endif -%}
+
+      {%- if section.settings.show_lead and article.excerpt != blank -%}
+        <p class="kyn-lead">{{ article.excerpt }}</p>
+      {%- endif -%}
+
+      <div class="kyn-article__body article-body rte">
+        {{ article.content }}
+      </div>
+
+      {%- if section.settings.show_article_nav -%}
+        <nav class="kyn-article__nav">
+          {%- if blog.previous_article -%}
+            <a href="{{ blog.previous_article }}" class="kyn-article__navlink kyn-article__navlink--prev">
+              <span class="kyn-article__navdir">← {{ 'reading.prev' | t | default: 'Anterior' }}</span>
+              <span class="kyn-article__navt">{{ blog.previous_article.title | truncate: 60 }}</span>
+            </a>
+          {%- endif -%}
+          {%- if blog.next_article -%}
+            <a href="{{ blog.next_article }}" class="kyn-article__navlink kyn-article__navlink--next">
+              <span class="kyn-article__navdir">{{ 'reading.next' | t | default: 'Siguiente' }} →</span>
+              <span class="kyn-article__navt">{{ blog.next_article.title | truncate: 60 }}</span>
+            </a>
+          {%- endif -%}
+        </nav>
       {%- endif -%}
     </div>
 
-    {%- comment -%} Body {%- endcomment -%}
-    <div class="article-body rte">
-      {{ article.content }}
-    </div>
+    {%- if section.settings.show_sidebar -%}
+      <aside class="kyn-article__sidebar">
+        <div class="kyn-article__sidebar-sticky">
 
-    {%- comment -%} Next / Prev {%- endcomment -%}
-    {%- if section.settings.show_article_nav -%}
-      <div class="article-nav">
-        {%- if blog.previous_article -%}
-          <a href="{{ blog.previous_article }}" class="article-nav__link article-nav__link--prev">
-            <span class="article-nav__dir">← Previous</span>
-            <span class="article-nav__t">{{ blog.previous_article.title | truncate: 60 }}</span>
-          </a>
-        {%- endif -%}
-        {%- if blog.next_article -%}
-          <a href="{{ blog.next_article }}" class="article-nav__link article-nav__link--next">
-            <span class="article-nav__dir">Next →</span>
-            <span class="article-nav__t">{{ blog.next_article.title | truncate: 60 }}</span>
-          </a>
-        {%- endif -%}
-      </div>
+          {%- if section.settings.show_author or section.settings.show_date or section.settings.show_reading_time -%}
+            <div class="kyn-meta">
+              {%- if section.settings.show_author and article.author != blank -%}
+                <div class="kyn-meta__avatar" aria-hidden="true">{{ ini }}</div>
+              {%- endif -%}
+              <div>
+                {%- if section.settings.show_author and article.author != blank -%}
+                  <div class="kyn-meta__name">{{ article.author }}</div>
+                {%- endif -%}
+                <div class="kyn-meta__sub">
+                  {%- if section.settings.show_date -%}<time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%-d %b %Y' }}</time>{%- endif -%}
+                  {%- if section.settings.show_date and section.settings.show_reading_time %} · {% endif -%}
+                  {%- if section.settings.show_reading_time -%}{{ rtime }} min{%- endif -%}
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.show_tags and article.tags.size > 0 -%}
+            <div class="kyn-side-block">
+              <div class="kyn-side-block__label">{{ section.settings.tags_heading }}</div>
+              <div class="kyn-tags">
+                {%- for tag in article.tags -%}
+                  <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="kyn-tag">{{ tag }}</a>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if section.blocks.size > 0 -%}
+            <div class="kyn-side-block">
+              <div class="kyn-side-block__label">{{ section.settings.used_heading }}</div>
+              <div class="kyn-used">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'used_product' and block.settings.product != blank -%}
+                    {%- assign p = block.settings.product -%}
+                    <a href="{{ p.url }}" class="kyn-used__item" {{ block.shopify_attributes }}>
+                      {%- if p.featured_image -%}
+                        <img class="kyn-used__thumb" src="{{ p.featured_image | image_url: width: 88 }}" alt="{{ p.featured_image.alt | default: p.title | escape }}" width="44" height="44" loading="lazy">
+                      {%- else -%}
+                        <span class="kyn-used__thumb kyn-used__thumb--ph" aria-hidden="true"></span>
+                      {%- endif -%}
+                      <span class="kyn-used__meta">
+                        <span class="kyn-used__name">{{ p.title }}</span>
+                        <span class="kyn-used__price">{{ p.price | money }}</span>
+                      </span>
+                    </a>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+
+        </div>
+      </aside>
     {%- endif -%}
-
-    <div style="text-align:center;margin-top:56px;">
-      <a href="{{ blog.url }}" class="kyn-btn kyn-btn--ghost">Back to {{ blog.title }}</a>
-    </div>
-
   </div>
+
+  {%- comment -%} ---------- RELATED ---------- {%- endcomment -%}
+  {%- if section.settings.show_related -%}
+    <div class="kyn-related">
+      <div class="kyn-related__label">{{ section.settings.related_heading }}</div>
+      <div class="kyn-related__grid">
+        {%- assign shown = 0 -%}
+        {%- for a in blog.articles -%}
+          {%- unless a.id == article.id -%}
+            <a href="{{ a.url }}" class="kyn-related__card">
+              {%- if a.image -%}
+                <img class="kyn-related__thumb" src="{{ a.image | image_url: width: 480 }}" alt="{{ a.image.alt | default: a.title | escape }}" width="480" height="360" loading="lazy">
+              {%- else -%}
+                <span class="kyn-related__thumb kyn-related__thumb--ph" aria-hidden="true"></span>
+              {%- endif -%}
+              <span class="kyn-related__title">{{ a.title }}</span>
+            </a>
+            {%- assign shown = shown | plus: 1 -%}
+            {%- if shown >= section.settings.related_count -%}{%- break -%}{%- endif -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
 </article>
 
 <style>
-.article-breadcrumb { font-size: 13px; color: var(--ink-500); margin-bottom: 32px; }
-.article-breadcrumb a { color: var(--periwinkle-600); text-decoration: none; }
-.article-breadcrumb a:hover { text-decoration: underline; }
-.article-hero { border-radius: 16px; overflow: hidden; margin-bottom: 48px; }
-.article-hero img { width: 100%; height: 480px; object-fit: cover; display: block; }
-.article-top { position: relative; max-width: var(--article-max-w, 720px); margin: 0 auto 48px; }
-.article-header { text-align: center; }
-.article-header--left { text-align: left; }
-.article-header--left .article-meta { justify-content: flex-start; }
-.article-header .eyebrow { margin-bottom: 12px; }
-.article-title { font-family: var(--font-display); font-size: var(--article-title-size, clamp(28px,4vw,48px)); color: var(--periwinkle-600); line-height: 1.2; margin: 0 0 16px; }
-.article-meta { font-size: 13px; color: var(--ink-500); display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; }
-.article-tag { color: var(--periwinkle-600); text-decoration: none; background: var(--periwinkle-50); border-radius: 100px; padding: 2px 10px; font-size: 12px; }
-.article-body { max-width: var(--article-max-w, 720px); margin: 0 auto 64px; line-height: var(--leading-relaxed, 1.7); color: var(--ink-700); font-size: var(--article-body-size, 17px); }
-.rte h2 { font-family: var(--font-display); font-size: 24px; color: var(--periwinkle-600); margin: 40px 0 16px; }
-.rte h3 { font-family: var(--font-display); font-size: 20px; color: var(--periwinkle-600); margin: 32px 0 12px; }
-.rte p { margin: 0 0 20px; }
-.rte a { color: var(--periwinkle-600); }
-.rte img { border-radius: 12px; max-width: 100%; height: auto; }
-.rte ul, .rte ol { padding-left: 24px; margin: 0 0 20px; }
-.rte li { margin-bottom: 8px; }
-.article-nav { display: flex; justify-content: space-between; gap: 16px; padding-top: 48px; border-top: 1px solid var(--border-subtle); margin-top: 48px; }
-.article-nav__link { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: inherit; max-width: 45%; }
-.article-nav__link--next { text-align: right; margin-left: auto; }
-.article-nav__dir { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-500); }
-.article-nav__t { font-size: 15px; font-weight: 500; color: var(--ink-900); }
+  .kyn-article { max-width: {{ section.settings.max_width }}px; margin: 0 auto; padding: 24px 20px 72px; }
+  .kyn-article__breadcrumb { font-size: 13px; color: var(--ink-500); margin-bottom: 20px; }
+  .kyn-article__breadcrumb a { color: var(--periwinkle-600); text-decoration: none; }
+  .kyn-article__breadcrumb a:hover { text-decoration: underline; }
+
+  /* Hero */
+  .kyn-hero { position: relative; width: 100%; border-radius: var(--radius-lg, 24px); overflow: hidden; background: linear-gradient(160deg, var(--periwinkle-300, #AEB8E2), #8795D2); }
+  .kyn-hero--ratio-21-9 { aspect-ratio: 21 / 9; }
+  .kyn-hero--ratio-16-9 { aspect-ratio: 16 / 9; }
+  .kyn-hero--ratio-3-1  { aspect-ratio: 3 / 1; }
+  .kyn-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .kyn-hero__img--placeholder { background: linear-gradient(160deg, var(--periwinkle-300, #AEB8E2), #8795D2); }
+  .kyn-hero__overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(42,41,51,var(--kyn-ov,.65)), rgba(42,41,51,0) 62%); }
+  .kyn-hero__content { position: absolute; left: 48px; right: 48px; bottom: 36px; }
+  .kyn-hero__title { font-family: var(--font-display); font-size: clamp(26px, 3.8vw, 44px); line-height: 1.12; color: #fff; margin: 0; max-width: var(--kyn-title-max, 70%); }
+
+  .kyn-badge-pop { display: inline-block; background: var(--kyn-accent, #E85DA0); color: #fff; font-family: var(--font-sans); font-weight: 700; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; padding: 5px 12px; border-radius: var(--radius-pill, 999px); margin-bottom: 14px; }
+
+  .kyn-eyebrow { font-family: var(--font-sans); font-weight: 700; font-size: 11px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: var(--kyn-eyebrow, #6B7AC1); }
+  .kyn-article__titlebelow { margin: 28px 0 8px; }
+  .kyn-article__h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 46px); line-height: 1.15; color: var(--periwinkle-600); margin: 12px 0 0; }
+
+  /* Grid */
+  .kyn-article__grid { display: grid; grid-template-columns: minmax(0,1fr) 240px; gap: 0; margin-top: 32px; }
+  .kyn-article__grid--nosidebar { grid-template-columns: minmax(0,1fr); }
+  .kyn-article__main { position: relative; padding: 8px 48px 0 0; min-width: 0; }
+  .kyn-article__grid--nosidebar .kyn-article__main { padding-right: 0; max-width: 760px; margin: 0 auto; }
+
+  .kyn-lead { font-family: var(--font-sans); font-weight: 400; font-size: 18px; line-height: 1.5; color: var(--ink-500, #75737F); margin: 0 0 28px; }
+
+  /* Body (keeps reading-panel vars working) */
+  .kyn-article__body.article-body.rte { color: #4A4955; }
+  .kyn-article__body.rte p { font-family: var(--font-sans); font-weight: 400; font-size: var(--rd-size, 17px); line-height: var(--rd-leading, 1.7); color: #4A4955; margin: 0 0 20px; }
+  .kyn-article__body.rte h2 { font-family: var(--font-display); font-size: 26px; line-height: 1.25; color: var(--periwinkle-600); margin: 36px 0 14px; }
+  .kyn-article__body.rte h3 { font-family: var(--font-display); font-size: 20px; color: var(--periwinkle-600); margin: 28px 0 12px; }
+  .kyn-article__body.rte a { color: var(--periwinkle-600); }
+  .kyn-article__body.rte img { border-radius: 12px; max-width: 100%; height: auto; }
+  .kyn-article__body.rte ul, .kyn-article__body.rte ol { padding-left: 24px; margin: 0 0 20px; }
+  .kyn-article__body.rte li { margin-bottom: 8px; }
+  .kyn-article__body.rte blockquote { margin: 28px 0; padding: 0 0 0 20px; border-left: 3px solid var(--kyn-accent, #E85DA0); font-weight: 600; font-size: 20px; line-height: 1.4; color: var(--ink-900); }
+  .kyn-article__body.rte hr { border: none; border-top: 1px solid var(--border-subtle, #E4E2E6); margin: 32px 0; }
+
+  /* Article nav */
+  .kyn-article__nav { display: flex; justify-content: space-between; gap: 16px; padding-top: 32px; border-top: 1px solid var(--border-subtle, #E4E2E6); margin-top: 40px; }
+  .kyn-article__navlink { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: inherit; max-width: 45%; }
+  .kyn-article__navlink--next { text-align: right; margin-left: auto; }
+  .kyn-article__navdir { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-500); }
+  .kyn-article__navt { font-size: 15px; font-weight: 600; color: var(--ink-900); }
+
+  /* Sidebar */
+  .kyn-article__sidebar { padding: 8px 0 0 24px; border-left: 1px solid var(--border-subtle, #E4E2E6); }
+  .kyn-article__sidebar-sticky { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 24px; }
+  .kyn-meta { display: flex; align-items: center; gap: 10px; }
+  .kyn-meta__avatar { width: 36px; height: 36px; border-radius: 999px; background: var(--periwinkle-100, #CFE0F2); display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); font-weight: 700; font-size: 13px; color: var(--periwinkle-700, #5562A4); flex: none; }
+  .kyn-meta__name { font-family: var(--font-sans); font-weight: 600; font-size: 13px; color: var(--ink-900); }
+  .kyn-meta__sub { font-family: var(--font-sans); font-weight: 400; font-size: 11.5px; color: var(--ink-500, #75737F); }
+  .kyn-side-block__label { font-family: var(--font-sans); font-weight: 700; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-400, #A8A6B0); margin-bottom: 10px; }
+  .kyn-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kyn-tag { font-family: var(--font-sans); font-weight: 600; font-size: 12px; color: var(--periwinkle-700, #5562A4); background: var(--periwinkle-50, #F0F2FB); border-radius: var(--radius-pill, 999px); padding: 4px 10px; text-decoration: none; }
+  .kyn-used { display: flex; flex-direction: column; gap: 10px; }
+  .kyn-used__item { display: flex; gap: 10px; align-items: center; text-decoration: none; }
+  .kyn-used__thumb { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex: none; }
+  .kyn-used__thumb--ph { background: var(--periwinkle-100, #CFE0F2); }
+  .kyn-used__meta { display: flex; flex-direction: column; }
+  .kyn-used__name { font-family: var(--font-sans); font-weight: 600; font-size: 12.5px; line-height: 1.3; color: var(--ink-900); }
+  .kyn-used__price { font-family: var(--font-sans); font-weight: 400; font-size: 12.5px; color: var(--ink-500, #75737F); }
+
+  /* Related */
+  .kyn-related { padding: 32px 0 0; border-top: 1px solid var(--border-subtle, #E4E2E6); margin-top: 8px; }
+  .kyn-related__label { font-family: var(--font-sans); font-weight: 700; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-500, #75737F); margin-bottom: 16px; }
+  .kyn-related__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .kyn-related__card { text-decoration: none; display: block; }
+  .kyn-related__thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 12px; margin-bottom: 8px; display: block; }
+  .kyn-related__thumb--ph { background: var(--periwinkle-50, #F0F2FB); }
+  .kyn-related__title { font-family: var(--font-sans); font-weight: 600; font-size: 13.5px; line-height: 1.3; color: var(--ink-900); }
+
+  @media (max-width: 820px) {
+    .kyn-article__grid { grid-template-columns: minmax(0,1fr); }
+    .kyn-article__main { padding-right: 0; }
+    .kyn-article__sidebar { padding: 24px 0 0; border-left: none; border-top: 1px solid var(--border-subtle, #E4E2E6); margin-top: 24px; }
+    .kyn-article__sidebar-sticky { position: static; }
+    .kyn-hero__content { left: 24px; right: 24px; bottom: 24px; }
+    .kyn-hero__title { max-width: 100%; }
+    .kyn-related__grid { grid-template-columns: 1fr; }
+  }
 </style>
 
 {% schema %}
 {
   "name": "Article",
+  "tag": "section",
   "settings": [
     { "type": "header", "content": "Layout" },
-    { "type": "select", "id": "content_width", "label": "Content width", "options": [
-        { "value": "narrow", "label": "Narrow" },
-        { "value": "standard", "label": "Standard" },
-        { "value": "wide", "label": "Wide" }
-      ], "default": "standard" },
-    { "type": "select", "id": "header_alignment", "label": "Eyebrow, title & meta alignment", "options": [
-        { "value": "center", "label": "Center" },
-        { "value": "left", "label": "Left" }
-      ], "default": "center" },
+    { "type": "range", "id": "max_width", "label": "Content max width (px)", "min": 720, "max": 1100, "step": 20, "default": 860 },
     { "type": "checkbox", "id": "show_breadcrumb", "label": "Show breadcrumb", "default": true },
-    { "type": "checkbox", "id": "show_image", "label": "Show featured image", "default": true },
-    { "type": "checkbox", "id": "show_eyebrow", "label": "Show eyebrow (blog name above title)", "default": true },
-    { "type": "checkbox", "id": "show_date", "label": "Show date", "default": true },
+    { "type": "checkbox", "id": "show_sidebar", "label": "Show sidebar", "default": true },
+
+    { "type": "header", "content": "Hero" },
+    { "type": "checkbox", "id": "show_hero", "label": "Show hero image", "default": true },
+    { "type": "select", "id": "hero_ratio", "label": "Hero aspect ratio", "default": "21-9",
+      "options": [
+        { "value": "21-9", "label": "Cinematic (21:9)" },
+        { "value": "16-9", "label": "Wide (16:9)" },
+        { "value": "3-1", "label": "Banner (3:1)" }
+      ] },
+    { "type": "checkbox", "id": "title_on_hero", "label": "Overlay title on hero image", "info": "Off = title shown below hero in dark text.", "default": true },
+    { "type": "range", "id": "hero_overlay", "label": "Hero overlay darkness", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 65 },
+    { "type": "range", "id": "title_max", "label": "Overlaid title max width", "min": 50, "max": 100, "step": 5, "unit": "%", "default": 70 },
+
+    { "type": "header", "content": "Category & title" },
+    { "type": "checkbox", "id": "show_category_badge", "label": "Show category / eyebrow", "default": true },
+    { "type": "text", "id": "eyebrow_text", "label": "Category text", "info": "Leave blank to use the first tag, then the blog name." },
+    { "type": "checkbox", "id": "show_lead", "label": "Show lead paragraph (uses the article excerpt)", "default": true },
+
+    { "type": "header", "content": "Meta" },
     { "type": "checkbox", "id": "show_author", "label": "Show author", "default": true },
+    { "type": "checkbox", "id": "show_date", "label": "Show date", "default": true },
+    { "type": "checkbox", "id": "show_reading_time", "label": "Show reading time", "default": true },
+    { "type": "range", "id": "words_per_minute", "label": "Reading speed (words/min)", "min": 150, "max": 280, "step": 10, "default": 200 },
+
+    { "type": "header", "content": "Tags" },
     { "type": "checkbox", "id": "show_tags", "label": "Show tags", "default": true },
-    { "type": "checkbox", "id": "show_article_nav", "label": "Show previous/next article links", "default": true },
-    { "type": "header", "content": "Typography" },
-    { "type": "select", "id": "title_size", "label": "Title size", "options": [
-        { "value": "default", "label": "Default" },
-        { "value": "large", "label": "Large" }
-      ], "default": "default" },
-    { "type": "select", "id": "body_font_size", "label": "Body text size", "options": [
-        { "value": "compact", "label": "Compact" },
-        { "value": "default", "label": "Default" },
-        { "value": "comfortable", "label": "Comfortable" }
-      ], "default": "default" },
-    { "type": "header", "content": "Reading options" },
-    { "type": "checkbox", "id": "show_reading_controls", "label": "Show reading options button", "info": "Small floating button, top-right of the article, that lets readers adjust text size, line height, spacing and font.", "default": true },
+    { "type": "text", "id": "tags_heading", "label": "Tags heading", "default": "Tags" },
+
+    { "type": "header", "content": "Used in this article" },
+    { "type": "text", "id": "used_heading", "label": "Heading", "default": "Se usó en este artículo", "info": "Add products with the blocks below." },
+
+    { "type": "header", "content": "Related articles" },
+    { "type": "checkbox", "id": "show_related", "label": "Show related articles", "default": true },
+    { "type": "text", "id": "related_heading", "label": "Heading", "default": "También te puede interesar" },
+    { "type": "range", "id": "related_count", "label": "How many", "min": 3, "max": 6, "step": 1, "default": 3 },
+    { "type": "checkbox", "id": "show_article_nav", "label": "Show previous/next links", "default": false },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "accent_color", "label": "Accent (badge, quote)", "default": "#E85DA0" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow text", "default": "#6B7AC1" },
+
+    { "type": "header", "content": "Reading options panel" },
+    { "type": "checkbox", "id": "show_reading_controls", "label": "Show reading options panel", "default": true },
+    { "type": "select", "id": "reading_controls_position", "label": "Panel position", "default": "body",
+      "options": [ { "value": "body", "label": "Top of article body" } ] },
     { "type": "checkbox", "id": "enable_bionic", "label": "Enable bionic highlighting (experimental)", "info": "Evidence for this technique is limited. Off by default for readers.", "default": true }
   ],
+  "blocks": [
+    {
+      "type": "used_product",
+      "name": "Used product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
   "presets": [{ "name": "Article" }]
 }
 {% endschema %}
