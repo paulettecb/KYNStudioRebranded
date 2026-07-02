@@ -11,8 +11,19 @@
   "sections": {
     "main": {
       "type": "main-article",
-      "settings": {}
+      "settings": {
+        "show_breadcrumb": false,
+        "show_image": true,
+        "show_date": true,
+        "show_author": true,
+        "show_tags": true,
+        "show_article_nav": true,
+        "show_reading_controls": true,
+        "enable_bionic": true
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }
