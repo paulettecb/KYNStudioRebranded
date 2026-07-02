@@ -22,5 +22,21 @@
     "general": {
       "title": "Carrito"
     }
+  },
+  "reading": {
+    "title": "Opciones de lectura",
+    "size": "Tamaño",
+    "size_small": "Texto más pequeño",
+    "size_default": "Tamaño normal",
+    "size_large": "Texto más grande",
+    "leading": "Interlineado",
+    "leading_normal": "Normal",
+    "leading_wide": "Amplio",
+    "spaced": "Texto espaciado",
+    "sans": "Fuente simple",
+    "bionic": "Resaltado guiado",
+    "experimental": "Experimental",
+    "bionic_note": "La evidencia científica sobre esta técnica es limitada — pruébala y usa lo que te funcione.",
+    "reset": "Restablecer"
   }
 }

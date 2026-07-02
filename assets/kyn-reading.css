@@ -1,0 +1,163 @@
+/* KYN — Reading options (blog articles)
+   Evidence-based readability controls. Applies only to .article-body.rte */
+
+/* ---- Reader modifiers (higher specificity than the section's inline styles) ---- */
+.article-body.rte {
+  font-size: var(--rd-size, 17px);
+  line-height: var(--rd-leading, 1.7);
+}
+.article-body.rte.rd-size-0 { --rd-size: 1rem; }
+.article-body.rte.rd-size-1 { --rd-size: 1.125rem; }
+.article-body.rte.rd-size-2 { --rd-size: 1.375rem; }
+
+.article-body.rte.rd-leading-normal { --rd-leading: 1.6; }
+.article-body.rte.rd-leading-wide   { --rd-leading: 1.9; }
+
+/* WCAG 1.4.12 spacing values */
+.article-body.rte.rd-spaced {
+  letter-spacing: 0.12em;
+  word-spacing: 0.16em;
+}
+.article-body.rte.rd-spaced p { margin-bottom: 2em; }
+
+.article-body.rte.rd-sans,
+.article-body.rte.rd-sans h2,
+.article-body.rte.rd-sans h3,
+.article-body.rte.rd-sans blockquote {
+  font-family: var(--font-sans);
+  font-style: normal;
+}
+
+/* Bionic highlight — moderate weight only (extreme weights slow reading) */
+.article-body.rte b.rd-bionic { font-weight: 600; color: inherit; }
+
+/* ---- Panel ---- */
+.rd-panel {
+  max-width: 720px;
+  margin: 0 auto 32px;
+  background: var(--white, #fff);
+  border: 1.5px solid var(--ink-100, #e5e5ee);
+  border-radius: var(--radius-md, 16px);
+  font-family: var(--font-sans);
+}
+.rd-panel__summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-700, #3a3a4a);
+  border-radius: var(--radius-md, 16px);
+}
+.rd-panel__summary::-webkit-details-marker { display: none; }
+.rd-panel__summary::after {
+  content: "";
+  margin-left: auto;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  padding: 3px;
+  transform: rotate(45deg);
+  transition: transform .15s ease;
+}
+.rd-panel[open] .rd-panel__summary::after { transform: rotate(-135deg); }
+.rd-panel__summary:focus-visible {
+  outline: 2px solid var(--periwinkle-500, #6b7bd6);
+  outline-offset: 2px;
+}
+.rd-panel__icon { display: inline-flex; color: var(--periwinkle-600, #5563c1); }
+
+.rd-panel__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 4px 18px 16px;
+  border-top: 1px solid var(--border-subtle, #ececf4);
+}
+.rd-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rd-group__label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--ink-500, #6f6f80);
+}
+.rd-seg {
+  display: inline-flex;
+  border: 1.5px solid var(--ink-100, #e5e5ee);
+  border-radius: var(--radius-pill, 999px);
+  overflow: hidden;
+}
+.rd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-700, #3a3a4a);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.rd-seg .rd-btn + .rd-btn { border-left: 1.5px solid var(--ink-100, #e5e5ee); }
+.rd-btn:focus-visible {
+  outline: 2px solid var(--periwinkle-500, #6b7bd6);
+  outline-offset: -2px;
+}
+.rd-btn[aria-pressed="true"] {
+  background: var(--periwinkle-500, #6b7bd6);
+  color: #fff;
+}
+.rd-btn--toggle {
+  border: 1.5px solid var(--ink-100, #e5e5ee);
+  border-radius: var(--radius-pill, 999px);
+}
+.rd-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--pop-magenta, #e0289b);
+  color: #fff;
+}
+.rd-btn[aria-pressed="true"] .rd-badge { background: rgba(255,255,255,.25); }
+.rd-note {
+  width: 100%;
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-500, #6f6f80);
+}
+.rd-reset {
+  margin-left: auto;
+  min-height: 44px;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--periwinkle-600, #5563c1);
+  text-decoration: underline;
+}
+.rd-reset:focus-visible {
+  outline: 2px solid var(--periwinkle-500, #6b7bd6);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .rd-panel__body { gap: 10px 14px; padding: 4px 14px 14px; }
+  .rd-reset { margin-left: 0; }
+}
