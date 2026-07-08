@@ -48,6 +48,7 @@
         "cta1_link": "shopify://collections/the-kyn-training-bundle",
         "cta2_label": "Build a set",
         "cta2_link": "",
+        "image": "shopify://shop_images/collar_new_3.png",
         "image_caption": "collar de biothane®",
         "placeholder_label": "product shot — collar + leash set",
         "show_badge": true
@@ -124,7 +125,7 @@
         "periwinkle": {
           "type": "swatch",
           "settings": {
-            "color": "#2F3658",
+            "color": "#2f3658",
             "name": "Dark Navy",
             "note": "the elegance",
             "link": ""
@@ -133,7 +134,7 @@
         "sand": {
           "type": "swatch",
           "settings": {
-            "color": "#5E5C43",
+            "color": "#5e5c43",
             "name": "Olive",
             "note": "the statement",
             "link": ""
@@ -173,9 +174,7 @@
         "spark_word": "durar!",
         "body": "<p>Cada collar y correa de KYN se corta, perfora y remacha a mano con biothane original y latón sólido. No es producción en masa — es una pieza para la vida de tu perro.</p>",
         "cta_label": "Conoce la historia",
-        "cta_link": "",
-        "video_1": "shopify://shop_videos/mp_.mp4",
-        "video_2": "shopify://shop_videos/Puedes_cambiar_el_fondo_a_Peri.mp4"
+        "cta_link": ""
       }
     },
     "reviews": {
