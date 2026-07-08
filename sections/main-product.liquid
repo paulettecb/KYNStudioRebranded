@@ -13,6 +13,7 @@
         <button
           class="pdp-thumb{% if forloop.first %} active{% endif %}"
           data-index="{{ forloop.index0 }}"
+          data-media-id="{{ media.id }}"
           data-src="{{ media | image_url: width: 900 }}"
           aria-label="Ver imagen {{ forloop.index }}"
           type="button"
@@ -326,6 +327,13 @@
   var OPTIONS  = PRODUCT.options;
   var S_ID     = {{ section.id | json }};
 
+  /* ── Media id → resized gallery src, for variant image swaps ── */
+  var MEDIA_SRC = {
+    {%- for media in product.media limit: 8 -%}
+      "{{ media.id }}": {{ media | image_url: width: 900 | json }}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  };
+
   /* ── State: option index → selected value ── */
   var selected = {};
   var first = VARIANTS[0] || {};
@@ -368,6 +376,23 @@
     if (inputEl) inputEl.value = v.id;
     if (priceEl) priceEl.textContent = formatMoney(v.price);
     if (instEl)  instEl.textContent  = formatMoney(Math.round(v.price / 6));
+
+    /* Swap main image + active thumbnail when this variant has its own photo */
+    if (v.featured_image) {
+      var heroImg  = document.getElementById('pdp-hero-img-' + S_ID);
+      var mediaId  = String(v.featured_image.id);
+      var newSrc   = MEDIA_SRC[mediaId] || v.featured_image.src;
+
+      if (heroImg && newSrc && heroImg.src !== newSrc) {
+        heroImg.style.opacity = '0.6';
+        heroImg.src = newSrc;
+        heroImg.onload = function () { heroImg.style.opacity = '1'; };
+      }
+
+      document.querySelectorAll('#pdp-thumbs-' + S_ID + ' .pdp-thumb').forEach(function (t) {
+        t.classList.toggle('active', t.dataset.mediaId === mediaId);
+      });
+    }
 
     if (atcBtn) {
       if (v.available) {
