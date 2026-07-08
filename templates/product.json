@@ -2,9 +2,21 @@
   "sections": {
     "main": {
       "type": "main-product",
-      "settings": {
-        "show_engraving": true
-      }
+      "blocks": {
+        "engraving": {
+          "type": "personalization_zone",
+          "settings": {
+            "title": "Personalizar nombre",
+            "subtitle": "Graba el nombre de tu perro — sin costo adicional",
+            "input_type": "text",
+            "property_name": "Nombre del perro",
+            "placeholder": "Nombre de tu perro",
+            "max_length": 12,
+            "show_preview": true
+          }
+        }
+      },
+      "block_order": ["engraving"]
     }
   },
   "order": ["main"]
