@@ -169,6 +169,8 @@
       "settings": {
         "bg": "#fffdf8",
         "image_right": false,
+        "video_1": "shopify://files/videos/mp_.mp4",
+        "video_2": "shopify://files/videos/Puedes_cambiar_el_fondo_a_Peri.mp4",
         "eyebrow": "Hecho a mano",
         "title": "Creados para",
         "spark_word": "durar!",
