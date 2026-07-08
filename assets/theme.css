@@ -316,6 +316,17 @@ p{margin:0;}
 .story .btn{margin-top:12px;}
 
 /* ============================================================
+   VIDEO SPOTLIGHT
+   ============================================================ */
+.video-spotlight__frame{position:relative;border-radius:var(--radius-lg);overflow:hidden;aspect-ratio:16/9;background:var(--periwinkle-50);}
+.video-spotlight__video,.video-spotlight__placeholder{width:100%;height:100%;display:block;object-fit:cover;}
+.video-spotlight__overlay{position:absolute;left:0;right:0;bottom:0;padding:40px;background:linear-gradient(to top, rgba(20,20,26,.65), transparent 65%);}
+.video-spotlight__overlay .eyebrow--on-dark{color:#fff;}
+.video-spotlight__overlay .eyebrow--on-dark::before{background:#fff;}
+.video-spotlight__overlay .h-display{color:#fff;margin:10px 0 0;}
+.video-spotlight__overlay .spark{color:var(--periwinkle-300, #b7c0e8);}
+
+/* ============================================================
    REVIEWS
    ============================================================ */
 .reviews__head{text-align:center;margin:0 auto 56px;max-width:680px;}
