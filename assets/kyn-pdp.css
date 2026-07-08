@@ -233,19 +233,19 @@
 .kyn-swatch.selected .kyn-swatch__check { opacity: 1; }
 .kyn-swatch__check svg { width: 12px; height: 12px; }
 
-/* ── Engraving ── */
-.pdp-engraving {
+/* ── Personalization zones ── */
+.pdp-zone {
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-md);
   overflow: hidden;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   transition: border-color var(--dur-fast) var(--ease-out);
 }
-.pdp-engraving:focus-within {
+.pdp-zone:focus-within {
   border-color: var(--periwinkle-300);
 }
 
-.pdp-engraving__toggle {
+.pdp-zone__toggle {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -258,31 +258,31 @@
   font-family: var(--font-sans);
   gap: 12px;
 }
-.pdp-engraving__toggle:hover { background: var(--oat); }
+.pdp-zone__toggle:hover { background: var(--oat); }
 
-.pdp-engraving__header { display: flex; flex-direction: column; gap: 2px; }
-.pdp-engraving__title {
+.pdp-zone__header { display: flex; flex-direction: column; gap: 2px; }
+.pdp-zone__title {
   font-size: 14px;
   font-weight: 600;
   color: var(--ink-900);
 }
-.pdp-engraving__sub {
+.pdp-zone__sub {
   font-size: 12px;
   color: var(--ink-500);
 }
 
-.pdp-engraving__icon {
+.pdp-zone__icon {
   font-size: 22px;
   color: var(--periwinkle-500);
   line-height: 1;
   flex-shrink: 0;
   transition: transform var(--dur-base) var(--ease-out);
 }
-.pdp-engraving__toggle[aria-expanded="true"] .pdp-engraving__icon {
+.pdp-zone__toggle[aria-expanded="true"] .pdp-zone__icon {
   transform: rotate(45deg);
 }
 
-.pdp-engraving__body {
+.pdp-zone__body {
   border-top: 1px solid var(--border-subtle);
   padding: 14px 16px 16px;
   display: flex;
@@ -290,9 +290,24 @@
   gap: 12px;
 }
 
-.pdp-engraving__input { margin: 0; }
+.pdp-zone__input,
+.pdp-zone__textarea,
+.pdp-zone__select { margin: 0; }
 
-.pdp-engraving__preview {
+.pdp-zone__textarea { resize: vertical; }
+
+.pdp-zone__file {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-700);
+  border: 1.5px dashed var(--ink-100);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.pdp-zone__preview {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -300,14 +315,14 @@
   border-radius: var(--radius-sm);
   padding: 10px 14px;
 }
-.pdp-engraving__preview-label {
+.pdp-zone__preview-label {
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-500);
   font-weight: 600;
 }
-.pdp-engraving__preview-text {
+.pdp-zone__preview-text {
   font-family: var(--font-accent);
   font-size: 28px;
   color: var(--ink-900);

@@ -129,45 +129,12 @@
         %}
       {%- endfor -%}
 
-      <!-- ── Name engraving (line item property) ── -->
-      {%- if section.settings.show_engraving -%}
-        <div class="pdp-engraving">
-          <button
-            type="button"
-            class="pdp-engraving__toggle"
-            aria-expanded="false"
-            id="engraving-toggle-{{ section.id }}"
-          >
-            <div class="pdp-engraving__header">
-              <span class="pdp-engraving__title">Personalizar nombre</span>
-              <span class="pdp-engraving__sub">
-                Graba el nombre de tu perro — sin costo adicional
-              </span>
-            </div>
-            <span class="pdp-engraving__icon" aria-hidden="true">+</span>
-          </button>
-
-          <div
-            class="pdp-engraving__body"
-            id="engraving-body-{{ section.id }}"
-            hidden
-          >
-            <input
-              type="text"
-              name="properties[Nombre del perro]"
-              class="kyn-input pdp-engraving__input"
-              placeholder="Nombre de tu perro"
-              maxlength="12"
-              id="engraving-input-{{ section.id }}"
-              autocomplete="off"
-            >
-            <div class="pdp-engraving__preview">
-              <span class="pdp-engraving__preview-label">Vista previa</span>
-              <span class="pdp-engraving__preview-text" id="engraving-preview-{{ section.id }}">Max</span>
-            </div>
-          </div>
-        </div>
-      {%- endif -%}
+      <!-- ── Personalization zones (line item properties) ── -->
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'personalization_zone' -%}
+          {% render 'pdp-personalization-zone', block: block %}
+        {%- endif -%}
+      {%- endfor -%}
 
       <!-- ── Buy buttons ── -->
       <div class="pdp-buy">
@@ -456,30 +423,30 @@
     });
   });
 
-  /* ── Engraving toggle ── */
-  var engToggle = document.getElementById('engraving-toggle-' + S_ID);
-  var engBody   = document.getElementById('engraving-body-' + S_ID);
+  /* ── Personalization zones: toggle + live preview ── */
+  document.querySelectorAll('#MainProduct-' + S_ID + ' .pdp-zone').forEach(function (zone) {
+    var toggle = zone.querySelector('.pdp-zone__toggle');
+    var body   = zone.querySelector('.pdp-zone__body');
+    if (!toggle || !body) return;
 
-  if (engToggle && engBody) {
-    engToggle.addEventListener('click', function () {
-      var open = engToggle.getAttribute('aria-expanded') === 'true';
-      engToggle.setAttribute('aria-expanded', String(!open));
+    toggle.addEventListener('click', function () {
+      var open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
       if (open) {
-        engBody.setAttribute('hidden', '');
+        body.setAttribute('hidden', '');
       } else {
-        engBody.removeAttribute('hidden');
+        body.removeAttribute('hidden');
       }
     });
 
-    /* Live preview */
-    var engInput   = document.getElementById('engraving-input-' + S_ID);
-    var engPreview = document.getElementById('engraving-preview-' + S_ID);
-    if (engInput && engPreview) {
-      engInput.addEventListener('input', function () {
-        engPreview.textContent = this.value.trim() || 'Max';
+    var input   = body.querySelector('.pdp-zone__input');
+    var preview = body.querySelector('.pdp-zone__preview-text');
+    if (input && preview) {
+      input.addEventListener('input', function () {
+        preview.textContent = this.value.trim() || preview.dataset.default || 'Aa';
       });
     }
-  }
+  });
 
   /* ── Accordion tabs ── */
   document.querySelectorAll('#pdp-tabs-' + S_ID + ' .pdp-tab__header').forEach(function (header) {
@@ -516,20 +483,98 @@
   "settings": [
     {
       "type": "checkbox",
-      "id": "show_engraving",
-      "label": "Mostrar campo de nombre grabado",
-      "default": true
-    },
-    {
-      "type": "checkbox",
       "id": "show_buy_now",
       "label": "Mostrar botón \"Comprar ahora\"",
       "default": false
     }
   ],
+  "blocks": [
+    {
+      "type": "personalization_zone",
+      "name": "Zona personalizable",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "default": "Personalizar"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Texto de ayuda",
+          "default": "Personaliza tu producto — sin costo adicional"
+        },
+        {
+          "type": "select",
+          "id": "input_type",
+          "label": "Tipo de personalización",
+          "options": [
+            { "value": "text", "label": "Texto corto (ej. grabado de nombre)" },
+            { "value": "textarea", "label": "Texto largo (ej. mensaje/dedicatoria)" },
+            { "value": "select", "label": "Lista desplegable (ej. estilo de fuente)" },
+            { "value": "image", "label": "Subir imagen/foto" }
+          ],
+          "default": "text"
+        },
+        {
+          "type": "text",
+          "id": "property_name",
+          "label": "Nombre de la propiedad",
+          "info": "Cómo se ve en el carrito y el pedido. Si se deja vacío, usa el título.",
+          "default": "Personalización"
+        },
+        {
+          "type": "text",
+          "id": "placeholder",
+          "label": "Placeholder",
+          "default": ""
+        },
+        {
+          "type": "number",
+          "id": "max_length",
+          "label": "Máximo de caracteres (texto/texto largo)",
+          "default": 40
+        },
+        {
+          "type": "textarea",
+          "id": "select_options",
+          "label": "Opciones (una por línea)",
+          "info": "Solo aplica al tipo \"Lista desplegable\"."
+        },
+        {
+          "type": "checkbox",
+          "id": "required",
+          "label": "Obligatorio",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_preview",
+          "label": "Mostrar vista previa en vivo",
+          "info": "Solo aplica al tipo \"Texto corto\".",
+          "default": true
+        }
+      ]
+    }
+  ],
   "presets": [
     {
-      "name": "Product information"
+      "name": "Product information",
+      "blocks": [
+        {
+          "type": "personalization_zone",
+          "settings": {
+            "title": "Personalizar nombre",
+            "subtitle": "Graba el nombre de tu perro — sin costo adicional",
+            "input_type": "text",
+            "property_name": "Nombre del perro",
+            "placeholder": "Nombre de tu perro",
+            "max_length": 12,
+            "show_preview": true
+          }
+        }
+      ]
     }
   ]
 }
