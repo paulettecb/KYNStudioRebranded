@@ -192,6 +192,7 @@
       "type": "video-spotlight",
       "settings": {
         "bg": "#fffdf8",
+        "video": "shopify://files/videos/gemini_generated_video_207DBF5A.mp4",
         "eyebrow": "KYN",
         "title": "Algo lindo está por",
         "spark_word": "llegar."
