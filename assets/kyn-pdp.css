@@ -233,6 +233,38 @@
 .kyn-swatch.selected .kyn-swatch__check { opacity: 1; }
 .kyn-swatch__check svg { width: 12px; height: 12px; }
 
+/* ── Non-color option pills (e.g. yes/no add-ons) ── */
+.kyn-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.kyn-pill {
+  height: auto;
+  width: auto;
+  border-radius: var(--radius-pill);
+  padding: 9px 18px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-700);
+  background: var(--white);
+  box-shadow: none;
+  border: 1.5px solid var(--ink-100);
+}
+.kyn-pill:hover {
+  border-color: var(--periwinkle-300);
+  transform: none;
+}
+.kyn-pill.selected {
+  border-color: var(--ink-900);
+  color: var(--ink-900);
+  background: var(--oat);
+  box-shadow: none;
+}
+.kyn-pill .kyn-swatch__check { display: none; }
+
 /* ── Personalization zones ── */
 .pdp-zone {
   border: 1.5px solid var(--border-subtle);
