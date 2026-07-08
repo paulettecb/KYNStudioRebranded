@@ -186,6 +186,15 @@
         "spark_word": "felices!"
       }
     },
+    "video-spotlight": {
+      "type": "video-spotlight",
+      "settings": {
+        "bg": "#fffdf8",
+        "eyebrow": "KYN",
+        "title": "Algo lindo está por",
+        "spark_word": "llegar."
+      }
+    },
     "newsletter": {
       "type": "newsletter",
       "settings": {
@@ -208,6 +217,7 @@
     "color-story",
     "story",
     "reviews",
+    "video-spotlight",
     "newsletter"
   ]
 }

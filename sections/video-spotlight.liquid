@@ -1,0 +1,47 @@
+{%- comment -%}
+  KYN — Video spotlight (full-width video with overlaid caption)
+{%- endcomment -%}
+
+<section class="section video-spotlight" style="background: {{ section.settings.bg }};">
+  <div class="container">
+    <div class="video-spotlight__frame">
+      {%- if section.settings.video != blank -%}
+        {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, class: 'video-spotlight__video' }}
+      {%- else -%}
+        <div class="video-spotlight__placeholder">{{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder' }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.eyebrow != blank or section.settings.title != blank -%}
+        <div class="video-spotlight__overlay">
+          {%- if section.settings.eyebrow != blank -%}
+            <span class="eyebrow eyebrow--on-dark">{{ section.settings.eyebrow | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.title != blank -%}
+            <h2 class="h-display">
+              {{ section.settings.title | escape }}
+              {%- if section.settings.spark_word != blank -%}
+                <span class="spark">{{ section.settings.spark_word | escape }}</span>
+              {%- endif -%}
+            </h2>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Video spotlight",
+  "settings": [
+    { "type": "color", "id": "bg", "label": "Background", "default": "#FFFDF8" },
+    { "type": "video", "id": "video", "label": "Video" },
+    { "type": "text",  "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text",  "id": "title", "label": "Title" },
+    { "type": "text",  "id": "spark_word", "label": "Spark word" }
+  ],
+  "presets": [
+    { "name": "Video spotlight" }
+  ]
+}
+{% endschema %}
