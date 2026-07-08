@@ -66,10 +66,14 @@
 
     <!-- Badges -->
     <div class="pdp-badge-row">
-      {%- if product.tags contains 'new' or product.tags contains 'new-drop' or product.tags contains 'New Drop' -%}
-        <span class="kyn-badge kyn-badge--pop">new ♥</span>
+      {%- if product.gift_card? -%}
+        <span class="kyn-badge kyn-badge--soft">Tarjeta de regalo digital</span>
+      {%- else -%}
+        {%- if product.tags contains 'new' or product.tags contains 'new-drop' or product.tags contains 'New Drop' -%}
+          <span class="kyn-badge kyn-badge--pop">new ♥</span>
+        {%- endif -%}
+        <span class="kyn-badge kyn-badge--soft">HANDMADE IN MEXICO</span>
       {%- endif -%}
-      <span class="kyn-badge kyn-badge--soft">HANDMADE IN MEXICO</span>
     </div>
 
     <!-- Title -->
@@ -133,11 +137,51 @@
       {%- endunless -%}
 
       <!-- ── Personalization zones (line item properties) ── -->
-      {%- for block in section.blocks -%}
-        {%- if block.type == 'personalization_zone' -%}
-          {% render 'pdp-personalization-zone', block: block %}
-        {%- endif -%}
-      {%- endfor -%}
+      {%- unless product.gift_card? -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'personalization_zone' -%}
+            {% render 'pdp-personalization-zone', block: block %}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endunless -%}
+
+      <!-- ── Gift card recipient fields ── -->
+      {%- if product.gift_card? -%}
+        <div class="pdp-gift-recipient">
+          <input type="hidden" name="properties[__shopify_send_gift_card_to_a_friend]" value="true">
+          <label class="pdp-field-label" for="Recipient-email-{{ section.id }}">Email del destinatario</label>
+          <input
+            type="email"
+            id="Recipient-email-{{ section.id }}"
+            name="properties[Recipient email]"
+            class="kyn-input"
+            placeholder="destinatario@correo.com"
+            required
+          >
+          <label class="pdp-field-label" for="Recipient-name-{{ section.id }}">Nombre del destinatario (opcional)</label>
+          <input
+            type="text"
+            id="Recipient-name-{{ section.id }}"
+            name="properties[Recipient name]"
+            class="kyn-input"
+          >
+          <label class="pdp-field-label" for="Recipient-message-{{ section.id }}">Mensaje (opcional)</label>
+          <textarea
+            id="Recipient-message-{{ section.id }}"
+            name="properties[Message]"
+            class="kyn-input"
+            maxlength="200"
+          ></textarea>
+          <label class="pdp-field-label" for="Recipient-send-on-{{ section.id }}">Enviar el (opcional)</label>
+          <input
+            type="date"
+            id="Recipient-send-on-{{ section.id }}"
+            name="properties[Send on]"
+            class="kyn-input"
+            min="{{ 'now' | date: '%Y-%m-%d' }}"
+          >
+        </div>
+      {%- endif -%}
 
       <!-- ── Buy buttons ── -->
       <div class="pdp-buy">
@@ -177,53 +221,78 @@
 
     <!-- ── Trust icons ── -->
     <div class="pdp-trust">
-      <div class="pdp-trust__item">
-        <div class="pdp-trust__icon">
-          <svg width="20" height="20" fill="none" stroke="currentColor"
-               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-               viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
+      {%- if product.gift_card? -%}
+        <div class="pdp-trust__item">
+          <div class="pdp-trust__icon">
+            <svg width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                 viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <span class="pdp-trust__label">Entrega inmediata por email</span>
         </div>
-        <span class="pdp-trust__label">Latón sólido</span>
-      </div>
 
-      <div class="pdp-trust__item">
-        <div class="pdp-trust__icon">
-          <svg width="20" height="20" fill="none" stroke="currentColor"
-               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-               viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-            <path d="M12 6v6l4 2"/>
-          </svg>
+        <div class="pdp-trust__item">
+          <div class="pdp-trust__icon">
+            <svg width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                 viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <span class="pdp-trust__label">Sin fecha de vencimiento</span>
         </div>
-        <span class="pdp-trust__label">Waterproof</span>
-      </div>
+      {%- else -%}
+        <div class="pdp-trust__item">
+          <div class="pdp-trust__icon">
+            <svg width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                 viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <span class="pdp-trust__label">Latón sólido</span>
+        </div>
 
-      <div class="pdp-trust__item">
-        <div class="pdp-trust__icon">
-          <svg width="20" height="20" fill="none" stroke="currentColor"
-               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-               viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="1" y="3" width="15" height="13"/>
-            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-            <circle cx="5.5" cy="18.5" r="2.5"/>
-            <circle cx="18.5" cy="18.5" r="2.5"/>
-          </svg>
+        <div class="pdp-trust__item">
+          <div class="pdp-trust__icon">
+            <svg width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                 viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <span class="pdp-trust__label">Waterproof</span>
         </div>
-        <span class="pdp-trust__label">Envío express</span>
-      </div>
 
-      <div class="pdp-trust__item">
-        <div class="pdp-trust__icon">
-          <svg width="20" height="20" fill="none" stroke="currentColor"
-               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-               viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
+        <div class="pdp-trust__item">
+          <div class="pdp-trust__icon">
+            <svg width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                 viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="1" y="3" width="15" height="13"/>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+              <circle cx="5.5" cy="18.5" r="2.5"/>
+              <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <span class="pdp-trust__label">Envío express</span>
         </div>
-        <span class="pdp-trust__label">Hecho a mano</span>
-      </div>
+
+        <div class="pdp-trust__item">
+          <div class="pdp-trust__icon">
+            <svg width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                 viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <span class="pdp-trust__label">Hecho a mano</span>
+        </div>
+      {%- endif -%}
     </div>
 
     <hr class="pdp-divider">
@@ -249,33 +318,55 @@
         </div>
       {%- endif -%}
 
-      <div class="pdp-tab">
-        <button type="button" class="pdp-tab__header" aria-expanded="false">
-          <span>Materiales</span>
-          <svg class="pdp-tab__icon" width="16" height="16" fill="none"
-               stroke="currentColor" stroke-width="2" stroke-linecap="round"
-               viewBox="0 0 24 24" aria-hidden="true">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-        <div class="pdp-tab__body" hidden>
-          <div class="pdp-tab__content">
-            {%- if product.metafields.custom.materials != blank -%}
-              {{ product.metafields.custom.materials }}
-            {%- else -%}
-              <ul>
-                <li><strong>Biothane original</strong> — flexible, impermeable y resistente a UV</li>
-                <li><strong>Herraje de latón sólido</strong> — anticorrosión, sin zinc ni metales blandos</li>
-                <li><strong>Costura reforzada</strong> — doble hilo encerado en los puntos de carga</li>
-              </ul>
-            {%- endif -%}
+      {%- unless product.gift_card? -%}
+        <div class="pdp-tab">
+          <button type="button" class="pdp-tab__header" aria-expanded="false">
+            <span>Materiales</span>
+            <svg class="pdp-tab__icon" width="16" height="16" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="pdp-tab__body" hidden>
+            <div class="pdp-tab__content">
+              {%- if product.metafields.custom.materials != blank -%}
+                {{ product.metafields.custom.materials }}
+              {%- else -%}
+                <ul>
+                  <li><strong>Biothane original</strong> — flexible, impermeable y resistente a UV</li>
+                  <li><strong>Herraje de latón sólido</strong> — anticorrosión, sin zinc ni metales blandos</li>
+                  <li><strong>Costura reforzada</strong> — doble hilo encerado en los puntos de carga</li>
+                </ul>
+              {%- endif -%}
+            </div>
           </div>
         </div>
-      </div>
+
+        <div class="pdp-tab">
+          <button type="button" class="pdp-tab__header" aria-expanded="false">
+            <span>Cuidado</span>
+            <svg class="pdp-tab__icon" width="16" height="16" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="pdp-tab__body" hidden>
+            <div class="pdp-tab__content">
+              {%- if product.metafields.custom.care != blank -%}
+                {{ product.metafields.custom.care }}
+              {%- else -%}
+                <p>Limpia con un trapo húmedo. No requiere acondicionadores ni aceites. El biothane no absorbe olores ni bacterias — solo enjuaga y seca al aire.</p>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endunless -%}
 
       <div class="pdp-tab">
         <button type="button" class="pdp-tab__header" aria-expanded="false">
-          <span>Cuidado</span>
+          <span>{%- if product.gift_card? -%}Entrega{%- else -%}Envío y devoluciones{%- endif -%}</span>
           <svg class="pdp-tab__icon" width="16" height="16" fill="none"
                stroke="currentColor" stroke-width="2" stroke-linecap="round"
                viewBox="0 0 24 24" aria-hidden="true">
@@ -284,28 +375,13 @@
         </button>
         <div class="pdp-tab__body" hidden>
           <div class="pdp-tab__content">
-            {%- if product.metafields.custom.care != blank -%}
-              {{ product.metafields.custom.care }}
+            {%- if product.gift_card? -%}
+              <p>La tarjeta de regalo se envía por email al destinatario (o a ti, si no llenas el campo) en cuanto se confirma el pago.</p>
+              <p>No tiene fecha de vencimiento y se puede usar en una o varias compras hasta agotar el saldo.</p>
             {%- else -%}
-              <p>Limpia con un trapo húmedo. No requiere acondicionadores ni aceites. El biothane no absorbe olores ni bacterias — solo enjuaga y seca al aire.</p>
+              <p>Envío estándar 5–8 días hábiles · Express 2–3 días.</p>
+              <p>Producto personalizado con nombre grabado no acepta cambios ni devoluciones salvo defecto de fabricación.</p>
             {%- endif -%}
-          </div>
-        </div>
-      </div>
-
-      <div class="pdp-tab">
-        <button type="button" class="pdp-tab__header" aria-expanded="false">
-          <span>Envío y devoluciones</span>
-          <svg class="pdp-tab__icon" width="16" height="16" fill="none"
-               stroke="currentColor" stroke-width="2" stroke-linecap="round"
-               viewBox="0 0 24 24" aria-hidden="true">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-        <div class="pdp-tab__body" hidden>
-          <div class="pdp-tab__content">
-            <p>Envío estándar 5–8 días hábiles · Express 2–3 días.</p>
-            <p>Producto personalizado con nombre grabado no acepta cambios ni devoluciones salvo defecto de fabricación.</p>
           </div>
         </div>
       </div>

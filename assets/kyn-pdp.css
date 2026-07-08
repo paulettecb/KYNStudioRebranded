@@ -361,6 +361,34 @@
   line-height: 1;
 }
 
+/* ── Gift card recipient fields ── */
+.pdp-gift-recipient {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px 16px;
+  margin-bottom: 12px;
+}
+.pdp-field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-700);
+}
+.kyn-input {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-900);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  width: 100%;
+  margin: 0 0 6px;
+}
+.kyn-input:focus { border-color: var(--periwinkle-300); outline: none; }
+textarea.kyn-input { resize: vertical; min-height: 60px; }
+
 /* ── Buy buttons ── */
 .pdp-buy {
   display: flex;

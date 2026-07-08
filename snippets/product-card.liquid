@@ -22,7 +22,9 @@
         <div class="hero__media--placeholder" style="position:absolute;inset:0;border-radius:0;border:0;"><span class="hero__caption">{{ product.title | escape }}</span></div>
       {%- endif -%}
 
-      {%- if product.tags contains 'new' -%}
+      {%- if product.gift_card? -%}
+        <span class="kyn-badge kyn-badge--soft">Tarjeta de regalo</span>
+      {%- elsif product.tags contains 'new' -%}
         <span class="kyn-badge kyn-badge--pop"><span>&#xF00E;e&#xF031;</span></span>
       {%- elsif product.tags contains 'best-seller' or product.tags contains 'Best Seller' -%}
         <span class="kyn-badge kyn-badge--brand">Best Seller</span>
