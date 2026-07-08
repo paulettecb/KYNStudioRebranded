@@ -123,12 +123,14 @@
       >
 
       <!-- ── Color / option swatches ── -->
-      {%- for option in product.options_with_values -%}
-        {% render 'product-swatches',
-          option: option,
-          option_index: forloop.index0
-        %}
-      {%- endfor -%}
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          {% render 'product-swatches',
+            option: option,
+            option_index: forloop.index0
+          %}
+        {%- endfor -%}
+      {%- endunless -%}
 
       <!-- ── Personalization zones (line item properties) ── -->
       {%- for block in section.blocks -%}
