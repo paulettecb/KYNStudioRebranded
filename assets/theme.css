@@ -302,7 +302,9 @@ p{margin:0;}
 .story__grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
 .story__grid--reverse{direction:rtl;}
 .story__grid--reverse > *{direction:ltr;}
-.story__media img,.story__media-placeholder{width:100%;height:auto;border-radius:var(--radius-lg);display:block;aspect-ratio:4/5;object-fit:cover;background:var(--periwinkle-50);}
+.story__media img,.story__media-placeholder,.story__video{width:100%;height:auto;border-radius:var(--radius-lg);display:block;aspect-ratio:4/5;object-fit:cover;background:var(--periwinkle-50);}
+.story__media--duo{display:flex;gap:10px;}
+.story__media--duo .story__video{flex:1;min-width:0;}
 .story__body .h-display{margin:14px 0 20px;}
 .story__text{color:var(--ink-700);font-size:17px;line-height:1.6;}
 .story__text p{margin:0 0 14px;}

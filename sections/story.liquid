@@ -5,8 +5,13 @@
 <section class="section story" style="background: {{ section.settings.bg }};">
   <div class="container">
     <div class="story__grid {% if section.settings.image_right %}story__grid--reverse{% endif %}">
-      <div class="story__media">
-        {%- if section.settings.image != blank -%}
+      <div class="story__media{% if section.settings.video_1 != blank and section.settings.video_2 != blank %} story__media--duo{% endif %}">
+        {%- if section.settings.video_1 != blank -%}
+          {{ section.settings.video_1 | video_tag: autoplay: true, loop: true, muted: true, class: 'story__video' }}
+          {%- if section.settings.video_2 != blank -%}
+            {{ section.settings.video_2 | video_tag: autoplay: true, loop: true, muted: true, class: 'story__video' }}
+          {%- endif -%}
+        {%- elsif section.settings.image != blank -%}
           <img src="{{ section.settings.image | image_url: width: 1200 }}"
                srcset="{{ section.settings.image | image_url: width: 600 }} 600w,
                        {{ section.settings.image | image_url: width: 1200 }} 1200w"
@@ -61,6 +66,8 @@
     { "type": "color", "id": "bg", "label": "Background", "default": "#FFFDF8" },
     { "type": "checkbox", "id": "image_right", "label": "Image on right", "default": false },
     { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "video", "id": "video_1", "label": "Video (overrides image above if set)" },
+    { "type": "video", "id": "video_2", "label": "Video 2 (optional — pairs side-by-side with Video)" },
     { "type": "text",  "id": "eyebrow", "label": "Eyebrow", "default": "Hecho a mano" },
     { "type": "text",  "id": "title", "label": "Title", "default": "Built by hand, made to" },
     { "type": "text",  "id": "spark_word", "label": "Spark word", "default": "last." },
