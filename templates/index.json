@@ -48,7 +48,6 @@
         "cta1_link": "shopify://collections/the-kyn-training-bundle",
         "cta2_label": "Build a set",
         "cta2_link": "",
-        "image": "shopify://shop_images/Gemini_Generated_Image_nwhm20nwhm20nwhm.png",
         "image_caption": "collar de biothane®",
         "placeholder_label": "product shot — collar + leash set",
         "show_badge": true
@@ -113,7 +112,7 @@
     "color-story": {
       "type": "color-story",
       "blocks": {
-        "periwinkle": {
+        "swatch_VbiqHw": {
           "type": "swatch",
           "settings": {
             "color": "#8795d2",
@@ -122,26 +121,36 @@
             "link": ""
           }
         },
+        "periwinkle": {
+          "type": "swatch",
+          "settings": {
+            "color": "#2F3658",
+            "name": "Dark Navy",
+            "note": "the elegance",
+            "link": ""
+          }
+        },
         "sand": {
           "type": "swatch",
           "settings": {
-            "color": "#d4b89e",
-            "name": "Sand",
-            "note": "warm neutral",
+            "color": "#5E5C43",
+            "name": "Olive",
+            "note": "the statement",
             "link": ""
           }
         },
         "onyx": {
           "type": "swatch",
           "settings": {
-            "color": "#1f1f23",
-            "name": "Onyx",
+            "color": "#934926",
+            "name": "Camel",
             "note": "everyday classic",
             "link": ""
           }
         }
       },
       "block_order": [
+        "swatch_VbiqHw",
         "periwinkle",
         "sand",
         "onyx"
@@ -171,9 +180,9 @@
       "type": "reviews",
       "settings": {
         "bg": "#f4f0e8",
-        "eyebrow": "Loved by their humans",
-        "title": "Real walks, real",
-        "spark_word": "tails."
+        "eyebrow": "Para los humanos que amamos",
+        "title": "Paseos reales, colas",
+        "spark_word": "felices!"
       }
     },
     "newsletter": {
