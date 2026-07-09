@@ -3,7 +3,14 @@
   Editorial color swatches grid. No products required.
 {%- endcomment -%}
 
-<section class="section color-story" style="background: {{ section.settings.bg }};">
+{%- capture eyebrow_font -%}{% render 'font-stack', key: section.settings.eyebrow_font %}{%- endcapture -%}
+{%- capture title_font -%}{% render 'font-stack', key: section.settings.title_font %}{%- endcapture -%}
+{%- capture spark_font -%}{% render 'font-stack', key: section.settings.spark_font %}{%- endcapture -%}
+{%- capture lead_font -%}{% render 'font-stack', key: section.settings.lead_font %}{%- endcapture -%}
+{%- capture swatch_name_font -%}{% render 'font-stack', key: section.settings.swatch_name_font %}{%- endcapture -%}
+{%- capture swatch_note_font -%}{% render 'font-stack', key: section.settings.swatch_note_font %}{%- endcapture -%}
+
+<section id="color-story-{{ section.id }}" class="section color-story" style="background: {{ section.settings.bg }};">
   <div class="container">
     <header class="color-story__head">
       <span class="eyebrow">{{ section.settings.eyebrow | escape }}</span>
@@ -32,15 +39,102 @@
   </div>
 </section>
 
+<style>
+  #color-story-{{ section.id }} .eyebrow{
+    font-family: {{ eyebrow_font }};
+    font-size: {{ section.settings.eyebrow_size }}px;
+  }
+  #color-story-{{ section.id }} .h-display{
+    font-family: {{ title_font }};
+    font-size: {{ section.settings.title_size }}px;
+  }
+  #color-story-{{ section.id }} .h-display .spark{
+    font-family: {{ spark_font }};
+    font-size: {{ section.settings.spark_size }}px;
+  }
+  #color-story-{{ section.id }} .lead{
+    font-family: {{ lead_font }};
+    font-size: {{ section.settings.lead_size }}px;
+  }
+  #color-story-{{ section.id }} .color-swatch__dot{
+    width: {{ section.settings.dot_size }}px;
+    height: {{ section.settings.dot_size }}px;
+  }
+  #color-story-{{ section.id }} .color-swatch__name{
+    font-family: {{ swatch_name_font }};
+    font-size: {{ section.settings.swatch_name_size }}px;
+  }
+  #color-story-{{ section.id }} .color-swatch__note{
+    font-family: {{ swatch_note_font }};
+    font-size: {{ section.settings.swatch_note_size }}px;
+  }
+  @media (max-width: 749px){
+    #color-story-{{ section.id }} .h-display{ font-size: {{ section.settings.title_size | times: 0.72 | round }}px; }
+    #color-story-{{ section.id }} .h-display .spark{ font-size: {{ section.settings.spark_size | times: 0.72 | round }}px; }
+    #color-story-{{ section.id }} .color-swatch__dot{ width: {{ section.settings.dot_size | times: 0.73 | round }}px; height: {{ section.settings.dot_size | times: 0.73 | round }}px; }
+  }
+</style>
+
 {% schema %}
 {
   "name": "Color story",
   "settings": [
     { "type": "color", "id": "bg", "label": "Background", "default": "#F4F0E8" },
+
+    { "type": "header", "content": "Eyebrow" },
     { "type": "text",  "id": "eyebrow", "label": "Eyebrow", "default": "Colors that suit them" },
+    { "type": "select", "id": "eyebrow_font", "label": "Eyebrow font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Title" },
     { "type": "text",  "id": "title", "label": "Title", "default": "Made in shades they look" },
-    { "type": "text",  "id": "spark_word", "label": "Spark word (Friendship font)", "default": "good in." },
-    { "type": "text",  "id": "lead", "label": "Lead", "default": "Every color is hand-picked, small-batch, and looks like it belongs on them." }
+    { "type": "select", "id": "title_font", "label": "Title font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "title_size", "label": "Title size", "min": 24, "max": 72, "step": 2, "unit": "px", "default": 40 },
+    { "type": "text",  "id": "spark_word", "label": "Spark word", "default": "good in." },
+    { "type": "select", "id": "spark_font", "label": "Spark word font", "default": "display",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "spark_size", "label": "Spark word size", "min": 20, "max": 80, "step": 2, "unit": "px", "default": 42 },
+
+    { "type": "header", "content": "Lead text" },
+    { "type": "text",  "id": "lead", "label": "Lead", "default": "Every color is hand-picked, small-batch, and looks like it belongs on them." },
+    { "type": "select", "id": "lead_font", "label": "Lead font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "lead_size", "label": "Lead size", "min": 14, "max": 26, "step": 1, "unit": "px", "default": 17 },
+
+    { "type": "header", "content": "Swatches" },
+    { "type": "range", "id": "dot_size", "label": "Swatch dot size", "min": 60, "max": 140, "step": 4, "unit": "px", "default": 88 },
+    { "type": "select", "id": "swatch_name_font", "label": "Swatch name font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "swatch_name_size", "label": "Swatch name size", "min": 12, "max": 22, "step": 1, "unit": "px", "default": 15 },
+    { "type": "select", "id": "swatch_note_font", "label": "Swatch note font", "default": "accent",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "swatch_note_size", "label": "Swatch note size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 18 }
   ],
   "blocks": [
     {
