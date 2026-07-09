@@ -1,0 +1,10 @@
+{%- comment -%}
+  Renders the CSS font-family value for a KYN font key.
+  Usage: {% render 'font-stack', key: section.settings.title_font %}
+  Keys: sans (default) | display | accent
+{%- endcomment -%}
+{%- case key -%}
+  {%- when 'display' -%}var(--font-display)
+  {%- when 'accent' -%}var(--font-accent)
+  {%- else -%}var(--font-sans)
+{%- endcase -%}
