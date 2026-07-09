@@ -1,3 +1,8 @@
+{%- capture title_font -%}{% render 'font-stack', key: section.settings.title_font %}{%- endcapture -%}
+{%- capture price_font -%}{% render 'font-stack', key: section.settings.price_font %}{%- endcapture -%}
+{%- capture description_font -%}{% render 'font-stack', key: section.settings.description_font %}{%- endcapture -%}
+{%- capture tab_heading_font -%}{% render 'font-stack', key: section.settings.tab_heading_font %}{%- endcapture -%}
+
 {{ 'kyn-pdp.css' | asset_url | stylesheet_tag }}
 
 <div class="pdp-wrap" id="MainProduct-{{ section.id }}">
@@ -391,6 +396,28 @@
   </div><!-- /.pdp-info -->
 </div><!-- /.pdp-wrap -->
 
+<style>
+  #MainProduct-{{ section.id }} .pdp-title{
+    font-family: {{ title_font }};
+    font-size: {{ section.settings.title_size }}px;
+  }
+  #MainProduct-{{ section.id }} .pdp-price{
+    font-family: {{ price_font }};
+    font-size: {{ section.settings.price_size }}px;
+  }
+  #MainProduct-{{ section.id }} .rte{
+    font-family: {{ description_font }};
+    font-size: {{ section.settings.description_size }}px;
+  }
+  #MainProduct-{{ section.id }} .pdp-tab__header{
+    font-family: {{ tab_heading_font }};
+    font-size: {{ section.settings.tab_heading_size }}px;
+  }
+  @media (max-width: 900px){
+    #MainProduct-{{ section.id }} .pdp-title{ font-size: {{ section.settings.title_size | times: 0.714 | round }}px; }
+  }
+</style>
+
 
 <!-- ═══════════════════════════════════════════
      VARIANT PICKER + GALLERY JS
@@ -589,7 +616,43 @@
       "id": "show_buy_now",
       "label": "Mostrar botón \"Comprar ahora\"",
       "default": false
-    }
+    },
+
+    { "type": "header", "content": "Tipografía — Título del producto" },
+    { "type": "select", "id": "title_font", "label": "Fuente del título", "default": "display",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "title_size", "label": "Tamaño del título", "min": 32, "max": 84, "step": 2, "unit": "px", "default": 56 },
+
+    { "type": "header", "content": "Tipografía — Precio" },
+    { "type": "select", "id": "price_font", "label": "Fuente del precio", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "price_size", "label": "Tamaño del precio", "min": 18, "max": 44, "step": 2, "unit": "px", "default": 28 },
+
+    { "type": "header", "content": "Tipografía — Descripción" },
+    { "type": "select", "id": "description_font", "label": "Fuente de la descripción", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "description_size", "label": "Tamaño de la descripción", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 14 },
+
+    { "type": "header", "content": "Tipografía — Encabezados de acordeón" },
+    { "type": "select", "id": "tab_heading_font", "label": "Fuente de encabezados (Descripción, Materiales, Cuidado, Envío)", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "tab_heading_size", "label": "Tamaño de encabezados", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 14 }
   ],
   "blocks": [
     {
