@@ -5,7 +5,13 @@
   {%- assign heading = heading | replace: spark, spark_html -%}
 {%- endif -%}
 
-<section class="section featured-products">
+{%- capture eyebrow_font -%}{% render 'font-stack', key: section.settings.eyebrow_font %}{%- endcapture -%}
+{%- capture heading_font -%}{% render 'font-stack', key: section.settings.heading_font %}{%- endcapture -%}
+{%- capture spark_font -%}{% render 'font-stack', key: section.settings.spark_font %}{%- endcapture -%}
+{%- capture product_heading_font -%}{% render 'font-stack', key: section.settings.product_heading_font %}{%- endcapture -%}
+{%- capture cta_label_font -%}{% render 'font-stack', key: section.settings.cta_label_font %}{%- endcapture -%}
+
+<section id="featured-products-{{ section.id }}" class="section featured-products">
   <div class="container">
     <div class="sec-head">
       <div>
@@ -33,17 +39,85 @@
   </div>
 </section>
 
+<style>
+  #featured-products-{{ section.id }} .eyebrow{
+    font-family: {{ eyebrow_font }};
+    font-size: {{ section.settings.eyebrow_size }}px;
+  }
+  #featured-products-{{ section.id }} .sec-head h2{
+    font-family: {{ heading_font }};
+    font-size: {{ section.settings.heading_size }}px;
+  }
+  #featured-products-{{ section.id }} .sec-head h2 .spark{
+    font-family: {{ spark_font }};
+    font-size: {{ section.settings.spark_size }}px;
+  }
+  #featured-products-{{ section.id }} .kyn-product__name{
+    font-family: {{ product_heading_font }};
+    font-size: {{ section.settings.product_heading_size }}px;
+  }
+  #featured-products-{{ section.id }} .kyn-btn--sm{
+    font-family: {{ cta_label_font }};
+    font-size: {{ section.settings.cta_label_size }}px;
+  }
+  @media (max-width: 749px){
+    #featured-products-{{ section.id }} .sec-head h2{ font-size: {{ section.settings.heading_size | times: 0.75 | round }}px; }
+    #featured-products-{{ section.id }} .sec-head h2 .spark{ font-size: {{ section.settings.spark_size | times: 0.75 | round }}px; }
+  }
+</style>
+
 {% schema %}
 {
   "name": "Featured products",
   "settings": [
+    { "type": "header", "content": "Eyebrow" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Best sellers" },
+    { "type": "select", "id": "eyebrow_font", "label": "Eyebrow font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Heading" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "The pieces our pack loves most." },
+    { "type": "select", "id": "heading_font", "label": "Heading font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 28, "max": 72, "step": 2, "unit": "px", "default": 48 },
     { "type": "text", "id": "spark_word", "label": "Spark word", "default": "loves" },
+    { "type": "select", "id": "spark_font", "label": "Spark word font", "default": "display",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "spark_size", "label": "Spark word size", "min": 24, "max": 84, "step": 2, "unit": "px", "default": 48 },
+
+    { "type": "header", "content": "Product grid" },
     { "type": "collection", "id": "collection", "label": "Collection" },
     { "type": "range", "id": "product_limit", "label": "Number of products", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "select", "id": "product_heading_font", "label": "Product card title font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "product_heading_size", "label": "Product card title size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 18 },
+
     { "type": "header", "content": "View-all link" },
     { "type": "text", "id": "cta_label", "label": "Link label", "default": "View all" },
+    { "type": "select", "id": "cta_label_font", "label": "Link label font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "cta_label_size", "label": "Link label size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 },
     { "type": "url",  "id": "cta_link",  "label": "Link" }
   ],
   "presets": [{ "name": "Featured products" }]

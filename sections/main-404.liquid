@@ -1,21 +1,83 @@
-<section class="section" style="text-align:center;">
+{%- capture eyebrow_font -%}{% render 'font-stack', key: section.settings.eyebrow_font %}{%- endcapture -%}
+{%- capture heading_font -%}{% render 'font-stack', key: section.settings.heading_font %}{%- endcapture -%}
+{%- capture text_font -%}{% render 'font-stack', key: section.settings.text_font %}{%- endcapture -%}
+{%- capture button_font -%}{% render 'font-stack', key: section.settings.button_font %}{%- endcapture -%}
+
+<section class="section" id="main-404-{{ section.id }}" style="text-align:center;">
   <div class="container">
     <span class="eyebrow">{{ section.settings.eyebrow }}</span>
-    <h1 style="font-size:72px;margin:18px 0;">{{ section.settings.heading }}</h1>
-    <p style="color:var(--ink-700);font-size:18px;max-width:480px;margin:0 auto 28px;">{{ section.settings.text }}</p>
-    <a class="kyn-btn kyn-btn--primary kyn-btn--lg" href="{{ section.settings.button_link | default: routes.root_url }}">{{ section.settings.button_label }}</a>
+    <h1 class="main-404__heading" style="margin:18px 0;">{{ section.settings.heading }}</h1>
+    <p class="main-404__text" style="color:var(--ink-700);max-width:480px;margin:0 auto 28px;">{{ section.settings.text }}</p>
+    <a class="kyn-btn kyn-btn--primary kyn-btn--lg main-404__button" href="{{ section.settings.button_link | default: routes.root_url }}">{{ section.settings.button_label }}</a>
   </div>
 </section>
+
+<style>
+  #main-404-{{ section.id }} .eyebrow{
+    font-family: {{ eyebrow_font }};
+    font-size: {{ section.settings.eyebrow_size }}px;
+  }
+  #main-404-{{ section.id }} .main-404__heading{
+    font-family: {{ heading_font }};
+    font-size: {{ section.settings.heading_size }}px;
+  }
+  #main-404-{{ section.id }} .main-404__text{
+    font-family: {{ text_font }};
+    font-size: {{ section.settings.text_size }}px;
+  }
+  #main-404-{{ section.id }} .main-404__button{
+    font-family: {{ button_font }};
+    font-size: {{ section.settings.button_size }}px;
+  }
+  @media (max-width: 749px){
+    #main-404-{{ section.id }} .main-404__heading{ font-size: {{ section.settings.heading_size | times: 0.55 | round }}px; }
+  }
+</style>
 
 {% schema %}
 {
   "name": "404",
   "settings": [
+    { "type": "header", "content": "Eyebrow" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "404" },
+    { "type": "select", "id": "eyebrow_font", "label": "Eyebrow font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Heading" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Lost on the trail." },
+    { "type": "select", "id": "heading_font", "label": "Heading font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 32, "max": 96, "step": 2, "unit": "px", "default": 72 },
+
+    { "type": "header", "content": "Text" },
     { "type": "textarea", "id": "text", "label": "Text", "default": "The page you're looking for has wandered off. Let's get you back to the pack." },
+    { "type": "select", "id": "text_font", "label": "Text font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "text_size", "label": "Text size", "min": 14, "max": 24, "step": 1, "unit": "px", "default": 18 },
+
+    { "type": "header", "content": "Button" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Back to home" },
-    { "type": "url", "id": "button_link", "label": "Button link", "info": "Defaults to the homepage" }
+    { "type": "url", "id": "button_link", "label": "Button link", "info": "Defaults to the homepage" },
+    { "type": "select", "id": "button_font", "label": "Button font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "button_size", "label": "Button size", "min": 12, "max": 22, "step": 1, "unit": "px", "default": 16 }
   ],
   "presets": [{ "name": "404" }]
 }

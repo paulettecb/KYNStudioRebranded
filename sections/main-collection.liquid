@@ -1,6 +1,10 @@
+{%- capture heading_font -%}{% render 'font-stack', key: section.settings.heading_font %}{%- endcapture -%}
+{%- capture desc_font -%}{% render 'font-stack', key: section.settings.desc_font %}{%- endcapture -%}
+{%- capture empty_font -%}{% render 'font-stack', key: section.settings.empty_font %}{%- endcapture -%}
+
 {%- paginate collection.products by section.settings.products_per_page -%}
 
-<section class="section">
+<section class="section" id="main-collection-{{ section.id }}">
   <div class="container">
     <div class="collection-header">
       {%- if collection.image -%}
@@ -22,7 +26,7 @@
       {%- for product in collection.products -%}
         {% render 'product-card', product: product %}
       {%- else -%}
-        <p style="color:var(--ink-400);">{{ section.settings.empty_message }}</p>
+        <p class="collection-empty">{{ section.settings.empty_message }}</p>
       {%- endfor -%}
     </div>
 
@@ -41,9 +45,25 @@
 .collection-banner { position: relative; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
 .collection-banner img { width: 100%; height: 320px; object-fit: cover; display: block; }
 .collection-banner__overlay { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 32px; background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%); }
-.collection-banner__overlay h1 { color: #fff; font-size: clamp(28px,5vw,48px); }
 .collection-desc { color: var(--ink-700, #3d3d3d); max-width: 640px; line-height: 1.6; }
 .pagination { text-align: center; margin-top: 48px; }
+#main-collection-{{ section.id }} .collection-banner__overlay h1{
+  color: #fff;
+  font-family: {{ heading_font }};
+  font-size: {{ section.settings.heading_size }}px;
+}
+#main-collection-{{ section.id }} .collection-desc{
+  font-family: {{ desc_font }};
+  font-size: {{ section.settings.desc_size }}px;
+}
+#main-collection-{{ section.id }} .collection-empty{
+  color: var(--ink-400);
+  font-family: {{ empty_font }};
+  font-size: {{ section.settings.empty_size }}px;
+}
+@media (max-width: 749px){
+  #main-collection-{{ section.id }} .collection-banner__overlay h1{ font-size: {{ section.settings.heading_size | times: 0.58 | round }}px; }
+}
 </style>
 
 {% schema %}
@@ -52,7 +72,34 @@
   "settings": [
     { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
     { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
-    { "type": "text", "id": "empty_message", "label": "Empty collection message", "default": "No hay productos en esta colección todavía." }
+    { "type": "text", "id": "empty_message", "label": "Empty collection message", "default": "No hay productos en esta colección todavía." },
+
+    { "type": "header", "content": "Banner heading" },
+    { "type": "select", "id": "heading_font", "label": "Heading font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 28, "max": 72, "step": 2, "unit": "px", "default": 48 },
+
+    { "type": "header", "content": "Description" },
+    { "type": "select", "id": "desc_font", "label": "Description font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "desc_size", "label": "Description size", "min": 14, "max": 24, "step": 1, "unit": "px", "default": 16 },
+
+    { "type": "header", "content": "Empty collection message" },
+    { "type": "select", "id": "empty_font", "label": "Empty message font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "empty_size", "label": "Empty message size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 }
   ],
   "presets": [{ "name": "Collection" }]
 }

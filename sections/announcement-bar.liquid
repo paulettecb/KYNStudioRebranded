@@ -1,5 +1,7 @@
+{%- capture text_font -%}{% render 'font-stack', key: section.settings.text_font %}{%- endcapture -%}
+
 {%- if section.blocks.size > 0 -%}
-<div class="announcement" role="region" aria-label="Announcements">
+<div id="announcement-bar-{{ section.id }}" class="announcement" role="region" aria-label="Announcements">
   {%- for block in section.blocks -%}
     <span {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
     {%- unless forloop.last -%}<span class="sep">·</span>{%- endunless -%}
@@ -7,10 +9,27 @@
 </div>
 {%- endif -%}
 
+<style>
+  #announcement-bar-{{ section.id }}.announcement{
+    font-family: {{ text_font }};
+    font-size: {{ section.settings.text_size }}px;
+  }
+</style>
+
 {% schema %}
 {
   "name": "Announcement bar",
   "max_blocks": 4,
+  "settings": [
+    { "type": "header", "content": "Message text" },
+    { "type": "select", "id": "text_font", "label": "Message font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "text_size", "label": "Message size", "min": 10, "max": 22, "step": 1, "unit": "px", "default": 13 }
+  ],
   "blocks": [
     {
       "type": "item",

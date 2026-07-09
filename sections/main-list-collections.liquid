@@ -1,6 +1,11 @@
+{%- capture heading_font -%}{% render 'font-stack', key: section.settings.heading_font %}{%- endcapture -%}
+{%- capture card_title_font -%}{% render 'font-stack', key: section.settings.card_title_font %}{%- endcapture -%}
+{%- capture card_desc_font -%}{% render 'font-stack', key: section.settings.card_desc_font %}{%- endcapture -%}
+{%- capture card_cta_font -%}{% render 'font-stack', key: section.settings.card_cta_font %}{%- endcapture -%}
+
 {%- paginate collections by section.settings.collections_per_page -%}
 
-<section class="section">
+<section class="section" id="main-list-collections-{{ section.id }}">
   <div class="container">
 
     <div class="collist-header">
@@ -57,7 +62,7 @@
 
 <style>
 .collist-header { text-align: center; margin-bottom: 56px; }
-.collist-header h1 { font-size: clamp(32px,5vw,52px); color: var(--ink-900); margin: 0; }
+.collist-header h1 { color: var(--ink-900); margin: 0; }
 .collist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px; }
 .collist-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; border-radius: 16px; overflow: hidden; background: var(--paper); transition: transform .2s, box-shadow .2s; }
 .collist-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(42,41,51,.10); }
@@ -66,10 +71,30 @@
 .collist-card:hover .collist-card__img img { transform: scale(1.04); }
 .collist-card__img--placeholder { display: flex; align-items: center; justify-content: center; background: var(--oat); }
 .collist-card__body { padding: 20px 24px 24px; }
-.collist-card__title { font-size: 20px; font-weight: 600; color: var(--ink-900); margin: 0 0 6px; }
-.collist-card__desc { font-size: 14px; color: var(--ink-500); margin: 0 0 12px; line-height: 1.5; }
-.collist-card__cta { font-size: 13px; font-weight: 500; color: var(--periwinkle-600); letter-spacing: .04em; }
+.collist-card__title { font-weight: 600; color: var(--ink-900); margin: 0 0 6px; }
+.collist-card__desc { color: var(--ink-500); margin: 0 0 12px; line-height: 1.5; }
+.collist-card__cta { font-weight: 500; color: var(--periwinkle-600); letter-spacing: .04em; }
 .pagination { text-align: center; margin-top: 56px; }
+
+#main-list-collections-{{ section.id }} .collist-header h1{
+  font-family: {{ heading_font }};
+  font-size: {{ section.settings.heading_size }}px;
+}
+#main-list-collections-{{ section.id }} .collist-card__title{
+  font-family: {{ card_title_font }};
+  font-size: {{ section.settings.card_title_size }}px;
+}
+#main-list-collections-{{ section.id }} .collist-card__desc{
+  font-family: {{ card_desc_font }};
+  font-size: {{ section.settings.card_desc_size }}px;
+}
+#main-list-collections-{{ section.id }} .collist-card__cta{
+  font-family: {{ card_cta_font }};
+  font-size: {{ section.settings.card_cta_size }}px;
+}
+@media (max-width: 749px){
+  #main-list-collections-{{ section.id }} .collist-header h1{ font-size: {{ section.settings.heading_size | times: 0.62 | round }}px; }
+}
 </style>
 
 {% schema %}
@@ -79,7 +104,43 @@
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Everything KYN" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by Collection" },
     { "type": "range", "id": "collections_per_page", "label": "Collections per page", "min": 4, "max": 24, "step": 4, "default": 12 },
-    { "type": "text", "id": "empty_message", "label": "Empty state message", "default": "No collections yet." }
+    { "type": "text", "id": "empty_message", "label": "Empty state message", "default": "No collections yet." },
+
+    { "type": "header", "content": "Heading typography" },
+    { "type": "select", "id": "heading_font", "label": "Heading font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 32, "max": 64, "step": 2, "unit": "px", "default": 52 },
+
+    { "type": "header", "content": "Card title typography" },
+    { "type": "select", "id": "card_title_font", "label": "Card title font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "card_title_size", "label": "Card title size", "min": 14, "max": 32, "step": 1, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Card description typography" },
+    { "type": "select", "id": "card_desc_font", "label": "Card description font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "card_desc_size", "label": "Card description size", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 14 },
+
+    { "type": "header", "content": "Card CTA typography" },
+    { "type": "select", "id": "card_cta_font", "label": "Card CTA font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "card_cta_size", "label": "Card CTA size", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 13 }
   ],
   "presets": [{ "name": "Collections list" }]
 }
