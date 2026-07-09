@@ -4,7 +4,10 @@
   {%- else -%}{%- assign page_max_width = 780 -%}
 {%- endcase -%}
 
-<section class="section">
+{%- capture title_font -%}{% render 'font-stack', key: section.settings.title_font %}{%- endcapture -%}
+{%- capture body_font -%}{% render 'font-stack', key: section.settings.body_font %}{%- endcapture -%}
+
+<section class="section" id="main-page-{{ section.id }}">
   <div class="container" style="max-width:{{ page_max_width }}px;">
     {%- if section.settings.show_title -%}
       <h1 class="page-title">{{ page.title }}</h1>
@@ -16,11 +19,25 @@
 </section>
 
 <style>
-.page-title { font-size: clamp(24px,4vw,40px); margin-bottom: 28px; }
-.page-content { color: var(--ink-700, #3d3d3d); line-height: 1.8; font-size: 16px; }
+.page-title { margin-bottom: 28px; }
+.page-content { color: var(--ink-700, #3d3d3d); line-height: 1.8; }
 .page-content h2 { font-size: 22px; margin: 32px 0 12px; }
 .page-content p { margin-bottom: 16px; }
 .page-content ul, .page-content ol { padding-left: 20px; margin-bottom: 16px; }
+</style>
+
+<style>
+  #main-page-{{ section.id }} .page-title{
+    font-family: {{ title_font }};
+    font-size: {{ section.settings.title_size }}px;
+  }
+  #main-page-{{ section.id }} .page-content{
+    font-family: {{ body_font }};
+    font-size: {{ section.settings.body_size }}px;
+  }
+  @media (max-width: 749px){
+    #main-page-{{ section.id }} .page-title{ font-size: {{ section.settings.title_size | times: 0.6 | round }}px; }
+  }
 </style>
 
 {% schema %}
@@ -38,7 +55,25 @@
         { "value": "wide", "label": "Wide" }
       ],
       "default": "normal"
-    }
+    },
+
+    { "type": "header", "content": "Title" },
+    { "type": "select", "id": "title_font", "label": "Title font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "title_size", "label": "Title size", "min": 24, "max": 64, "step": 2, "unit": "px", "default": 40 },
+
+    { "type": "header", "content": "Body" },
+    { "type": "select", "id": "body_font", "label": "Body font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "body_size", "label": "Body size", "min": 14, "max": 22, "step": 1, "unit": "px", "default": 16 }
   ],
   "presets": [{ "name": "Page" }]
 }

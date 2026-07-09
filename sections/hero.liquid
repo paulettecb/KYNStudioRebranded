@@ -5,7 +5,15 @@
   {%- assign title = title | replace: spark, spark_html -%}
 {%- endif -%}
 
-<section class="hero">
+{%- capture eyebrow_font -%}{% render 'font-stack', key: section.settings.eyebrow_font %}{%- endcapture -%}
+{%- capture title_font -%}{% render 'font-stack', key: section.settings.title_font %}{%- endcapture -%}
+{%- capture spark_font -%}{% render 'font-stack', key: section.settings.spark_font %}{%- endcapture -%}
+{%- capture lead_font -%}{% render 'font-stack', key: section.settings.lead_font %}{%- endcapture -%}
+{%- capture cta1_label_font -%}{% render 'font-stack', key: section.settings.cta1_label_font %}{%- endcapture -%}
+{%- capture cta2_label_font -%}{% render 'font-stack', key: section.settings.cta2_label_font %}{%- endcapture -%}
+{%- capture caption_font -%}{% render 'font-stack', key: section.settings.caption_font %}{%- endcapture -%}
+
+<section class="hero" id="hero-{{ section.id }}">
   <div class="hero__inner">
     <div>
       {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
@@ -22,7 +30,7 @@
       {%- if section.blocks.size > 0 -%}
       <div class="hero__trust">
         {%- for block in section.blocks -%}
-          <div {{ block.shopify_attributes }}><b>{{ block.settings.label }}</b>{{ block.settings.sub }}</div>
+          <div id="hero-trust-{{ block.id }}" {{ block.shopify_attributes }}><b>{{ block.settings.label }}</b><span class="hero__trust-sub">{{ block.settings.sub }}</span></div>
         {%- endfor -%}
       </div>
       {%- endif -%}
@@ -52,24 +60,126 @@
   </div>
 </section>
 
+<style>
+  #hero-{{ section.id }} .eyebrow{
+    font-family: {{ eyebrow_font }};
+    font-size: {{ section.settings.eyebrow_size }}px;
+  }
+  #hero-{{ section.id }} .hero__title{
+    font-family: {{ title_font }};
+    font-size: {{ section.settings.title_size }}px;
+  }
+  #hero-{{ section.id }} .hero__title .spark{
+    font-family: {{ spark_font }};
+    font-size: {{ section.settings.spark_size }}px;
+  }
+  #hero-{{ section.id }} .hero__lead{
+    font-family: {{ lead_font }};
+    font-size: {{ section.settings.lead_size }}px;
+  }
+  #hero-{{ section.id }} .hero__ctas .kyn-btn--primary{
+    font-family: {{ cta1_label_font }};
+    font-size: {{ section.settings.cta1_label_size }}px;
+  }
+  #hero-{{ section.id }} .hero__ctas .kyn-btn--secondary{
+    font-family: {{ cta2_label_font }};
+    font-size: {{ section.settings.cta2_label_size }}px;
+  }
+  #hero-{{ section.id }} .hero__caption{
+    font-family: {{ caption_font }};
+    font-size: {{ section.settings.caption_size }}px;
+  }
+  {%- for block in section.blocks -%}
+    {%- capture block_label_font -%}{% render 'font-stack', key: block.settings.label_font %}{%- endcapture -%}
+    {%- capture block_sub_font -%}{% render 'font-stack', key: block.settings.sub_font %}{%- endcapture -%}
+  #hero-trust-{{ block.id }} b{
+    font-family: {{ block_label_font }};
+    font-size: {{ block.settings.label_size }}px;
+  }
+  #hero-trust-{{ block.id }} .hero__trust-sub{
+    font-family: {{ block_sub_font }};
+    font-size: {{ block.settings.sub_size }}px;
+  }
+  {%- endfor -%}
+  @media (max-width: 749px){
+    #hero-{{ section.id }} .hero__title{ font-size: {{ section.settings.title_size | times: 0.72 | round }}px; }
+    #hero-{{ section.id }} .hero__title .spark{ font-size: {{ section.settings.spark_size | times: 0.72 | round }}px; }
+  }
+</style>
+
 {% schema %}
 {
   "name": "Hero",
   "settings": [
-    { "type": "header", "content": "Copy" },
+    { "type": "header", "content": "Eyebrow" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Handmade · Biothane & brass" },
+    { "type": "select", "id": "eyebrow_font", "label": "Eyebrow font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Title" },
     { "type": "text", "id": "title", "label": "Title", "default": "Gear up for the good walks." },
+    { "type": "select", "id": "title_font", "label": "Title font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "title_size", "label": "Title size", "min": 40, "max": 120, "step": 2, "unit": "px", "default": 80 },
     { "type": "text", "id": "spark_word", "label": "Spark word (rendered in Friendship)", "info": "Word inside the title to render as the brand spark.", "default": "good" },
+    { "type": "select", "id": "spark_font", "label": "Spark word font", "default": "display",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "spark_size", "label": "Spark word size", "min": 40, "max": 120, "step": 2, "unit": "px", "default": 80 },
+
+    { "type": "header", "content": "Lead" },
     { "type": "textarea", "id": "lead", "label": "Lead", "default": "Strong, waterproof, and built by hand from original biothane and solid brass — for the dogs who go everywhere." },
+    { "type": "select", "id": "lead_font", "label": "Lead font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "lead_size", "label": "Lead size", "min": 14, "max": 34, "step": 1, "unit": "px", "default": 19 },
+
     { "type": "header", "content": "Buttons" },
     { "type": "text", "id": "cta1_label", "label": "Primary button label", "default": "Shop the collection" },
     { "type": "url",  "id": "cta1_link",  "label": "Primary button link" },
+    { "type": "select", "id": "cta1_label_font", "label": "Primary button font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "cta1_label_size", "label": "Primary button size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 16 },
     { "type": "text", "id": "cta2_label", "label": "Secondary button label", "default": "Build a set" },
     { "type": "url",  "id": "cta2_link",  "label": "Secondary button link" },
+    { "type": "select", "id": "cta2_label_font", "label": "Secondary button font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "cta2_label_size", "label": "Secondary button size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 16 },
+
     { "type": "header", "content": "Image" },
     { "type": "image_picker", "id": "image", "label": "Product image" },
     { "type": "text", "id": "image_caption", "label": "Photo caption", "info": "Small label shown over the photo — with or without an image set. Leave blank to hide." },
     { "type": "text", "id": "placeholder_label", "label": "Placeholder label (when no image)", "info": "Fallback text shown only while no photo and no caption are set." },
+    { "type": "select", "id": "caption_font", "label": "Caption font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "caption_size", "label": "Caption size", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 11 },
     { "type": "checkbox", "id": "show_badge", "label": "Show ‘new ♥’ script badge", "default": true }
   ],
   "blocks": [
@@ -79,7 +189,21 @@
       "limit": 3,
       "settings": [
         { "type": "text", "id": "label", "label": "Label", "default": "Waterproof" },
-        { "type": "text", "id": "sub",   "label": "Subtitle", "default": "Rinse & go" }
+        { "type": "select", "id": "label_font", "label": "Label font", "default": "sans",
+          "options": [
+            { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+            { "value": "display", "label": "Display (Friendship script)" },
+            { "value": "accent", "label": "Accent (Farmhouse serif)" }
+          ] },
+        { "type": "range", "id": "label_size", "label": "Label size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 16 },
+        { "type": "text", "id": "sub",   "label": "Subtitle", "default": "Rinse & go" },
+        { "type": "select", "id": "sub_font", "label": "Subtitle font", "default": "sans",
+          "options": [
+            { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+            { "value": "display", "label": "Display (Friendship script)" },
+            { "value": "accent", "label": "Accent (Farmhouse serif)" }
+          ] },
+        { "type": "range", "id": "sub_size", "label": "Subtitle size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 }
       ]
     }
   ],

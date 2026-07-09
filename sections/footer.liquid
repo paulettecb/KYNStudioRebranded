@@ -1,4 +1,9 @@
-<footer class="site-footer">
+{%- capture tagline_font -%}{% render 'font-stack', key: section.settings.tagline_font %}{%- endcapture -%}
+{%- capture heading_font -%}{% render 'font-stack', key: section.settings.heading_font %}{%- endcapture -%}
+{%- capture link_font -%}{% render 'font-stack', key: section.settings.link_font %}{%- endcapture -%}
+{%- capture bottom_font -%}{% render 'font-stack', key: section.settings.bottom_font %}{%- endcapture -%}
+
+<footer class="site-footer" id="site-footer-{{ section.id }}">
   <div class="container">
     <div class="site-footer__grid">
       <div class="site-footer__brand">
@@ -39,6 +44,25 @@
   </div>
 </footer>
 
+<style>
+  #site-footer-{{ section.id }} .site-footer__brand p{
+    font-family: {{ tagline_font }};
+    font-size: {{ section.settings.tagline_size }}px;
+  }
+  #site-footer-{{ section.id }} h5{
+    font-family: {{ heading_font }};
+    font-size: {{ section.settings.heading_size }}px;
+  }
+  #site-footer-{{ section.id }} .site-footer__grid ul{
+    font-family: {{ link_font }};
+    font-size: {{ section.settings.link_size }}px;
+  }
+  #site-footer-{{ section.id }} .site-footer__bottom{
+    font-family: {{ bottom_font }};
+    font-size: {{ section.settings.bottom_size }}px;
+  }
+</style>
+
 {% schema %}
 {
   "name": "Footer",
@@ -46,14 +70,46 @@
   "settings": [
     { "type": "image_picker", "id": "logo", "label": "Logo (white background)" },
     { "type": "text", "id": "tagline", "label": "Tagline", "default": "Handmade dog walk gear. Original biothane & solid brass — strong, durable, fully waterproof." },
+    { "type": "select", "id": "tagline_font", "label": "Tagline font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "tagline_size", "label": "Tagline size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14 },
+
     { "type": "header", "content": "Social" },
     { "type": "paragraph", "content": "Leave blank to use the links set in Theme settings > Social media." },
     { "type": "url", "id": "instagram", "label": "Instagram URL" },
     { "type": "url", "id": "tiktok", "label": "TikTok URL" },
     { "type": "url", "id": "youtube", "label": "YouTube URL" },
+
+    { "type": "header", "content": "Column headings & links" },
+    { "type": "select", "id": "heading_font", "label": "Column heading font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "heading_size", "label": "Column heading size", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 12 },
+    { "type": "select", "id": "link_font", "label": "Link font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "link_size", "label": "Link size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14 },
+
     { "type": "header", "content": "Bottom row" },
     { "type": "text", "id": "bottom_left", "label": "Bottom left text" },
-    { "type": "text", "id": "bottom_right", "label": "Bottom right text" }
+    { "type": "text", "id": "bottom_right", "label": "Bottom right text" },
+    { "type": "select", "id": "bottom_font", "label": "Bottom row font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "bottom_size", "label": "Bottom row size", "min": 10, "max": 16, "step": 1, "unit": "px", "default": 12 }
   ],
   "blocks": [
     {

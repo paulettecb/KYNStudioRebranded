@@ -40,7 +40,14 @@
   assign ini = ini | upcase
 -%}
 
-<article class="kyn-article" style="--kyn-accent: {{ accent }}; --kyn-eyebrow: {{ eyebrow_c }};">
+{%- capture eyebrow_font -%}{% render 'font-stack', key: section.settings.eyebrow_font %}{%- endcapture -%}
+{%- capture title_font -%}{% render 'font-stack', key: section.settings.title_font %}{%- endcapture -%}
+{%- capture lead_font -%}{% render 'font-stack', key: section.settings.lead_font %}{%- endcapture -%}
+{%- capture body_font -%}{% render 'font-stack', key: section.settings.body_font %}{%- endcapture -%}
+{%- capture body_heading_font -%}{% render 'font-stack', key: section.settings.body_heading_font %}{%- endcapture -%}
+{%- capture quote_font -%}{% render 'font-stack', key: section.settings.quote_font %}{%- endcapture -%}
+
+<article class="kyn-article" id="main-article-{{ section.id }}" style="--kyn-accent: {{ accent }}; --kyn-eyebrow: {{ eyebrow_c }};">
 
   {%- if section.settings.show_breadcrumb -%}
     <nav class="kyn-article__breadcrumb" aria-label="Breadcrumb">
@@ -223,11 +230,11 @@
   .kyn-hero__content { position: absolute; left: 48px; right: 48px; bottom: 36px; }
   .kyn-hero__title { font-family: var(--font-display); font-size: clamp(26px, 3.8vw, 44px); line-height: 1.12; color: #fff; margin: 0; max-width: var(--kyn-title-max, 70%); }
 
-  .kyn-badge-pop { display: inline-block; background: var(--kyn-accent, #E85DA0); color: #fff; font-family: var(--font-sans); font-weight: 700; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; padding: 5px 12px; border-radius: var(--radius-pill, 999px); margin-bottom: 14px; }
+  .kyn-badge-pop { display: inline-block; background: var(--kyn-accent, #E85DA0); color: #fff; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 12px; border-radius: var(--radius-pill, 999px); margin-bottom: 14px; }
 
-  .kyn-eyebrow { font-family: var(--font-sans); font-weight: 700; font-size: 11px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: var(--kyn-eyebrow, #6B7AC1); }
+  .kyn-eyebrow { font-weight: 700; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: var(--kyn-eyebrow, #6B7AC1); }
   .kyn-article__titlebelow { margin: 28px 0 8px; }
-  .kyn-article__h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 46px); line-height: 1.15; color: var(--periwinkle-600); margin: 12px 0 0; }
+  .kyn-article__h1 { line-height: 1.15; color: var(--periwinkle-600); margin: 12px 0 0; }
 
   /* Grid */
   .kyn-article__grid { display: grid; grid-template-columns: minmax(0,1fr) 240px; gap: 0; margin-top: 32px; }
@@ -235,18 +242,23 @@
   .kyn-article__main { position: relative; padding: 8px 48px 0 0; min-width: 0; }
   .kyn-article__grid--nosidebar .kyn-article__main { padding-right: 0; max-width: 760px; margin: 0 auto; }
 
-  .kyn-lead { font-family: var(--font-sans); font-weight: 400; font-size: 18px; line-height: 1.5; color: var(--ink-500, #75737F); margin: 0 0 28px; }
+  .kyn-lead { font-weight: 400; line-height: 1.5; color: var(--ink-500, #75737F); margin: 0 0 28px; }
 
   /* Body (keeps reading-panel vars working) */
   .kyn-article__body.article-body.rte { color: #4A4955; }
-  .kyn-article__body.rte p { font-family: var(--font-sans); font-weight: 400; font-size: var(--rd-size, 17px); line-height: var(--rd-leading, 1.7); color: #4A4955; margin: 0 0 20px; }
-  .kyn-article__body.rte h2 { font-family: var(--font-display); font-size: 26px; line-height: 1.25; color: var(--periwinkle-600); margin: 36px 0 14px; }
-  .kyn-article__body.rte h3 { font-family: var(--font-display); font-size: 20px; color: var(--periwinkle-600); margin: 28px 0 12px; }
+  .kyn-article__body.rte p { font-weight: 400; line-height: var(--rd-leading, 1.7); color: #4A4955; margin: 0 0 20px; }
+  /* NOTE: h2/h3/blockquote font-family & font-size stay on these bare (unscoped)
+     selectors on purpose, matching their original specificity — kyn-reading.css's
+     .rd-sans toggle relies on out-specificity-ing a plain 2/3-class selector to
+     switch h2/h3/blockquote to the sans font for readability. Prefixing these with
+     the section ID would out-rank that rule and silently break the "sans" toggle. */
+  .kyn-article__body.rte h2 { font-family: {{ body_heading_font }}; font-size: {{ section.settings.body_heading_size }}px; line-height: 1.25; color: var(--periwinkle-600); margin: 36px 0 14px; }
+  .kyn-article__body.rte h3 { font-family: {{ body_heading_font }}; font-size: {{ section.settings.body_heading_size | times: 0.769 | round }}px; color: var(--periwinkle-600); margin: 28px 0 12px; }
   .kyn-article__body.rte a { color: var(--periwinkle-600); }
   .kyn-article__body.rte img { border-radius: 12px; max-width: 100%; height: auto; }
   .kyn-article__body.rte ul, .kyn-article__body.rte ol { padding-left: 24px; margin: 0 0 20px; }
   .kyn-article__body.rte li { margin-bottom: 8px; }
-  .kyn-article__body.rte blockquote { margin: 28px 0; padding: 0 0 0 20px; border-left: 3px solid var(--kyn-accent, #E85DA0); font-weight: 600; font-size: 20px; line-height: 1.4; color: var(--ink-900); }
+  .kyn-article__body.rte blockquote { margin: 28px 0; padding: 0 0 0 20px; border-left: 3px solid var(--kyn-accent, #E85DA0); font-weight: 600; font-family: {{ quote_font }}; font-size: {{ section.settings.quote_size }}px; line-height: 1.4; color: var(--ink-900); }
   .kyn-article__body.rte hr { border: none; border-top: 1px solid var(--border-subtle, #E4E2E6); margin: 32px 0; }
 
   /* Article nav */
@@ -292,6 +304,33 @@
     .kyn-hero__title { max-width: 100%; }
     .kyn-related__grid { grid-template-columns: 1fr; }
   }
+
+  /* Dynamic type controls (schema-driven) */
+  #main-article-{{ section.id }} .kyn-badge-pop,
+  #main-article-{{ section.id }} .kyn-eyebrow {
+    font-family: {{ eyebrow_font }};
+    font-size: {{ section.settings.eyebrow_size }}px;
+  }
+  #main-article-{{ section.id }} .kyn-article__h1,
+  #main-article-{{ section.id }} .kyn-hero__title {
+    font-family: {{ title_font }};
+    font-size: {{ section.settings.title_size }}px;
+  }
+  #main-article-{{ section.id }} .kyn-lead {
+    font-family: {{ lead_font }};
+    font-size: {{ section.settings.lead_size }}px;
+  }
+  #main-article-{{ section.id }} .kyn-article__body.rte p {
+    font-family: {{ body_font }};
+    font-size: var(--rd-size, {{ section.settings.body_size }}px);
+  }
+
+  @media (max-width: 749px) {
+    #main-article-{{ section.id }} .kyn-article__h1,
+    #main-article-{{ section.id }} .kyn-hero__title { font-size: {{ section.settings.title_size | times: 0.61 | round }}px; }
+    .kyn-article__body.rte h2 { font-size: {{ section.settings.body_heading_size | times: 0.85 | round }}px; }
+    .kyn-article__body.rte h3 { font-size: {{ section.settings.body_heading_size | times: 0.85 | times: 0.769 | round }}px; }
+  }
 </style>
 
 {% schema %}
@@ -319,7 +358,51 @@
     { "type": "header", "content": "Category & title" },
     { "type": "checkbox", "id": "show_category_badge", "label": "Show category / eyebrow", "default": true },
     { "type": "text", "id": "eyebrow_text", "label": "Category text", "info": "Leave blank to use the first tag, then the blog name." },
+    { "type": "select", "id": "eyebrow_font", "label": "Eyebrow font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 9, "max": 16, "step": 1, "unit": "px", "default": 11 },
+    { "type": "select", "id": "title_font", "label": "Article title font", "default": "display",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "title_size", "label": "Article title size", "min": 28, "max": 64, "step": 2, "unit": "px", "default": 46, "info": "Applies to the article title, whether shown overlaid on the hero image or below it." },
     { "type": "checkbox", "id": "show_lead", "label": "Show lead paragraph (uses the article excerpt)", "default": true },
+    { "type": "select", "id": "lead_font", "label": "Lead font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "lead_size", "label": "Lead size", "min": 14, "max": 28, "step": 1, "unit": "px", "default": 18 },
+
+    { "type": "header", "content": "Body text" },
+    { "type": "select", "id": "body_font", "label": "Body text font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "body_size", "label": "Body text size", "min": 14, "max": 22, "step": 1, "unit": "px", "default": 17, "info": "Default reading size. Readers can still resize with the reading options panel." },
+    { "type": "select", "id": "body_heading_font", "label": "Body heading font (H2/H3)", "default": "display",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "body_heading_size", "label": "Body heading size (H2)", "min": 18, "max": 40, "step": 2, "unit": "px", "default": 26, "info": "H3 headings scale proportionally from this." },
+    { "type": "select", "id": "quote_font", "label": "Blockquote font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "quote_size", "label": "Blockquote size", "min": 16, "max": 32, "step": 1, "unit": "px", "default": 20 },
 
     { "type": "header", "content": "Meta" },
     { "type": "checkbox", "id": "show_author", "label": "Show author", "default": true },

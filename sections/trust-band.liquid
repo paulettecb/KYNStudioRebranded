@@ -1,11 +1,13 @@
 <section class="trust-band">
   <div class="trust-band__row">
     {%- for block in section.blocks -%}
+      {%- capture block_title_font -%}{% render 'font-stack', key: block.settings.title_font %}{%- endcapture -%}
+      {%- capture block_subtitle_font -%}{% render 'font-stack', key: block.settings.subtitle_font %}{%- endcapture -%}
       <div class="trust-feat" {{ block.shopify_attributes }}>
         <span class="trust-feat__icon">{% render 'icon', name: block.settings.icon %}</span>
         <div>
-          <h4>{{ block.settings.title }}</h4>
-          <p>{{ block.settings.subtitle }}</p>
+          <h4 style="font-family:{{ block_title_font }}; font-size:{{ block.settings.title_size }}px;">{{ block.settings.title }}</h4>
+          <p style="font-family:{{ block_subtitle_font }}; font-size:{{ block.settings.subtitle_size }}px;">{{ block.settings.subtitle }}</p>
         </div>
       </div>
     {%- endfor -%}
@@ -32,8 +34,25 @@
             { "value": "star",  "label": "Reviewed (star)" }
           ]
         },
+        { "type": "header", "content": "Title" },
         { "type": "text", "id": "title", "label": "Title", "default": "Fully waterproof" },
-        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Original biothane — rinse, ride home, dry." }
+        { "type": "select", "id": "title_font", "label": "Title font", "default": "sans",
+          "options": [
+            { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+            { "value": "display", "label": "Display (Friendship script)" },
+            { "value": "accent", "label": "Accent (Farmhouse serif)" }
+          ] },
+        { "type": "range", "id": "title_size", "label": "Title size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 15 },
+
+        { "type": "header", "content": "Subtitle" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Original biothane — rinse, ride home, dry." },
+        { "type": "select", "id": "subtitle_font", "label": "Subtitle font", "default": "sans",
+          "options": [
+            { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+            { "value": "display", "label": "Display (Friendship script)" },
+            { "value": "accent", "label": "Accent (Farmhouse serif)" }
+          ] },
+        { "type": "range", "id": "subtitle_size", "label": "Subtitle size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 }
       ]
     }
   ],

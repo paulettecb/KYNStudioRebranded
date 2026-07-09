@@ -1,6 +1,12 @@
+{%- capture heading_font -%}{% render 'font-stack', key: section.settings.heading_font %}{%- endcapture -%}
+{%- capture count_font -%}{% render 'font-stack', key: section.settings.count_font %}{%- endcapture -%}
+{%- capture item_type_font -%}{% render 'font-stack', key: section.settings.item_type_font %}{%- endcapture -%}
+{%- capture item_title_font -%}{% render 'font-stack', key: section.settings.item_title_font %}{%- endcapture -%}
+{%- capture item_excerpt_font -%}{% render 'font-stack', key: section.settings.item_excerpt_font %}{%- endcapture -%}
+
 {%- paginate search.results by section.settings.results_per_page -%}
 
-<section class="section">
+<section class="section" id="main-search-{{ section.id }}">
   <div class="container">
 
     <div class="search-header">
@@ -68,21 +74,45 @@
 
 <style>
 .search-header { max-width: 640px; margin: 0 auto 48px; }
-.search-header h1 { font-size: clamp(28px,4vw,40px); color: var(--ink-900); margin: 0 0 24px; }
+.search-header h1 { color: var(--ink-900); margin: 0 0 24px; }
 .search-form__field { display: flex; gap: 12px; }
 .search-form__field .kyn-input { flex: 1; }
-.search-count { color: var(--ink-500); font-size: 14px; margin: 0 0 32px; }
+.search-count { color: var(--ink-500); margin: 0 0 32px; }
 .search-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
 .search-item { display: flex; gap: 16px; background: var(--paper); border-radius: 12px; padding: 16px; text-decoration: none; color: inherit; transition: box-shadow .2s; }
 .search-item:hover { box-shadow: 0 4px 16px rgba(42,41,51,.08); }
 .search-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
-.search-item__type { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--periwinkle-600); margin: 0 0 4px; }
-.search-item__title { font-size: 16px; font-weight: 500; color: var(--ink-900); margin: 0 0 4px; }
-.search-item__excerpt { font-size: 13px; color: var(--ink-500); margin: 0; line-height: 1.5; }
+.search-item__type { text-transform: uppercase; letter-spacing: .12em; color: var(--periwinkle-600); margin: 0 0 4px; }
+.search-item__title { font-weight: 500; color: var(--ink-900); margin: 0 0 4px; }
+.search-item__excerpt { color: var(--ink-500); margin: 0; line-height: 1.5; }
 .search-empty { text-align: center; padding: 64px 0; }
 .search-empty .eyebrow { margin-bottom: 12px; }
 .search-empty p { color: var(--ink-500); margin: 0 0 24px; }
 .pagination { text-align: center; margin-top: 48px; }
+
+#main-search-{{ section.id }} .search-header h1{
+  font-family: {{ heading_font }};
+  font-size: {{ section.settings.heading_size }}px;
+}
+#main-search-{{ section.id }} .search-count{
+  font-family: {{ count_font }};
+  font-size: {{ section.settings.count_size }}px;
+}
+#main-search-{{ section.id }} .search-item__type{
+  font-family: {{ item_type_font }};
+  font-size: {{ section.settings.item_type_size }}px;
+}
+#main-search-{{ section.id }} .search-item__title{
+  font-family: {{ item_title_font }};
+  font-size: {{ section.settings.item_title_size }}px;
+}
+#main-search-{{ section.id }} .search-item__excerpt{
+  font-family: {{ item_excerpt_font }};
+  font-size: {{ section.settings.item_excerpt_size }}px;
+}
+@media (max-width: 749px){
+  #main-search-{{ section.id }} .search-header h1{ font-size: {{ section.settings.heading_size | times: 0.7 | round }}px; }
+}
 </style>
 
 {% schema %}
@@ -92,7 +122,52 @@
     { "type": "range", "id": "results_per_page", "label": "Results per page", "min": 8, "max": 32, "step": 4, "default": 16 },
     { "type": "text", "id": "empty_eyebrow", "label": "Empty state eyebrow", "default": "No results" },
     { "type": "text", "id": "empty_text", "label": "Empty state text", "info": "Use {{ terms }} to insert the search term", "default": "We couldn't find anything for “{{ terms }}”. Try a different term." },
-    { "type": "text", "id": "empty_button_label", "label": "Empty state button label", "default": "Browse all products" }
+    { "type": "text", "id": "empty_button_label", "label": "Empty state button label", "default": "Browse all products" },
+
+    { "type": "header", "content": "Search heading" },
+    { "type": "select", "id": "heading_font", "label": "Heading font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 24, "max": 56, "step": 2, "unit": "px", "default": 40 },
+
+    { "type": "header", "content": "Result count" },
+    { "type": "select", "id": "count_font", "label": "Result count font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "count_size", "label": "Result count size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14 },
+
+    { "type": "header", "content": "Result item type" },
+    { "type": "select", "id": "item_type_font", "label": "Item type font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "item_type_size", "label": "Item type size", "min": 9, "max": 16, "step": 1, "unit": "px", "default": 11 },
+
+    { "type": "header", "content": "Result item title" },
+    { "type": "select", "id": "item_title_font", "label": "Item title font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "item_title_size", "label": "Item title size", "min": 13, "max": 24, "step": 1, "unit": "px", "default": 16 },
+
+    { "type": "header", "content": "Result item excerpt" },
+    { "type": "select", "id": "item_excerpt_font", "label": "Item excerpt font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "item_excerpt_size", "label": "Item excerpt size", "min": 11, "max": 18, "step": 1, "unit": "px", "default": 13 }
   ],
   "presets": [{ "name": "Search" }]
 }
