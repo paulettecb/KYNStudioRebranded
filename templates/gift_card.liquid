@@ -5,14 +5,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>Gift Card — {{ shop.name }}</title>
+  <title>Tarjeta de regalo — {{ shop.name }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap">
   {{ 'theme.css' | asset_url | stylesheet_tag }}
   <style>
+    @font-face {
+      font-family: 'Friendship';
+      src: url('{{ 'Friendship-Medium.otf' | asset_url }}') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Farmhouse';
+      src: url('{{ 'Farmhouse.otf' | asset_url }}') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
     body {
-      background: var(--oat);
+      background:
+        radial-gradient(480px 380px at 12% -8%, var(--pastel-lilac) 0%, transparent 65%),
+        radial-gradient(520px 420px at 108% 108%, var(--pastel-sky) 0%, transparent 65%),
+        var(--oat);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -21,80 +39,153 @@
       margin: 0;
       padding: 24px;
     }
+
     .gc-card {
-      background: var(--paper);
-      border-radius: 20px;
-      padding: 48px 40px;
+      position: relative;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: 44px 40px 36px;
       max-width: 440px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 4px 40px rgba(42,41,51,.10);
+      box-shadow: var(--shadow-lg);
     }
-    .gc-shop { font-family: var(--font-accent); font-size: 22px; color: var(--ink-900); margin: 0 0 32px; }
-    .gc-label { font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--ink-500); margin: 0 0 4px; }
-    .gc-value { font-size: 52px; font-weight: 600; color: var(--ink-900); line-height: 1; margin: 0 0 6px; }
-    .gc-balance { font-size: 14px; color: var(--ink-500); margin: 0 0 32px; }
-    .gc-qr { display: inline-block; background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 28px; }
-    .gc-code-label { font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--ink-500); margin: 0 0 8px; }
-    .gc-code {
-      font-family: 'Courier New', monospace;
-      font-size: 22px;
-      letter-spacing: .15em;
+
+    .gc-logo { height: 26px; width: auto; margin: 0 0 20px; }
+
+    .gc-eyebrow {
+      font-size: 12px;
+      letter-spacing: var(--tracking-eyebrow);
+      text-transform: uppercase;
+      color: var(--periwinkle-700);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+    }
+    .gc-eyebrow::before,
+    .gc-eyebrow::after { content: ""; width: 20px; height: 2px; background: var(--periwinkle-300); border-radius: 2px; }
+
+    .gc-value {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      letter-spacing: var(--tracking-tight);
+      font-size: 56px;
+      line-height: 1;
       color: var(--ink-900);
-      font-weight: 600;
+      margin: 0 0 6px;
+    }
+    .gc-balance { font-size: 14px; color: var(--text-muted); margin: 0 0 28px; min-height: 20px; }
+
+    .gc-divider {
+      position: relative;
+      height: 1px;
+      margin: 0 -40px 28px;
+      background: repeating-linear-gradient(to right, var(--border-subtle) 0 8px, transparent 8px 16px);
+    }
+    .gc-divider::before,
+    .gc-divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 24px;
+      height: 24px;
       background: var(--oat);
-      border-radius: 8px;
-      padding: 12px 20px;
-      margin: 0 0 8px;
+      border-radius: 50%;
+      transform: translateY(-50%);
+    }
+    .gc-divider::before { left: -52px; }
+    .gc-divider::after { right: -52px; }
+
+    .gc-qr { display: inline-flex; background: var(--white); border: 1.5px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; margin-bottom: 24px; box-shadow: var(--shadow-xs); }
+    .gc-qr img { display: block; border-radius: var(--radius-sm); }
+
+    .gc-code-wrap {
+      background: var(--periwinkle-50);
+      border: 1.5px dashed var(--periwinkle-300);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 0 0 24px;
+    }
+    .gc-code-label { font-size: 11px; letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--periwinkle-700); font-weight: 700; margin: 0 0 8px; }
+    .gc-code {
+      font-family: ui-monospace, 'Courier New', monospace;
+      font-size: 22px;
+      letter-spacing: .12em;
+      color: var(--ink-900);
+      font-weight: 700;
       display: block;
     }
-    .gc-hint { font-size: 13px; color: var(--ink-500); margin: 0 0 32px; }
-    .gc-expired { font-size: 13px; color: #c94040; margin: 0 0 32px; }
+
+    .gc-hint { font-size: 13px; color: var(--text-muted); margin: 0 0 28px; }
+    .gc-expired {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #A23A3A;
+      background: #F8E3E3;
+      border-radius: var(--radius-pill);
+      padding: 6px 16px;
+      margin: 0 0 28px;
+    }
+
     .gc-actions { display: flex; flex-direction: column; gap: 12px; }
-    .gc-print { background: none; border: 1.5px solid var(--border-subtle); border-radius: 8px; padding: 12px 24px; font-family: var(--font-sans); font-size: 14px; color: var(--ink-700); cursor: pointer; }
-    .gc-print:hover { border-color: var(--periwinkle-500); color: var(--periwinkle-600); }
+    .gc-actions .kyn-btn { width: 100%; }
+    .gc-wallet { display: inline-flex; justify-content: center; }
+    .gc-wallet img { display: block; }
+
+    .gc-shop-name { font-family: var(--font-accent); font-size: 15px; color: var(--text-muted); margin: 28px 0 0; }
+
     @media print {
       body { background: #fff; display: block; padding: 0; }
-      .gc-card { box-shadow: none; border: 1px solid #eee; }
+      .gc-card { box-shadow: none; border: 1px solid var(--border-subtle); }
+      .gc-divider::before, .gc-divider::after { background: #fff; }
       .gc-actions { display: none; }
     }
   </style>
 </head>
 <body>
   <div class="gc-card">
-    <p class="gc-shop">{{ shop.name }}</p>
+    <img class="gc-logo" src="{{ 'kyn-logo.png' | asset_url }}" alt="{{ shop.name }}">
 
-    <p class="gc-label">Gift Card</p>
+    <p class="gc-eyebrow">Tarjeta de regalo</p>
     <p class="gc-value">{{ gift_card.initial_value | money_without_trailing_zeros }}</p>
 
     {%- if gift_card.balance != gift_card.initial_value -%}
-      <p class="gc-balance">Balance: {{ gift_card.balance | money_without_trailing_zeros }}</p>
+      <p class="gc-balance">Saldo disponible: {{ gift_card.balance | money_without_trailing_zeros }}</p>
     {%- else -%}
       <p class="gc-balance">&nbsp;</p>
     {%- endif -%}
 
+    <div class="gc-divider" aria-hidden="true"></div>
+
     <div class="gc-qr">
-      <canvas id="gc-qr-canvas"></canvas>
+      <canvas id="gc-qr-canvas" width="140" height="140"></canvas>
     </div>
 
-    <p class="gc-code-label">Code</p>
-    <span class="gc-code">{{ gift_card.code | format_code }}</span>
+    <div class="gc-code-wrap">
+      <p class="gc-code-label">Código</p>
+      <span class="gc-code">{{ gift_card.code | format_code }}</span>
+    </div>
 
     {%- if gift_card.expired or gift_card.enabled == false -%}
-      <p class="gc-expired">This gift card is no longer active.</p>
+      <p class="gc-expired">Esta tarjeta ya no está activa</p>
     {%- else -%}
-      <p class="gc-hint">Enter this code at checkout.</p>
+      <p class="gc-hint">Ingresa este código al pagar tu pedido.</p>
     {%- endif -%}
 
     <div class="gc-actions">
       {%- if gift_card.pass_url -%}
-        <a href="{{ gift_card.pass_url }}">
-          <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" alt="Add to Apple Wallet" width="140" height="44">
+        <a class="gc-wallet" href="{{ gift_card.pass_url }}">
+          <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" alt="Agregar a Apple Wallet" width="140" height="44">
         </a>
       {%- endif -%}
-      <button class="gc-print" onclick="window.print()">Print this gift card</button>
-      <a href="{{ shop.url }}" class="kyn-btn kyn-btn--primary">Shop KYN</a>
+      <button type="button" class="kyn-btn kyn-btn--secondary kyn-btn--md" onclick="window.print()">Imprimir tarjeta</button>
+      <a href="{{ shop.url }}" class="kyn-btn kyn-btn--primary kyn-btn--lg">Ir a la tienda</a>
     </div>
+
+    <p class="gc-shop-name">{{ shop.name }}</p>
   </div>
 
   <script>
@@ -102,12 +193,11 @@
       var canvas = document.getElementById('gc-qr-canvas');
       var qrId = {{ gift_card.qr_identifier | json }};
       if (!canvas || !qrId) return;
-      // minimal QR via Google Charts fallback image
       var img = document.createElement('img');
       img.src = 'https://chart.googleapis.com/chart?chs=160x160&cht=qr&chl=' + encodeURIComponent(qrId) + '&choe=UTF-8';
-      img.width = 160;
-      img.height = 160;
-      img.alt = 'Gift card QR code';
+      img.width = 140;
+      img.height = 140;
+      img.alt = 'Código QR de la tarjeta de regalo';
       canvas.parentNode.replaceChild(img, canvas);
     })();
   </script>
