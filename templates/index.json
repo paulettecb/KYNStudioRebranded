@@ -16,9 +16,9 @@
           "type": "trust",
           "settings": {
             "label": "Waterproof",
-            "label_font": "sans",
+            "label_font": "display",
             "label_size": 16,
-            "sub": "Rinse & go",
+            "sub": "Enjuaga y listo!",
             "sub_font": "sans",
             "sub_size": 13
           }
@@ -26,10 +26,10 @@
         "brass": {
           "type": "trust",
           "settings": {
-            "label": "Solid brass",
-            "label_font": "sans",
+            "label": "Latón sólido",
+            "label_font": "display",
             "label_size": 16,
-            "sub": "Built tough",
+            "sub": "Fuerte y confiable",
             "sub_font": "sans",
             "sub_size": 13
           }
@@ -37,10 +37,10 @@
         "small_batch": {
           "type": "trust",
           "settings": {
-            "label": "Small batch",
-            "label_font": "sans",
+            "label": "Construídos por orden",
+            "label_font": "display",
             "label_size": 16,
-            "sub": "By hand",
+            "sub": "Hecho a mano",
             "sub_font": "sans",
             "sub_size": 13
           }
@@ -88,7 +88,7 @@
           "settings": {
             "icon": "droplets",
             "title": "100% waterproof",
-            "title_font": "sans",
+            "title_font": "display",
             "title_size": 15,
             "subtitle": "Biothane® — enjuaga y seca.",
             "subtitle_font": "sans",
@@ -100,7 +100,7 @@
           "settings": {
             "icon": "gem",
             "title": "Latón Sólido bajo en plomo",
-            "title_font": "sans",
+            "title_font": "display",
             "title_size": 15,
             "subtitle": "Elegido para acompañarte en miles de paseos.",
             "subtitle_font": "sans",
@@ -112,7 +112,7 @@
           "settings": {
             "icon": "hand",
             "title": "Hecho a mano",
-            "title_font": "sans",
+            "title_font": "display",
             "title_size": 15,
             "subtitle": "Batches pequeños, cortado & ensamblado in-house.",
             "subtitle_font": "sans",
@@ -124,7 +124,7 @@
           "settings": {
             "icon": "truck",
             "title": "Envíos gratis en todos nuestros productos",
-            "title_font": "sans",
+            "title_font": "display",
             "title_size": 15,
             "subtitle": "1 año de garantía en defectos de construcción.",
             "subtitle_font": "sans",
@@ -301,7 +301,7 @@
         "lead": "Sé la primera en saber cuándo soltamos un color nuevo o un drop limitado.",
         "lead_font": "sans",
         "lead_size": 17,
-        "placeholder": "tu correo",
+        "placeholder": "Nos compartes tu mail?",
         "placeholder_font": "sans",
         "placeholder_size": 15,
         "button": "Suscribirme",
