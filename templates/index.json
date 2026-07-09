@@ -16,21 +16,33 @@
           "type": "trust",
           "settings": {
             "label": "Waterproof",
-            "sub": "Rinse & go"
+            "label_font": "sans",
+            "label_size": 16,
+            "sub": "Rinse & go",
+            "sub_font": "sans",
+            "sub_size": 13
           }
         },
         "brass": {
           "type": "trust",
           "settings": {
             "label": "Solid brass",
-            "sub": "Built tough"
+            "label_font": "sans",
+            "label_size": 16,
+            "sub": "Built tough",
+            "sub_font": "sans",
+            "sub_size": 13
           }
         },
         "small_batch": {
           "type": "trust",
           "settings": {
             "label": "Small batch",
-            "sub": "By hand"
+            "label_font": "sans",
+            "label_size": 16,
+            "sub": "By hand",
+            "sub_font": "sans",
+            "sub_size": 13
           }
         }
       },
@@ -41,16 +53,30 @@
       ],
       "settings": {
         "eyebrow": "Hecho a mano · Biothane® & latón solido",
-        "title": "Gear up for the good walks.",
-        "spark_word": "good",
-        "lead": "Strong, waterproof, and built by hand from original biothane and solid brass — for the dogs who go everywhere.",
+        "eyebrow_font": "sans",
+        "eyebrow_size": 13,
+        "title": "Los mejores paseos los esperan!",
+        "title_font": "sans",
+        "title_size": 80,
+        "spark_word": "mejores",
+        "spark_font": "display",
+        "spark_size": 80,
+        "lead": "Resistente, waterproof, hecho a mano from en Biothane® y herrajes de latón sólido, te queremos acompañar en todo!",
+        "lead_font": "sans",
+        "lead_size": 19,
         "cta1_label": "Mira la colección completa",
         "cta1_link": "shopify://collections/the-kyn-training-bundle",
+        "cta1_label_font": "sans",
+        "cta1_label_size": 16,
         "cta2_label": "Conoce The Everyday Collar",
         "cta2_link": "shopify://products/the-urban-collar",
+        "cta2_label_font": "sans",
+        "cta2_label_size": 16,
         "image": "shopify://shop_images/collar_new_3.png",
-        "image_caption": "The Everyday Collar",
-        "placeholder_label": "product shot — collar + leash set",
+        "image_caption": "P R O X I M A M E N T E",
+        "placeholder_label": "",
+        "caption_font": "display",
+        "caption_size": 15,
         "show_badge": true
       }
     },
@@ -62,7 +88,11 @@
           "settings": {
             "icon": "droplets",
             "title": "100% waterproof",
-            "subtitle": "Biothane® — enjuaga y seca."
+            "title_font": "sans",
+            "title_size": 15,
+            "subtitle": "Biothane® — enjuaga y seca.",
+            "subtitle_font": "sans",
+            "subtitle_size": 13
           }
         },
         "brass": {
@@ -70,7 +100,11 @@
           "settings": {
             "icon": "gem",
             "title": "Latón Sólido bajo en plomo",
-            "subtitle": "Elegido para acompañarte en miles de paseos."
+            "title_font": "sans",
+            "title_size": 15,
+            "subtitle": "Elegido para acompañarte en miles de paseos.",
+            "subtitle_font": "sans",
+            "subtitle_size": 13
           }
         },
         "handmade": {
@@ -78,7 +112,11 @@
           "settings": {
             "icon": "hand",
             "title": "Hecho a mano",
-            "subtitle": "Batches pequeños, cortado & ensamblado in-house."
+            "title_font": "sans",
+            "title_size": 15,
+            "subtitle": "Batches pequeños, cortado & ensamblado in-house.",
+            "subtitle_font": "sans",
+            "subtitle_size": 13
           }
         },
         "shipping": {
@@ -86,7 +124,11 @@
           "settings": {
             "icon": "truck",
             "title": "Envíos gratis en todos nuestros productos",
-            "subtitle": "1 año de garantía en defectos de construcción."
+            "title_font": "sans",
+            "title_size": 15,
+            "subtitle": "1 año de garantía en defectos de construcción.",
+            "subtitle_font": "sans",
+            "subtitle_size": 13
           }
         }
       },
@@ -102,11 +144,21 @@
       "type": "featured-products",
       "settings": {
         "eyebrow": "Best sellers",
+        "eyebrow_font": "sans",
+        "eyebrow_size": 13,
         "heading": "La manada ama! estas piezas, conócelas",
+        "heading_font": "sans",
+        "heading_size": 48,
         "spark_word": "ama!",
+        "spark_font": "display",
+        "spark_size": 48,
         "collection": "the-kyn-modular-system",
         "product_limit": 4,
+        "product_heading_font": "sans",
+        "product_heading_size": 18,
         "cta_label": "Ver todo",
+        "cta_label_font": "sans",
+        "cta_label_size": 13,
         "cta_link": ""
       }
     },
@@ -185,10 +237,20 @@
         "video_1": "shopify://files/videos/mp_.mp4",
         "video_2": "shopify://files/videos/Puedes_cambiar_el_fondo_a_Peri.mp4",
         "eyebrow": "Hecho a mano",
+        "eyebrow_font": "sans",
+        "eyebrow_size": 13,
         "title": "Creados para",
+        "title_font": "sans",
+        "title_size": 40,
         "spark_word": "durar!",
+        "spark_font": "display",
+        "spark_size": 42,
         "body": "<p>Cada collar y correa de KYN se corta, perfora y remacha a mano con biothane original y latón sólido. No es producción en masa — es una pieza para la vida de tu perro.</p>",
+        "body_font": "sans",
+        "body_size": 17,
         "cta_label": "Conoce la historia",
+        "cta_label_font": "sans",
+        "cta_label_size": 15,
         "cta_link": ""
       }
     },
@@ -197,8 +259,14 @@
       "settings": {
         "bg": "#f4f0e8",
         "eyebrow": "Para los humanos que amamos",
+        "eyebrow_font": "sans",
+        "eyebrow_size": 13,
         "title": "Paseos reales, colas",
-        "spark_word": "felices!"
+        "title_font": "sans",
+        "title_size": 40,
+        "spark_word": "felices!",
+        "spark_font": "display",
+        "spark_size": 42
       }
     },
     "video-spotlight": {
@@ -207,8 +275,14 @@
         "bg": "#fffdf8",
         "video": "shopify://files/videos/gemini_generated_video_207DBF5A.mp4",
         "eyebrow": "KYN",
+        "eyebrow_font": "sans",
+        "eyebrow_size": 13,
         "title": "Algo lindo está por",
-        "spark_word": "llegar."
+        "title_font": "sans",
+        "title_size": 40,
+        "spark_word": "llegar.",
+        "spark_font": "display",
+        "spark_size": 42
       }
     },
     "newsletter": {
@@ -216,13 +290,29 @@
       "settings": {
         "bg": "#e5e9f4",
         "eyebrow": "Más que amigos del parque",
+        "eyebrow_font": "sans",
+        "eyebrow_size": 13,
         "title": "Lanzamientos, colores y cosas",
+        "title_font": "sans",
+        "title_size": 40,
         "spark_word": "lindas.",
+        "spark_font": "display",
+        "spark_size": 42,
         "lead": "Sé la primera en saber cuándo soltamos un color nuevo o un drop limitado.",
+        "lead_font": "sans",
+        "lead_size": 17,
         "placeholder": "tu correo",
+        "placeholder_font": "sans",
+        "placeholder_size": 15,
         "button": "Suscribirme",
+        "button_font": "sans",
+        "button_size": 15,
         "success": "¡Bienvenida a la manada! 🐾",
-        "fineprint": "Sin spam. Solo cosas buenas."
+        "success_font": "sans",
+        "success_size": 16,
+        "fineprint": "Sin spam. Solo cosas buenas.",
+        "fineprint_font": "sans",
+        "fineprint_size": 13
       }
     }
   },
