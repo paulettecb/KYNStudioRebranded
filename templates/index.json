@@ -159,9 +159,22 @@
       "settings": {
         "bg": "#f4f0e8",
         "eyebrow": "Colores que combinan",
-        "title": "Colores curados y elegidos para",
-        "spark_word": "verse bien.",
-        "lead": "Every color is hand-picked, small-batch, and looks like it belongs on them."
+        "eyebrow_font": "sans",
+        "eyebrow_size": 13,
+        "title": "Colores curados y elegidos para verse",
+        "title_font": "sans",
+        "title_size": 40,
+        "spark_word": "increible.",
+        "spark_font": "display",
+        "spark_size": 42,
+        "lead": "",
+        "lead_font": "sans",
+        "lead_size": 17,
+        "dot_size": 88,
+        "swatch_name_font": "sans",
+        "swatch_name_size": 15,
+        "swatch_note_font": "accent",
+        "swatch_note_size": 27
       }
     },
     "story": {
