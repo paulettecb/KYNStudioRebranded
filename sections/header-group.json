@@ -14,8 +14,12 @@
     "header": {
       "type": "header",
       "settings": {
-        "logo": "shopify://shop_images/Untitled_design_d2684ca3-f11b-43e6-9721-6bf123c83a49.png",
-        "menu": "main-menu"
+        "logo": "shopify://shop_images/A.png",
+        "menu": "main-menu",
+        "menu_font": "sans",
+        "menu_size": 14,
+        "cart_label_font": "sans",
+        "cart_label_size": 13
       }
     }
   },
