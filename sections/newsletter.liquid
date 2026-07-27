@@ -34,7 +34,7 @@
                placeholder="{{ section.settings.placeholder | escape }}"
                autocomplete="email"
                required>
-        <button type="submit" class="btn btn--primary">{{ section.settings.button | escape }}</button>
+        <button type="submit" class="kyn-btn kyn-btn--primary kyn-btn--lg">{{ section.settings.button | escape }}</button>
         {%- if form.posted_successfully? -%}
           <p class="newsletter__success">{{ section.settings.success | escape }}</p>
         {%- endif -%}
@@ -71,7 +71,7 @@
     font-family: {{ placeholder_font }};
     font-size: {{ section.settings.placeholder_size }}px;
   }
-  #newsletter-{{ section.id }} .newsletter__form .btn{
+  #newsletter-{{ section.id }} .newsletter__form .kyn-btn{
     font-family: {{ button_font }};
     font-size: {{ section.settings.button_size }}px;
   }

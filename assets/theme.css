@@ -355,7 +355,7 @@ p{margin:0;}
 .newsletter__form{display:flex;gap:10px;max-width:480px;margin:0 auto;flex-wrap:wrap;}
 .newsletter__form input[type=email]{flex:1 1 240px;padding:14px 18px;border:1px solid var(--border-on-oat);border-radius:var(--radius-pill);background:var(--white);font-family:var(--font-body);font-size:15px;color:var(--ink-900);outline:none;}
 .newsletter__form input[type=email]:focus{border-color:var(--periwinkle-500);box-shadow:0 0 0 3px var(--periwinkle-100);}
-.newsletter__form .btn{flex:0 0 auto;}
+.newsletter__form .kyn-btn{flex:0 0 auto;}
 .newsletter__success{color:var(--periwinkle-700);font-weight:600;width:100%;margin:8px 0 0;}
 .newsletter__error{color:#b04545;font-size:14px;width:100%;margin:8px 0 0;}
 .newsletter__fineprint{display:block;margin-top:16px;color:var(--ink-700);font-size:13px;opacity:.75;}
