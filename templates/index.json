@@ -288,7 +288,7 @@
     "newsletter": {
       "type": "newsletter",
       "settings": {
-        "bg": "#2f3658",
+        "bg": "#e5e9f4",
         "eyebrow": "Más que amigos del parque",
         "eyebrow_font": "sans",
         "eyebrow_size": 13,
@@ -305,7 +305,7 @@
         "placeholder_font": "sans",
         "placeholder_size": 15,
         "button": "Suscribirme",
-        "button_font": "sans",
+        "button_font": "display",
         "button_size": 15,
         "success": "¡Bienvenida a la manada! 🐾",
         "success_font": "sans",
