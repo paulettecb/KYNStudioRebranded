@@ -14,11 +14,11 @@
     "header": {
       "type": "header",
       "settings": {
-        "logo": "shopify://shop_images/A.png",
+        "logo": "shopify://shop_images/A-2.png",
         "menu": "main-menu",
         "menu_font": "sans",
         "menu_size": 14,
-        "cart_label_font": "sans",
+        "cart_label_font": "display",
         "cart_label_size": 13
       }
     }
