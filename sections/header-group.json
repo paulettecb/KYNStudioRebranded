@@ -16,7 +16,7 @@
       "settings": {
         "logo": "shopify://shop_images/A-2.png",
         "menu": "main-menu",
-        "menu_font": "sans",
+        "menu_font": "display",
         "menu_size": 14,
         "cart_label_font": "display",
         "cart_label_size": 13
