@@ -60,7 +60,7 @@
         {%- endif -%}
 
         {%- if section.settings.cta_label != blank -%}
-          <a class="btn btn--primary" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label | escape }}</a>
+          <a class="kyn-btn kyn-btn--ghost kyn-btn--md" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label | escape }}</a>
         {%- endif -%}
       </div>
     </div>
@@ -84,7 +84,7 @@
     font-family: {{ body_font }};
     font-size: {{ section.settings.body_size }}px;
   }
-  #story-{{ section.id }} .btn{
+  #story-{{ section.id }} .kyn-btn{
     font-family: {{ cta_label_font }};
     font-size: {{ section.settings.cta_label_size }}px;
   }
