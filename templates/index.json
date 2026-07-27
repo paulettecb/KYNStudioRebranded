@@ -209,7 +209,7 @@
         "onyx"
       ],
       "settings": {
-        "bg": "#f4f0e8",
+        "bg": "#c9d0ed",
         "eyebrow": "Colores que combinan",
         "eyebrow_font": "sans",
         "eyebrow_size": 13,
@@ -232,7 +232,7 @@
     "story": {
       "type": "story",
       "settings": {
-        "bg": "#fffdf8",
+        "bg": "#fbfaf7",
         "image_right": false,
         "video_1": "shopify://files/videos/mp_.mp4",
         "video_2": "shopify://files/videos/Puedes_cambiar_el_fondo_a_Peri.mp4",
@@ -257,7 +257,7 @@
     "reviews": {
       "type": "reviews",
       "settings": {
-        "bg": "#f4f0e8",
+        "bg": "#f0f2fb",
         "eyebrow": "Para los humanos que amamos",
         "eyebrow_font": "sans",
         "eyebrow_size": 13,
@@ -272,7 +272,7 @@
     "video-spotlight": {
       "type": "video-spotlight",
       "settings": {
-        "bg": "#fffdf8",
+        "bg": "#c9d0ed",
         "video": "shopify://files/videos/gemini_generated_video_207DBF5A.mp4",
         "eyebrow": "KYN",
         "eyebrow_font": "sans",
@@ -288,7 +288,7 @@
     "newsletter": {
       "type": "newsletter",
       "settings": {
-        "bg": "#e5e9f4",
+        "bg": "#2f3658",
         "eyebrow": "Más que amigos del parque",
         "eyebrow_font": "sans",
         "eyebrow_size": 13,
