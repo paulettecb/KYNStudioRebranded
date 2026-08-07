@@ -18,9 +18,9 @@ Found during an SEO/structured-data pass (Aug 2026):
 
 - [ ] **App blocks not supported in `main-product`** — the section's `blocks` schema only defines `personalization_zone`; there's no `{ "type": "@app" }` block or matching `case` branch, so merchants can't add a reviews app (Judge.me, Loox), upsell widget, etc. to the PDP from the theme editor without a code change.
 - [ ] **No quantity selector on the product form** — every "Agregar al carrito" click adds qty 1; there's no `<input name="quantity">`.
-- [ ] **PDP images aren't responsive** — gallery/hero `<img>` tags use a single fixed-width `image_url`, no `srcset`/`sizes`. Mobile visitors download the same size as desktop.
-- [ ] **JS price formatter hardcodes `$` + `MXN`** in `sections/main-product.liquid`'s inline script, instead of using the shop's actual `money_format`. The server-rendered price (via the `money` filter) is correct; the price the JS swaps in on variant change is not shop-format-aware — would show the wrong currency label if Shopify Markets/multi-currency is ever enabled.
-- [ ] **No `BreadcrumbList` structured data** — the PDP renders a visual breadcrumb (Inicio › Collection › Product) but no matching JSON-LD, so it can't earn the breadcrumb rich result in Google.
+- [x] ~~PDP images aren't responsive~~ — fixed: gallery/hero now use `image_tag` with a `widths`/`sizes` srcset.
+- [x] ~~JS price formatter hardcodes `$` + `MXN`~~ — fixed: now driven by `shop.money_format`.
+- [x] ~~No `BreadcrumbList` structured data~~ — fixed: added alongside the Product JSON-LD.
 - ⚠️ **Do not add `Review`/`AggregateRating` schema to `sections/reviews.liquid`** — those blocks are manually-authored marketing testimonials, not a verified-purchase reviews app. Marking them up as schema.org reviews would violate Google's structured-data guidelines (risk of a manual action).
 
 ## How to upload to Shopify
