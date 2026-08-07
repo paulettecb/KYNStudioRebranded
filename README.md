@@ -16,8 +16,8 @@ Shopify Online Store 2.0 theme built from the **KYN Design System**. Renders the
 
 Found during an SEO/structured-data pass (Aug 2026):
 
-- [ ] **App blocks not supported in `main-product`** — the section's `blocks` schema only defines `personalization_zone`; there's no `{ "type": "@app" }` block or matching `case` branch, so merchants can't add a reviews app (Judge.me, Loox), upsell widget, etc. to the PDP from the theme editor without a code change.
-- [ ] **No quantity selector on the product form** — every "Agregar al carrito" click adds qty 1; there's no `<input name="quantity">`.
+- [x] ~~App blocks not supported in `main-product`~~ — fixed: the section now declares a `{ "type": "@app" }` block and renders any app blocks (reviews widgets, upsells, trust badges, etc.) between the trust icons and the accordion tabs, so they're addable from the theme editor without a code change.
+- [x] ~~No quantity selector on the product form~~ — fixed: added a stepper (`name="quantity"`) above the "Agregar al carrito" button.
 - [x] ~~PDP images aren't responsive~~ — fixed: gallery/hero now use `image_tag` with a `widths`/`sizes` srcset.
 - [x] ~~JS price formatter hardcodes `$` + `MXN`~~ — fixed: now driven by `shop.money_format`.
 - [x] ~~No `BreadcrumbList` structured data~~ — fixed: added alongside the Product JSON-LD.

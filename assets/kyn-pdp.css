@@ -389,6 +389,55 @@
 .kyn-input:focus { border-color: var(--periwinkle-300); outline: none; }
 textarea.kyn-input { resize: vertical; min-height: 60px; }
 
+/* ── Quantity stepper ── */
+.pdp-qty {
+  margin-bottom: 14px;
+}
+.pdp-qty__stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.pdp-qty__btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--ink-900);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.pdp-qty__btn:hover {
+  background: var(--periwinkle-50);
+}
+.pdp-qty__input {
+  width: 44px;
+  height: 40px;
+  border: none;
+  border-left: 1.5px solid var(--border-subtle);
+  border-right: 1.5px solid var(--border-subtle);
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-900);
+  -moz-appearance: textfield;
+}
+.pdp-qty__input::-webkit-outer-spin-button,
+.pdp-qty__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.pdp-qty__input:focus {
+  outline: none;
+}
+
 /* ── Buy buttons ── */
 .pdp-buy {
   display: flex;
