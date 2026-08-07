@@ -23,13 +23,14 @@
           aria-label="Ver imagen {{ forloop.index }}"
           type="button"
         >
-          <img
-            src="{{ media | image_url: width: 120 }}"
-            alt="{{ media.alt | default: product.title | escape }}"
-            width="72"
-            height="86"
-            loading="lazy"
-          >
+          {{ media | image_url: width: 240 | image_tag:
+            widths: '72, 120, 144, 240',
+            sizes: '72px',
+            alt: media.alt | default: product.title | escape,
+            width: 72,
+            height: 86,
+            loading: 'lazy'
+          }}
         </button>
       {%- endfor -%}
     </div>
@@ -38,14 +39,16 @@
     <div class="pdp-main-wrap">
       <div class="pdp-main-img">
         {%- assign featured = product.featured_media -%}
-        <img
-          id="pdp-hero-img-{{ section.id }}"
-          src="{{ featured | image_url: width: 900 }}"
-          alt="{{ featured.alt | default: product.title | escape }}"
-          width="900"
-          height="1125"
-          loading="eager"
-        >
+        {{ featured | image_url: width: 1800 | image_tag:
+          id: 'pdp-hero-img-' | append: section.id,
+          widths: '450, 600, 900, 1200, 1800',
+          sizes: '(min-width: 990px) 45vw, 100vw',
+          alt: featured.alt | default: product.title | escape,
+          width: 900,
+          height: 1125,
+          loading: 'eager',
+          fetchpriority: 'high'
+        }}
         <span class="pdp-img-badge" aria-hidden="true">new ♥</span>
       </div>
     </div>
@@ -427,10 +430,11 @@
   'use strict';
 
   /* ── Data ── */
-  var PRODUCT = {{ product | json }};
-  var VARIANTS = PRODUCT.variants;
-  var OPTIONS  = PRODUCT.options;
-  var S_ID     = {{ section.id | json }};
+  var PRODUCT     = {{ product | json }};
+  var VARIANTS    = PRODUCT.variants;
+  var OPTIONS     = PRODUCT.options;
+  var S_ID        = {{ section.id | json }};
+  var MONEY_FORMAT = {{ shop.money_format | json }};
 
   /* ── Media id → resized gallery src, for variant image swaps ── */
   var MEDIA_SRC = {
@@ -455,12 +459,52 @@
     });
   }
 
-  function formatMoney(cents) {
-    /* Shopify stores prices in cents */
-    return '$' + (cents / 100).toLocaleString('es-MX', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }) + ' MXN';
+  /* Shopify's standard money formatter — reads the shop's real
+     money_format (currency symbol, decimals, thousands separator)
+     instead of a hardcoded "$ ... MXN" string, so this keeps working
+     correctly if the store ever sells in more than one currency. */
+  function formatMoney(cents, format) {
+    var formatString = format || MONEY_FORMAT;
+    var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+
+    function withDelimiters(number, precision, thousands, decimal) {
+      precision = precision === undefined ? 2 : precision;
+      thousands = thousands === undefined ? ',' : thousands;
+      decimal   = decimal === undefined ? '.' : decimal;
+
+      var value = (number / 100).toFixed(precision);
+      var parts = value.split('.');
+      var dollars = parts[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1' + thousands);
+      var centsPart = parts[1] ? decimal + parts[1] : '';
+
+      return dollars + centsPart;
+    }
+
+    var match = formatString.match(placeholderRegex);
+    var token = match ? match[1] : 'amount';
+    var value;
+
+    switch (token) {
+      case 'amount_no_decimals':
+        value = withDelimiters(cents, 0);
+        break;
+      case 'amount_with_comma_separator':
+        value = withDelimiters(cents, 2, '.', ',');
+        break;
+      case 'amount_no_decimals_with_comma_separator':
+        value = withDelimiters(cents, 0, '.', ',');
+        break;
+      case 'amount_with_space_separator':
+        value = withDelimiters(cents, 2, ' ', ',');
+        break;
+      case 'amount_no_decimals_with_space_separator':
+        value = withDelimiters(cents, 0, ' ');
+        break;
+      default:
+        value = withDelimiters(cents, 2);
+    }
+
+    return match ? formatString.replace(placeholderRegex, value) : ('$' + value);
   }
 
   function updateVariantUI() {
@@ -490,6 +534,10 @@
 
       if (heroImg && newSrc && heroImg.src !== newSrc) {
         heroImg.style.opacity = '0.6';
+        /* Drop srcset/sizes: while present they win over a plain .src
+           change, so the swap would silently do nothing. */
+        heroImg.removeAttribute('srcset');
+        heroImg.removeAttribute('sizes');
         heroImg.src = newSrc;
         heroImg.onload = function () { heroImg.style.opacity = '1'; };
       }
@@ -547,6 +595,8 @@
       this.classList.add('active');
       if (heroImg) {
         heroImg.style.opacity = '0.6';
+        heroImg.removeAttribute('srcset');
+        heroImg.removeAttribute('sizes');
         heroImg.src = this.dataset.src;
         heroImg.onload = function () { heroImg.style.opacity = '1'; };
       }
