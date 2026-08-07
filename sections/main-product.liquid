@@ -191,6 +191,26 @@
         </div>
       {%- endif -%}
 
+      <!-- ── Quantity selector ── -->
+      {%- unless product.gift_card? -%}
+        <div class="pdp-qty">
+          <label class="pdp-field-label" for="Quantity-{{ section.id }}">Cantidad</label>
+          <div class="pdp-qty__stepper">
+            <button type="button" class="pdp-qty__btn" id="qty-minus-{{ section.id }}" aria-label="Reducir cantidad">−</button>
+            <input
+              type="number"
+              name="quantity"
+              id="Quantity-{{ section.id }}"
+              class="pdp-qty__input"
+              value="1"
+              min="1"
+              inputmode="numeric"
+            >
+            <button type="button" class="pdp-qty__btn" id="qty-plus-{{ section.id }}" aria-label="Aumentar cantidad">+</button>
+          </div>
+        </div>
+      {%- endunless -%}
+
       <!-- ── Buy buttons ── -->
       <div class="pdp-buy">
         <button
@@ -302,6 +322,13 @@
         </div>
       {%- endif -%}
     </div>
+
+    <!-- ── App blocks (reviews widgets, trust badges, etc.) ── -->
+    {%- for block in section.blocks -%}
+      {%- if block.type == '@app' -%}
+        {% render block %}
+      {%- endif -%}
+    {%- endfor -%}
 
     <hr class="pdp-divider">
 
@@ -648,6 +675,34 @@
     });
   });
 
+  /* ── Quantity stepper ── */
+  (function () {
+    var qtyInput = document.getElementById('Quantity-' + S_ID);
+    var minusBtn = document.getElementById('qty-minus-' + S_ID);
+    var plusBtn  = document.getElementById('qty-plus-' + S_ID);
+    if (!qtyInput) return;
+
+    function clampQty() {
+      var val = parseInt(qtyInput.value, 10);
+      if (isNaN(val) || val < 1) val = 1;
+      qtyInput.value = val;
+      return val;
+    }
+
+    if (minusBtn) {
+      minusBtn.addEventListener('click', function () {
+        qtyInput.value = clampQty() - 1;
+        clampQty();
+      });
+    }
+    if (plusBtn) {
+      plusBtn.addEventListener('click', function () {
+        qtyInput.value = clampQty() + 1;
+      });
+    }
+    qtyInput.addEventListener('change', clampQty);
+  }());
+
   /* ── Run on load ── */
   updateVariantUI();
 
@@ -771,6 +826,9 @@
           "default": true
         }
       ]
+    },
+    {
+      "type": "@app"
     }
   ],
   "presets": [
