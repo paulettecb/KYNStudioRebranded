@@ -18,6 +18,9 @@
   {%- endif -%}
 
   {%- assign kyn_social_image = settings.social_share_image -%}
+  {%- if template.name == 'product' and product.featured_media -%}
+    {%- assign kyn_social_image = product.featured_media -%}
+  {%- endif -%}
   {%- if kyn_social_image != blank -%}
     <meta property="og:image" content="{{ kyn_social_image | image_url: width: 1200 }}">
     <meta name="twitter:image" content="{{ kyn_social_image | image_url: width: 1200 }}">
@@ -33,6 +36,10 @@
     <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
   {%- else -%}
     <link rel="icon" type="image/png" href="{{ 'kyn-logo.png' | asset_url }}">
+  {%- endif -%}
+
+  {%- if template.name == 'product' -%}
+    {% render 'structured-data-product' %}
   {%- endif -%}
 
   {{ content_for_header }}
