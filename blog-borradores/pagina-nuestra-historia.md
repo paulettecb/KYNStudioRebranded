@@ -4,6 +4,10 @@
 > en Shopify (id 162101297428, "00: The Origin") sigue intacta hasta que ella
 > apruebe este reemplazo. El body original está respaldado abajo.
 >
+> Título nuevo: "Nuestra historia" (el actual, "00: The Origin", ya no va con
+> el tono). El handle `our-story` no cambia, para no romper el link del home
+> ni ninguno que ya exista.
+>
 > Voz: el registro confesional en minúsculas que ya se aprobó para la sección
 > "story" del home. Los primeros dos párrafos son literalmente los mismos, para
 > que el home y esta página se sientan la misma persona.
@@ -60,7 +64,7 @@ el latón sólido llegó por terquedad. no quería herrajes que se oxidaran a lo
 
 ## por qué modular
 
-el equipo que hago es el que yo necesitaba: piezas que sirven para la banqueta, para el campo, y para las clases de agility.
+el equipo que hago es el que yo necesitaba: piezas que sirven para la banqueta, para el campo, para las clases de agility, y para salir con mis amigas a la plaza sin que la correa esté cochina ni oxidada.
 
 por eso kyn es modular. no porque suene bonito, sino porque un paseo no se parece al siguiente y yo no quería cargar tres correas distintas.
 
