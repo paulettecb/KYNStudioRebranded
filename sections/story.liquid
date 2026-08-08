@@ -8,6 +8,26 @@
 {%- capture body_font -%}{% render 'font-stack', key: section.settings.body_font %}{%- endcapture -%}
 {%- capture cta_label_font -%}{% render 'font-stack', key: section.settings.cta_label_font %}{%- endcapture -%}
 
+{%- comment -%}
+  Spark word: rendered inline when it appears inside the title (like the
+  hero does), appended after it otherwise — so older content that keeps
+  the spark as a trailing word still renders the same.
+{%- endcomment -%}
+{%- assign story_title = section.settings.title | escape -%}
+{%- assign story_spark = section.settings.spark_word | escape -%}
+{%- capture story_heading -%}
+  {%- if story_spark != blank -%}
+    {%- capture story_spark_html -%}<span class="spark">{{ story_spark }}</span>{%- endcapture -%}
+    {%- if story_title contains story_spark -%}
+      {{- story_title | replace: story_spark, story_spark_html -}}
+    {%- else -%}
+      {{- story_title }} {{ story_spark_html -}}
+    {%- endif -%}
+  {%- else -%}
+    {{- story_title -}}
+  {%- endif -%}
+{%- endcapture -%}
+
 <section id="story-{{ section.id }}" class="section story" style="background: {{ section.settings.bg }};">
   <div class="container">
     <div class="story__grid {% if section.settings.image_right %}story__grid--reverse{% endif %}">
@@ -31,12 +51,7 @@
 
       <div class="story__body">
         <span class="eyebrow">{{ section.settings.eyebrow | escape }}</span>
-        <h2 class="h-display">
-          {{ section.settings.title | escape }}
-          {%- if section.settings.spark_word != blank -%}
-            <span class="spark">{{ section.settings.spark_word | escape }}</span>
-          {%- endif -%}
-        </h2>
+        <h2 class="h-display">{{ story_heading }}</h2>
         <div class="story__text rte">
           {{ section.settings.body }}
         </div>
