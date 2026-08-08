@@ -2,17 +2,25 @@
 
 > Estado: borrador para revisión de Paulette. **No publicado.** La página actual
 > en Shopify (id 162101297428, "00: The Origin") sigue intacta hasta que ella
-> apruebe este reemplazo.
+> apruebe este reemplazo. El body original está respaldado abajo.
 >
 > Voz: el registro confesional en minúsculas que ya se aprobó para la sección
 > "story" del home. Los primeros dos párrafos son literalmente los mismos, para
 > que el home y esta página se sientan la misma persona.
 >
+> Se conservan los dos banners de la página actual. Las secciones del biothane
+> y del sistema modular se conservan también, reescritas en esta voz.
+>
 > Pendiente: la sección de Kenna y Nina. Paulette la quiere con foto y su
 > historia, pero decidió escribirla después, con calma. Abajo está marcado
 > dónde va.
+>
+> Por confirmar con Paulette: los datos de 450 kg de resistencia y
+> "antimicrobiano" vienen de la página actual, no los verifiqué yo.
 
 ---
+
+![](https://cdn.shopify.com/s/files/1/0998/3387/2660/files/KennaBanner.png?v=1775257018)
 
 ## cómo empezó
 
@@ -40,8 +48,42 @@ los collares tampoco fueron idea mía. me los pidieron ellas.
 
 <!-- PENDIENTE: sección de Kenna y Nina, con foto. Paulette la escribe después. -->
 
+![](https://cdn.shopify.com/s/files/1/0998/3387/2660/files/Banner_Hardware.png?v=1775258851)
+
+## por qué biothane
+
+el biothane no es tela ni es plástico. es una cinta de poliéster con una capa de polímero sellada encima. no absorbe agua, no se queda con el olor a perro mojado, y aguanta jalones de hasta 450 kg.
+
+la primera vez que enjuagué una correa con la manguera y quedó como nueva, entendí por qué me obsesioné con este material.
+
+el latón sólido llegó por terquedad. no quería herrajes que se oxidaran a los tres meses, y en méxico no encontré ninguno. los importé.
+
+## por qué modular
+
+el equipo que hago es el que yo necesitaba: piezas que sirven para la banqueta, para el campo, y para las clases de agility.
+
+por eso kyn es modular. no porque suene bonito, sino porque un paseo no se parece al siguiente y yo no quería cargar tres correas distintas.
+
 ## hoy
 
 sigo cortando, perforando y remachando cada pieza a mano, en lotes chiquitos, cuando me da la vida.
 
-las piezas se combinan entre sí porque un paseo no se parece al siguiente. el mismo herraje, el mismo biothane, y tú decides qué armar con eso.
+el mismo herraje, el mismo biothane, y tú decides qué armar con eso.
+
+---
+
+## Respaldo — body original de la página (antes del rebrand)
+
+```html
+<p class="p1" style="text-align: left;"><img alt="" src="https://cdn.shopify.com/s/files/1/0998/3387/2660/files/KennaBanner.png?v=1775257018"></p>
+<h3>SECCION 1: EL ORIGEN </h3>
+<p>Hola! Somos Paulette y Kenna!<br>Vinimos a contarte como empezó este concepto. <meta charset="UTF-8"><span>KYN no nació en un escritorio; nació en el asfalto. Nació de la vida compartida con Kenna, mi Border Collie. Juntas atravesamos procesos de salud, entrenamiento y aprendizaje, pérdidas y bajones de salud mental, que en conjunto, nos enseñaron una verdad incómoda: en los momentos críticos, el equipo no debería ser una variable de error. Necesitábamos algo que estuviera a nuestra altura.<br><br><meta charset="UTF-8"></span></p>
+<h3>SECCION 2: LA BRECHA TECNICA</h3>
+<p><span>Descubrí que en México, el equipo 'resistente' era sinónimo de básico y tosco o <meta charset="UTF-8">estéticamente comprometido. Mientras en otros países la tecnología de polímeros como el <b data-path-to-node="7" data-index-in-node="179">BioThane®</b> es el estándar de alto desempeño, aquí seguíamos limitados por materiales que absorben humedad, retienen olores y fallan bajo presión. Me negué a aceptar que 'suficiente' fuera el estándar para un perro activo. <br><br><meta charset="UTF-8"></span></p>
+<h3>SECCION 3: EL MANIFIESTO BIOTHANE<span><b data-path-to-node="7" data-index-in-node="179">®</b></span></h3>
+<p><span>El BioThane® es un material extraordinario, pero incomprendido. Es una cinta técnica de poliéster recubierta de polímero sellado: 100% hidrofóbico, antimicrobiano y con una resistencia a la tracción de <b data-path-to-node="8" data-index-in-node="250">450 kg</b>. En el <b data-path-to-node="8" data-index-in-node="264">Atelier de KYN</b>, decidimos llevar este material a su máximo potencial, fusionándolo con latón sólido y ensamblaje mecánico de precisión.<br><br><meta charset="UTF-8"></span></p>
+<p><span><img src="https://cdn.shopify.com/s/files/1/0998/3387/2660/files/Banner_Hardware.png?v=1775258851" alt=""></span></p>
+<h3>SECCION 4: LA PROMESA MODULAR</h3>
+<p><span>Diseñamos el equipo que nosotras necesitábamos: piezas inteligentes que se adaptan al ritmo de la ciudad, al silencio del bosque y al rigor del entrenamiento. <b data-path-to-node="9" data-index-in-node="202">Por eso KYN es modular.</b> Porque creemos que el diseño con propósito y la durabilidad extrema no son un lujo, sino una herramienta esencial para quienes vivimos la vida real con nuestros perros.<br></span></p>
+<p> </p>
+```
