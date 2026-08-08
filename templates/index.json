@@ -251,7 +251,7 @@
         "cta_label": "Conoce la historia",
         "cta_label_font": "sans",
         "cta_label_size": 15,
-        "cta_link": ""
+        "cta_link": "shopify://pages/our-story"
       }
     },
     "reviews": {
