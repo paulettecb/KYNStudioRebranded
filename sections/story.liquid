@@ -13,9 +13,9 @@
     <div class="story__grid {% if section.settings.image_right %}story__grid--reverse{% endif %}">
       <div class="story__media{% if section.settings.video_1 != blank and section.settings.video_2 != blank %} story__media--duo{% endif %}">
         {%- if section.settings.video_1 != blank -%}
-          {{ section.settings.video_1 | video_tag: autoplay: true, loop: true, muted: true, class: 'story__video' }}
+          {{ section.settings.video_1 | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, preload: 'metadata', class: 'story__video' }}
           {%- if section.settings.video_2 != blank -%}
-            {{ section.settings.video_2 | video_tag: autoplay: true, loop: true, muted: true, class: 'story__video' }}
+            {{ section.settings.video_2 | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, preload: 'metadata', class: 'story__video' }}
           {%- endif -%}
         {%- elsif section.settings.image != blank -%}
           <img src="{{ section.settings.image | image_url: width: 1200 }}"
@@ -59,7 +59,7 @@
           </ul>
         {%- endif -%}
 
-        {%- if section.settings.cta_label != blank -%}
+        {%- if section.settings.cta_label != blank and section.settings.cta_link != blank -%}
           <a class="kyn-btn kyn-btn--ghost kyn-btn--md" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label | escape }}</a>
         {%- endif -%}
       </div>
@@ -97,6 +97,7 @@
 {% schema %}
 {
   "name": "Brand story",
+  "disabled_on": { "groups": ["header", "footer"] },
   "settings": [
     { "type": "color", "id": "bg", "label": "Background", "default": "#FFFDF8" },
     { "type": "checkbox", "id": "image_right", "label": "Image on right", "default": false },
@@ -115,7 +116,7 @@
     { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 },
 
     { "type": "header", "content": "Title" },
-    { "type": "text",  "id": "title", "label": "Title", "default": "Built by hand, made to" },
+    { "type": "text",  "id": "title", "label": "Title", "default": "Creados para" },
     { "type": "select", "id": "title_font", "label": "Title font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -123,7 +124,7 @@
         { "value": "accent", "label": "Accent (Farmhouse serif)" }
       ] },
     { "type": "range", "id": "title_size", "label": "Title size", "min": 24, "max": 72, "step": 2, "unit": "px", "default": 40 },
-    { "type": "text",  "id": "spark_word", "label": "Spark word", "default": "last." },
+    { "type": "text",  "id": "spark_word", "label": "Spark word", "default": "durar." },
     { "type": "select", "id": "spark_font", "label": "Spark word font", "default": "display",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -151,7 +152,7 @@
         { "value": "accent", "label": "Accent (Farmhouse serif)" }
       ] },
     { "type": "range", "id": "cta_label_size", "label": "Button size", "min": 12, "max": 22, "step": 1, "unit": "px", "default": 15 },
-    { "type": "url",   "id": "cta_link",  "label": "Button link" }
+    { "type": "url",   "id": "cta_link",  "label": "Button link", "info": "El botón solo se muestra si tiene enlace." }
   ],
   "blocks": [
     {

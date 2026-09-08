@@ -11,8 +11,14 @@
   "sections": {
     "main": {
       "type": "main-list-collections",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Todo KYN",
+        "heading": "Compra por colección",
+        "empty_message": "Aún no hay colecciones."
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }

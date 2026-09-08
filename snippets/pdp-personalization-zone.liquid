@@ -14,32 +14,35 @@
 {%- if property_name == blank -%}
   {%- assign property_name = block.settings.title -%}
 {%- endif -%}
+{%- assign property_name = property_name | strip -%}
 
 <div class="pdp-zone" {{ block.shopify_attributes }}>
   <button
     type="button"
     class="pdp-zone__toggle"
     aria-expanded="false"
+    aria-controls="zone-body-{{ zone_id }}"
     id="zone-toggle-{{ zone_id }}"
   >
-    <div class="pdp-zone__header">
+    <span class="pdp-zone__header">
       <span class="pdp-zone__title">{{ block.settings.title }}</span>
       {%- if block.settings.subtitle != blank -%}
         <span class="pdp-zone__sub">{{ block.settings.subtitle }}</span>
       {%- endif -%}
-    </div>
+    </span>
     <span class="pdp-zone__icon" aria-hidden="true">+</span>
   </button>
 
   <div class="pdp-zone__body" id="zone-body-{{ zone_id }}" hidden>
+    <label class="visually-hidden" for="zone-input-{{ zone_id }}">{{ block.settings.title | escape }}</label>
 
     {%- case input_type -%}
 
       {%- when 'textarea' -%}
         <textarea
-          name="properties[{{ property_name }}]"
+          name="properties[{{ property_name | escape }}]"
           class="kyn-input pdp-zone__textarea"
-          placeholder="{{ block.settings.placeholder }}"
+          placeholder="{{ block.settings.placeholder | escape }}"
           maxlength="{{ block.settings.max_length | default: 120 }}"
           id="zone-input-{{ zone_id }}"
           rows="3"
@@ -48,14 +51,12 @@
 
       {%- when 'select' -%}
         <select
-          name="properties[{{ property_name }}]"
+          name="properties[{{ property_name | escape }}]"
           class="kyn-input pdp-zone__select"
           id="zone-input-{{ zone_id }}"
           {%- if block.settings.required %} required{% endif %}
         >
-          {%- unless block.settings.required -%}
-            <option value="">Selecciona una opción</option>
-          {%- endunless -%}
+          <option value="">{{ 'products.personalization.select_option' | t }}</option>
           {%- assign options = block.settings.select_options | newline_to_br | split: '<br />' -%}
           {%- for opt in options -%}
             {%- assign opt = opt | strip -%}
@@ -68,7 +69,7 @@
       {%- when 'image' -%}
         <input
           type="file"
-          name="properties[{{ property_name }}][image]"
+          name="properties[{{ property_name | escape }}]"
           class="pdp-zone__file"
           id="zone-input-{{ zone_id }}"
           accept="image/*"
@@ -78,9 +79,9 @@
       {%- else -%}
         <input
           type="text"
-          name="properties[{{ property_name }}]"
+          name="properties[{{ property_name | escape }}]"
           class="kyn-input pdp-zone__input"
-          placeholder="{{ block.settings.placeholder }}"
+          placeholder="{{ block.settings.placeholder | escape }}"
           maxlength="{{ block.settings.max_length | default: 40 }}"
           id="zone-input-{{ zone_id }}"
           autocomplete="off"
@@ -90,8 +91,8 @@
 
     {%- if block.settings.show_preview and input_type == 'text' -%}
       {%- assign preview_default = block.settings.placeholder | default: 'Aa' -%}
-      <div class="pdp-zone__preview">
-        <span class="pdp-zone__preview-label">Vista previa</span>
+      <div class="pdp-zone__preview" aria-live="polite">
+        <span class="pdp-zone__preview-label">{{ 'products.personalization.preview' | t }}</span>
         <span
           class="pdp-zone__preview-text"
           id="zone-preview-{{ zone_id }}"

@@ -1,27 +1,122 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin language editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "general": {
     "currency": "MXN",
-    "shop_name": "KYN"
+    "shop_name": "KYN",
+    "skip_to_content": "Skip to content",
+    "menu": "Menu",
+    "main_navigation": "Main navigation",
+    "search": "Search",
+    "account": "Account",
+    "cart": "Cart",
+    "meta": {
+      "tags": "tagged: {{ tags }}",
+      "page": "Page {{ page }}"
+    },
+    "pagination": {
+      "previous": "« Previous",
+      "next": "Next »"
+    },
+    "social": {
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "youtube": "YouTube",
+      "facebook": "Facebook",
+      "pinterest": "Pinterest"
+    }
   },
   "products": {
     "general": {
       "add_to_cart": "Add to cart",
-      "sold_out": "Sold out"
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "quantity": "Quantity",
+      "decrease_quantity": "Decrease quantity",
+      "increase_quantity": "Increase quantity",
+      "view_image": "View image {{ index }}",
+      "new_badge": "New",
+      "best_seller_badge": "Best seller",
+      "personalizable_badge": "Personalizable",
+      "gift_card_badge": "Gift card",
+      "handmade_badge": "Handmade in Mexico",
+      "breadcrumb_home": "Home",
+      "placeholder_name": "Product name",
+      "placeholder_desc": "Add products to a collection to populate this grid.",
+      "product_price": "Price",
+      "installments_prefix": "or {{ months }} payments of"
+    },
+    "tabs": {
+      "description": "Description",
+      "materials": "Materials",
+      "care": "Care",
+      "shipping": "Shipping & returns",
+      "delivery": "Delivery"
+    },
+    "personalization": {
+      "select_option": "Select an option",
+      "preview": "Preview",
+      "required_error": "This field is required to add the product."
+    },
+    "gift_card": {
+      "recipient_email": "Recipient email",
+      "recipient_name": "Recipient name (optional)",
+      "message": "Message (optional)",
+      "send_on": "Send on (optional)"
     }
   },
   "cart": {
     "general": {
-      "title": "Cart"
+      "title": "Cart",
+      "update": "Update cart",
+      "remove": "Remove",
+      "quantity_for": "Quantity for {{ product }}",
+      "decrease_for": "Decrease quantity for {{ product }}",
+      "increase_for": "Increase quantity for {{ product }}",
+      "subtotal": "Subtotal",
+      "item_count": {
+        "one": "{{ count }} item",
+        "other": "{{ count }} items"
+      }
     }
+  },
+  "search": {
+    "title": "Search",
+    "results_for": "Results for “{{ terms }}”",
+    "placeholder": "Search KYN…",
+    "submit": "Search",
+    "count": {
+      "one": "{{ count }} result",
+      "other": "{{ count }} results"
+    },
+    "types": {
+      "product": "Product",
+      "article": "Article",
+      "page": "Page"
+    }
+  },
+  "collections": {
+    "product_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    }
+  },
+  "blog": {
+    "read_more": "Read more"
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone (optional)",
+    "message": "Message",
+    "send": "Send message",
+    "success": "Thanks! We'll get back to you soon."
+  },
+  "password": {
+    "label": "Password",
+    "submit": "Enter",
+    "default_message": "Coming soon."
+  },
+  "footer": {
+    "policies": "Legal"
   },
   "reading": {
     "title": "Reading options",
@@ -37,6 +132,9 @@
     "bionic": "Guided highlighting",
     "experimental": "Experimental",
     "bionic_note": "Scientific evidence for this technique is limited — try it and keep what works for you.",
-    "reset": "Reset"
+    "reset": "Reset",
+    "prev": "Previous",
+    "next": "Next",
+    "stars": "{{ count }} out of 5 stars"
   }
 }

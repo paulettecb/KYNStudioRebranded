@@ -11,8 +11,14 @@
   "sections": {
     "main": {
       "type": "main-search",
-      "settings": {}
+      "settings": {
+        "empty_eyebrow": "Sin resultados",
+        "empty_text": "No encontramos nada para “[terms]”. Prueba con otra palabra.",
+        "empty_button_label": "Ver todos los productos"
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }

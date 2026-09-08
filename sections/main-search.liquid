@@ -12,24 +12,26 @@
     <div class="search-header">
       <h1>
         {%- if search.performed -%}
-          Results for &ldquo;{{ search.terms | escape }}&rdquo;
+          {{ 'search.results_for' | t: terms: search.terms }}
         {%- else -%}
-          Search
+          {{ 'search.title' | t }}
         {%- endif -%}
       </h1>
       <form action="{{ routes.search_url }}" method="get" class="search-form" role="search">
         <input type="hidden" name="type" value="product,article,page">
+        <input type="hidden" name="options[prefix]" value="last">
         <div class="search-form__field">
+          <label class="visually-hidden" for="search-input-{{ section.id }}">{{ 'search.title' | t }}</label>
           <input
             type="search"
             name="q"
+            id="search-input-{{ section.id }}"
             class="kyn-input"
             value="{{ search.terms | escape }}"
-            placeholder="Search KYN…"
-            aria-label="Search"
+            placeholder="{{ 'search.placeholder' | t | escape }}"
             autocomplete="off"
           >
-          <button type="submit" class="kyn-btn kyn-btn--primary">Search</button>
+          <button type="submit" class="kyn-btn kyn-btn--primary kyn-btn--md">{{ 'search.submit' | t }}</button>
         </div>
       </form>
     </div>
@@ -38,11 +40,11 @@
       {%- if search.results_count == 0 -%}
         <div class="search-empty">
           <p class="eyebrow">{{ section.settings.empty_eyebrow }}</p>
-          <p>{{ section.settings.empty_text | replace: '{{ terms }}', search.terms }}</p>
-          <a href="{{ routes.all_products_collection_url }}" class="kyn-btn kyn-btn--ghost">{{ section.settings.empty_button_label }}</a>
+          <p>{{ section.settings.empty_text | replace: '[terms]', search.terms }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="kyn-btn kyn-btn--ghost kyn-btn--md">{{ section.settings.empty_button_label }}</a>
         </div>
       {%- else -%}
-        <p class="search-count">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %}</p>
+        <p class="search-count">{{ 'search.count' | t: count: search.results_count }}</p>
         <div class="search-results">
           {%- for result in search.results -%}
             {%- if result.object_type == 'product' -%}
@@ -50,19 +52,28 @@
             {%- else -%}
               <a href="{{ result.url }}" class="search-item">
                 {%- if result.image -%}
-                  <img src="{{ result.image | image_url: width: 200 }}" alt="{{ result.title | escape }}" width="80" height="80" loading="lazy">
+                  {%- assign result_alt = result.image.alt | default: result.title -%}
+                  {{ result.image | image_url: width: 200 | image_tag: alt: result_alt, width: 80, height: 80, loading: 'lazy' }}
                 {%- endif -%}
                 <div class="search-item__body">
-                  <p class="search-item__type">{{ result.object_type | capitalize }}</p>
+                  <p class="search-item__type">
+                    {%- case result.object_type -%}
+                      {%- when 'article' -%}{{ 'search.types.article' | t }}
+                      {%- when 'page' -%}{{ 'search.types.page' | t }}
+                      {%- else -%}{{ result.object_type | capitalize }}
+                    {%- endcase -%}
+                  </p>
                   <p class="search-item__title">{{ result.title }}</p>
-                  <p class="search-item__excerpt">{{ result.body | strip_html | truncate: 120 }}</p>
+                  <p class="search-item__excerpt">{{ result.content | strip_html | truncate: 120 }}</p>
                 </div>
               </a>
             {%- endif -%}
           {%- endfor -%}
         </div>
         {%- if paginate.pages > 1 -%}
-          <div class="pagination">{{ paginate | default_pagination }}</div>
+          {%- assign prev_label = 'general.pagination.previous' | t -%}
+          {%- assign next_label = 'general.pagination.next' | t -%}
+          <div class="pagination">{{ paginate | default_pagination: next: next_label, previous: prev_label }}</div>
         {%- endif -%}
       {%- endif -%}
     {%- endif -%}
@@ -82,7 +93,7 @@
 .search-item { display: flex; gap: 16px; background: var(--paper); border-radius: 12px; padding: 16px; text-decoration: none; color: inherit; transition: box-shadow .2s; }
 .search-item:hover { box-shadow: 0 4px 16px rgba(42,41,51,.08); }
 .search-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
-.search-item__type { text-transform: uppercase; letter-spacing: .12em; color: var(--periwinkle-600); margin: 0 0 4px; }
+.search-item__type { text-transform: uppercase; letter-spacing: .12em; color: var(--periwinkle-700); margin: 0 0 4px; }
 .search-item__title { font-weight: 500; color: var(--ink-900); margin: 0 0 4px; }
 .search-item__excerpt { color: var(--ink-500); margin: 0; line-height: 1.5; }
 .search-empty { text-align: center; padding: 64px 0; }
@@ -112,17 +123,19 @@
 }
 @media (max-width: 749px){
   #main-search-{{ section.id }} .search-header h1{ font-size: {{ section.settings.heading_size | times: 0.7 | round }}px; }
+  .search-form__field { flex-direction: column; }
 }
 </style>
 
 {% schema %}
 {
   "name": "Search",
+  "enabled_on": { "templates": ["search"] },
   "settings": [
     { "type": "range", "id": "results_per_page", "label": "Results per page", "min": 8, "max": 32, "step": 4, "default": 16 },
-    { "type": "text", "id": "empty_eyebrow", "label": "Empty state eyebrow", "default": "No results" },
-    { "type": "text", "id": "empty_text", "label": "Empty state text", "info": "Use {{ terms }} to insert the search term", "default": "We couldn't find anything for “{{ terms }}”. Try a different term." },
-    { "type": "text", "id": "empty_button_label", "label": "Empty state button label", "default": "Browse all products" },
+    { "type": "text", "id": "empty_eyebrow", "label": "Empty state eyebrow", "default": "Sin resultados" },
+    { "type": "text", "id": "empty_text", "label": "Empty state text", "info": "Usa [terms] para insertar lo que buscó la persona.", "default": "No encontramos nada para “[terms]”. Prueba con otra palabra." },
+    { "type": "text", "id": "empty_button_label", "label": "Empty state button label", "default": "Ver todos los productos" },
 
     { "type": "header", "content": "Search heading" },
     { "type": "select", "id": "heading_font", "label": "Heading font", "default": "sans",
@@ -168,7 +181,6 @@
         { "value": "accent", "label": "Accent (Farmhouse serif)" }
       ] },
     { "type": "range", "id": "item_excerpt_size", "label": "Item excerpt size", "min": 11, "max": 18, "step": 1, "unit": "px", "default": 13 }
-  ],
-  "presets": [{ "name": "Search" }]
+  ]
 }
 {% endschema %}

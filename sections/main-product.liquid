@@ -3,7 +3,13 @@
 {%- capture description_font -%}{% render 'font-stack', key: section.settings.description_font %}{%- endcapture -%}
 {%- capture tab_heading_font -%}{% render 'font-stack', key: section.settings.tab_heading_font %}{%- endcapture -%}
 
-{{ 'kyn-pdp.css' | asset_url | stylesheet_tag }}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign is_new = false -%}
+{%- if product.tags contains 'new' or product.tags contains 'new-drop' or product.tags contains 'New Drop' -%}
+  {%- assign is_new = true -%}
+{%- endif -%}
+{%- assign installment_months = section.settings.installments_months | default: 6 -%}
+{%- assign form_id = 'product-form-' | append: section.id -%}
 
 <div class="pdp-wrap" id="MainProduct-{{ section.id }}">
 
@@ -15,18 +21,20 @@
     <!-- Thumbnails -->
     <div class="pdp-thumbs" id="pdp-thumbs-{{ section.id }}">
       {%- for media in product.media limit: 8 -%}
+        {%- assign thumb_alt = media.alt | default: product.title -%}
         <button
           class="pdp-thumb{% if forloop.first %} active{% endif %}"
           data-index="{{ forloop.index0 }}"
           data-media-id="{{ media.id }}"
           data-src="{{ media | image_url: width: 900 }}"
-          aria-label="Ver imagen {{ forloop.index }}"
+          data-srcset="{{ media | image_url: width: 900 }} 900w, {{ media | image_url: width: 1800 }} 1800w"
+          aria-label="{{ 'products.general.view_image' | t: index: forloop.index }}"
           type="button"
         >
           {{ media | image_url: width: 240 | image_tag:
             widths: '72, 120, 144, 240',
             sizes: '72px',
-            alt: media.alt | default: product.title | escape,
+            alt: thumb_alt,
             width: 72,
             height: 86,
             loading: 'lazy'
@@ -39,17 +47,25 @@
     <div class="pdp-main-wrap">
       <div class="pdp-main-img">
         {%- assign featured = product.featured_media -%}
-        {{ featured | image_url: width: 1800 | image_tag:
-          id: 'pdp-hero-img-' | append: section.id,
-          widths: '450, 600, 900, 1200, 1800',
-          sizes: '(min-width: 990px) 45vw, 100vw',
-          alt: featured.alt | default: product.title | escape,
-          width: 900,
-          height: 1125,
-          loading: 'eager',
-          fetchpriority: 'high'
-        }}
-        <span class="pdp-img-badge" aria-hidden="true">new ♥</span>
+        {%- assign hero_id = 'pdp-hero-img-' | append: section.id -%}
+        {%- assign hero_alt = featured.alt | default: product.title -%}
+        {%- if featured != blank -%}
+          {{ featured | image_url: width: 1800 | image_tag:
+            id: hero_id,
+            widths: '450, 600, 900, 1200, 1800',
+            sizes: '(min-width: 990px) 45vw, 100vw',
+            alt: hero_alt,
+            width: 900,
+            height: 1125,
+            loading: 'eager',
+            fetchpriority: 'high'
+          }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'pdp-main-img__placeholder' }}
+        {%- endif -%}
+        {%- if is_new -%}
+          <span class="pdp-img-badge" aria-hidden="true">new ♥</span>
+        {%- endif -%}
       </div>
     </div>
 
@@ -63,24 +79,26 @@
 
     <!-- Breadcrumb -->
     <nav class="pdp-breadcrumb" aria-label="Breadcrumb">
-      <a href="/">Inicio</a>
+      <a href="{{ routes.root_url }}">{{ 'products.general.breadcrumb_home' | t }}</a>
       <span class="pdp-breadcrumb__sep" aria-hidden="true">›</span>
       {%- if collection -%}
         <a href="{{ collection.url }}">{{ collection.title }}</a>
         <span class="pdp-breadcrumb__sep" aria-hidden="true">›</span>
       {%- endif -%}
-      <span>{{ product.title }}</span>
+      <span aria-current="page">{{ product.title }}</span>
     </nav>
 
     <!-- Badges -->
     <div class="pdp-badge-row">
       {%- if product.gift_card? -%}
-        <span class="kyn-badge kyn-badge--soft">Tarjeta de regalo digital</span>
+        <span class="kyn-badge kyn-badge--soft">{{ 'products.general.gift_card_badge' | t }}</span>
       {%- else -%}
-        {%- if product.tags contains 'new' or product.tags contains 'new-drop' or product.tags contains 'New Drop' -%}
-          <span class="kyn-badge kyn-badge--pop">new ♥</span>
+        {%- if is_new -%}
+          <span class="kyn-badge kyn-badge--pop"><span aria-hidden="true">new ♥</span><span class="visually-hidden">{{ 'products.general.new_badge' | t }}</span></span>
         {%- endif -%}
-        <span class="kyn-badge kyn-badge--soft">HANDMADE IN MEXICO</span>
+        {%- if section.settings.handmade_badge != blank -%}
+          <span class="kyn-badge kyn-badge--soft">{{ section.settings.handmade_badge }}</span>
+        {%- endif -%}
       {%- endif -%}
     </div>
 
@@ -88,29 +106,28 @@
     <h1 class="pdp-title">{{ product.title }}</h1>
 
     <!-- Price -->
-    <div class="pdp-price-row">
+    <div class="pdp-price-row" aria-live="polite" aria-atomic="true">
+      <span class="visually-hidden">{{ 'products.general.product_price' | t }}:</span>
       <span class="pdp-price" id="pdp-price-{{ section.id }}">
-        {{- product.selected_or_first_available_variant.price | money -}}
+        {{- current_variant.price | money -}}
       </span>
-      {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
-        <span class="pdp-price--compare">
-          {{ product.selected_or_first_available_variant.compare_at_price | money }}
-        </span>
-      {%- endif -%}
+      <span class="pdp-price--compare" id="pdp-compare-{{ section.id }}"{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>
+        {{ current_variant.compare_at_price | money }}
+      </span>
     </div>
 
-    <p class="pdp-installments">
-      o 6 pagos de
-      <strong id="pdp-installment-{{ section.id }}">
-        {{- product.selected_or_first_available_variant.price | divided_by: 6 | money -}}
-      </strong>
-      sin intereses con Mercado Pago
-    </p>
+    {%- if section.settings.show_installments -%}
+      <p class="pdp-installments">
+        {{ 'products.general.installments_prefix' | t: months: installment_months }}
+        <strong id="pdp-installment-{{ section.id }}">{{ current_variant.price | divided_by: installment_months | money }}</strong>
+        {{ section.settings.installments_text }}
+      </p>
+    {%- endif -%}
 
     <!-- Short tagline -->
     {%- if product.metafields.custom.tagline != blank -%}
       <p class="pdp-tagline">{{ product.metafields.custom.tagline }}</p>
-    {%- else -%}
+    {%- elsif product.description != blank -%}
       <p class="pdp-tagline">
         {{- product.description | strip_html | truncate: 200 -}}
       </p>
@@ -119,19 +136,13 @@
     <hr class="pdp-divider">
 
     <!-- ─── Product Form ─── -->
-    <form
-      id="product-form-{{ section.id }}"
-      action="/cart/add"
-      method="post"
-      enctype="multipart/form-data"
-      novalidate
-    >
+    {%- form 'product', product, id: form_id, class: 'pdp-form', enctype: 'multipart/form-data', data-section-id: section.id -%}
       <!-- Hidden variant ID — updated by JS -->
       <input
         type="hidden"
         name="id"
         id="variant-id-{{ section.id }}"
-        value="{{ product.selected_or_first_available_variant.id }}"
+        value="{{ current_variant.id }}"
       >
 
       <!-- ── Color / option swatches ── -->
@@ -139,7 +150,8 @@
         {%- for option in product.options_with_values -%}
           {% render 'product-swatches',
             option: option,
-            option_index: forloop.index0
+            option_index: forloop.index0,
+            section_id: section.id
           %}
         {%- endfor -%}
       {%- endunless -%}
@@ -157,7 +169,7 @@
       {%- if product.gift_card? -%}
         <div class="pdp-gift-recipient">
           <input type="hidden" name="properties[__shopify_send_gift_card_to_a_friend]" value="true">
-          <label class="pdp-field-label" for="Recipient-email-{{ section.id }}">Email del destinatario</label>
+          <label class="pdp-field-label" for="Recipient-email-{{ section.id }}">{{ 'products.gift_card.recipient_email' | t }}</label>
           <input
             type="email"
             id="Recipient-email-{{ section.id }}"
@@ -166,21 +178,21 @@
             placeholder="destinatario@correo.com"
             required
           >
-          <label class="pdp-field-label" for="Recipient-name-{{ section.id }}">Nombre del destinatario (opcional)</label>
+          <label class="pdp-field-label" for="Recipient-name-{{ section.id }}">{{ 'products.gift_card.recipient_name' | t }}</label>
           <input
             type="text"
             id="Recipient-name-{{ section.id }}"
             name="properties[Recipient name]"
             class="kyn-input"
           >
-          <label class="pdp-field-label" for="Recipient-message-{{ section.id }}">Mensaje (opcional)</label>
+          <label class="pdp-field-label" for="Recipient-message-{{ section.id }}">{{ 'products.gift_card.message' | t }}</label>
           <textarea
             id="Recipient-message-{{ section.id }}"
             name="properties[Message]"
             class="kyn-input"
             maxlength="200"
           ></textarea>
-          <label class="pdp-field-label" for="Recipient-send-on-{{ section.id }}">Enviar el (opcional)</label>
+          <label class="pdp-field-label" for="Recipient-send-on-{{ section.id }}">{{ 'products.gift_card.send_on' | t }}</label>
           <input
             type="date"
             id="Recipient-send-on-{{ section.id }}"
@@ -188,15 +200,16 @@
             class="kyn-input"
             min="{{ 'now' | date: '%Y-%m-%d' }}"
           >
+          <input type="hidden" name="properties[__shopify_offset]" id="Recipient-offset-{{ section.id }}" value="">
         </div>
       {%- endif -%}
 
       <!-- ── Quantity selector ── -->
       {%- unless product.gift_card? -%}
         <div class="pdp-qty">
-          <label class="pdp-field-label" for="Quantity-{{ section.id }}">Cantidad</label>
+          <label class="pdp-field-label" for="Quantity-{{ section.id }}">{{ 'products.general.quantity' | t }}</label>
           <div class="pdp-qty__stepper">
-            <button type="button" class="pdp-qty__btn" id="qty-minus-{{ section.id }}" aria-label="Reducir cantidad">−</button>
+            <button type="button" class="pdp-qty__btn" id="qty-minus-{{ section.id }}" aria-label="{{ 'products.general.decrease_quantity' | t }}">−</button>
             <input
               type="number"
               name="quantity"
@@ -204,9 +217,10 @@
               class="pdp-qty__input"
               value="1"
               min="1"
+              {%- if current_variant.inventory_management == 'shopify' and current_variant.inventory_policy == 'deny' and current_variant.inventory_quantity > 0 %} max="{{ current_variant.inventory_quantity }}"{% endif %}
               inputmode="numeric"
             >
-            <button type="button" class="pdp-qty__btn" id="qty-plus-{{ section.id }}" aria-label="Aumentar cantidad">+</button>
+            <button type="button" class="pdp-qty__btn" id="qty-plus-{{ section.id }}" aria-label="{{ 'products.general.increase_quantity' | t }}">+</button>
           </div>
         </div>
       {%- endunless -%}
@@ -218,7 +232,10 @@
           name="add"
           class="kyn-btn kyn-btn--primary kyn-btn--lg pdp-atc"
           id="atc-btn-{{ section.id }}"
-          {%- unless product.selected_or_first_available_variant.available %} disabled{%- endunless %}
+          data-label-add="{{ 'products.general.add_to_cart' | t | escape }}"
+          data-label-sold-out="{{ 'products.general.sold_out' | t | escape }}"
+          data-label-unavailable="{{ 'products.general.unavailable' | t | escape }}"
+          {%- unless current_variant.available %} disabled{%- endunless %}
         >
           <svg width="18" height="18" fill="none" stroke="currentColor"
                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -227,23 +244,31 @@
             <line x1="3" y1="6" x2="21" y2="6"/>
             <path d="M16 10a4 4 0 0 1-8 0"/>
           </svg>
-          {%- if product.selected_or_first_available_variant.available -%}
-            Agregar al carrito
-          {%- else -%}
-            Agotado
-          {%- endif -%}
+          <span class="pdp-atc__label">
+            {%- if current_variant.available -%}
+              {{ 'products.general.add_to_cart' | t }}
+            {%- else -%}
+              {{ 'products.general.sold_out' | t }}
+            {%- endif -%}
+          </span>
         </button>
 
         {%- if section.settings.show_buy_now -%}
-          {{- content_for_additional_checkout_buttons -}}
+          {{ form | payment_button }}
         {%- endif -%}
       </div>
 
-      <p class="pdp-secure">
-        🔒 Pago seguro &middot; <strong>6 meses sin intereses</strong> con Mercado Pago
-      </p>
+      <p class="pdp-form__error" id="pdp-form-error-{{ section.id }}" role="alert" hidden>{{ 'products.personalization.required_error' | t }}</p>
 
-    </form><!-- /#product-form -->
+      {%- if section.settings.secure_text != blank -%}
+        <p class="pdp-secure">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:-2px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          {{ section.settings.secure_text }}
+          {%- if section.settings.show_installments and section.settings.installments_text != blank %} &middot; <strong>{{ installment_months }} {{ section.settings.installments_text }}</strong>{%- endif -%}
+        </p>
+      {%- endif -%}
+
+    {%- endform -%}
 
     <hr class="pdp-divider">
 
@@ -273,53 +298,20 @@
           <span class="pdp-trust__label">Sin fecha de vencimiento</span>
         </div>
       {%- else -%}
-        <div class="pdp-trust__item">
-          <div class="pdp-trust__icon">
-            <svg width="20" height="20" fill="none" stroke="currentColor"
-                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                 viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-          </div>
-          <span class="pdp-trust__label">Latón sólido</span>
-        </div>
-
-        <div class="pdp-trust__item">
-          <div class="pdp-trust__icon">
-            <svg width="20" height="20" fill="none" stroke="currentColor"
-                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                 viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-              <path d="M12 6v6l4 2"/>
-            </svg>
-          </div>
-          <span class="pdp-trust__label">Waterproof</span>
-        </div>
-
-        <div class="pdp-trust__item">
-          <div class="pdp-trust__icon">
-            <svg width="20" height="20" fill="none" stroke="currentColor"
-                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                 viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="1" y="3" width="15" height="13"/>
-              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-              <circle cx="5.5" cy="18.5" r="2.5"/>
-              <circle cx="18.5" cy="18.5" r="2.5"/>
-            </svg>
-          </div>
-          <span class="pdp-trust__label">Envío express</span>
-        </div>
-
-        <div class="pdp-trust__item">
-          <div class="pdp-trust__icon">
-            <svg width="20" height="20" fill="none" stroke="currentColor"
-                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                 viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-            </svg>
-          </div>
-          <span class="pdp-trust__label">Hecho a mano</span>
-        </div>
+        {%- for i in (1..4) -%}
+          {%- case i -%}
+            {%- when 1 -%}{%- assign t_icon = 'shield' -%}{%- assign t_label = section.settings.trust_1 -%}
+            {%- when 2 -%}{%- assign t_icon = 'droplets' -%}{%- assign t_label = section.settings.trust_2 -%}
+            {%- when 3 -%}{%- assign t_icon = 'truck' -%}{%- assign t_label = section.settings.trust_3 -%}
+            {%- when 4 -%}{%- assign t_icon = 'heart' -%}{%- assign t_label = section.settings.trust_4 -%}
+          {%- endcase -%}
+          {%- if t_label != blank -%}
+            <div class="pdp-trust__item">
+              <div class="pdp-trust__icon">{% render 'icon', name: t_icon %}</div>
+              <span class="pdp-trust__label">{{ t_label }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
       {%- endif -%}
     </div>
 
@@ -337,15 +329,15 @@
 
       {%- if product.description != blank -%}
         <div class="pdp-tab">
-          <button type="button" class="pdp-tab__header" aria-expanded="false">
-            <span>Descripción</span>
+          <button type="button" class="pdp-tab__header" aria-expanded="false" aria-controls="pdp-tab-desc-{{ section.id }}">
+            <span>{{ 'products.tabs.description' | t }}</span>
             <svg class="pdp-tab__icon" width="16" height="16" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round"
                  viewBox="0 0 24 24" aria-hidden="true">
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </button>
-          <div class="pdp-tab__body" hidden>
+          <div class="pdp-tab__body" id="pdp-tab-desc-{{ section.id }}" hidden>
             <div class="pdp-tab__content rte">
               {{ product.description }}
             </div>
@@ -354,72 +346,80 @@
       {%- endif -%}
 
       {%- unless product.gift_card? -%}
+        {%- if product.metafields.custom.materials != blank or section.settings.materials_tab_content != blank -%}
         <div class="pdp-tab">
-          <button type="button" class="pdp-tab__header" aria-expanded="false">
-            <span>Materiales</span>
+          <button type="button" class="pdp-tab__header" aria-expanded="false" aria-controls="pdp-tab-materials-{{ section.id }}">
+            <span>{{ 'products.tabs.materials' | t }}</span>
             <svg class="pdp-tab__icon" width="16" height="16" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round"
                  viewBox="0 0 24 24" aria-hidden="true">
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </button>
-          <div class="pdp-tab__body" hidden>
-            <div class="pdp-tab__content">
+          <div class="pdp-tab__body" id="pdp-tab-materials-{{ section.id }}" hidden>
+            <div class="pdp-tab__content rte">
               {%- if product.metafields.custom.materials != blank -%}
-                {{ product.metafields.custom.materials }}
+                {{ product.metafields.custom.materials | metafield_tag }}
               {%- else -%}
-                <ul>
-                  <li><strong>Biothane original</strong> — flexible, impermeable y resistente a UV</li>
-                  <li><strong>Herraje de latón sólido</strong> — anticorrosión, sin zinc ni metales blandos</li>
-                  <li><strong>Costura reforzada</strong> — doble hilo encerado en los puntos de carga</li>
-                </ul>
+                {{ section.settings.materials_tab_content }}
               {%- endif -%}
             </div>
           </div>
         </div>
+        {%- endif -%}
 
+        {%- if product.metafields.custom.care != blank or section.settings.care_tab_content != blank -%}
         <div class="pdp-tab">
-          <button type="button" class="pdp-tab__header" aria-expanded="false">
-            <span>Cuidado</span>
+          <button type="button" class="pdp-tab__header" aria-expanded="false" aria-controls="pdp-tab-care-{{ section.id }}">
+            <span>{{ 'products.tabs.care' | t }}</span>
             <svg class="pdp-tab__icon" width="16" height="16" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round"
                  viewBox="0 0 24 24" aria-hidden="true">
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </button>
-          <div class="pdp-tab__body" hidden>
-            <div class="pdp-tab__content">
+          <div class="pdp-tab__body" id="pdp-tab-care-{{ section.id }}" hidden>
+            <div class="pdp-tab__content rte">
               {%- if product.metafields.custom.care != blank -%}
-                {{ product.metafields.custom.care }}
+                {{ product.metafields.custom.care | metafield_tag }}
               {%- else -%}
-                <p>Limpia con un trapo húmedo. No requiere acondicionadores ni aceites. El biothane no absorbe olores ni bacterias — solo enjuaga y seca al aire.</p>
+                {{ section.settings.care_tab_content }}
               {%- endif -%}
             </div>
           </div>
         </div>
+        {%- endif -%}
       {%- endunless -%}
 
+      {%- if product.gift_card? or section.settings.shipping_tab_content != blank or shop.shipping_policy != blank or shop.refund_policy != blank -%}
       <div class="pdp-tab">
-        <button type="button" class="pdp-tab__header" aria-expanded="false">
-          <span>{%- if product.gift_card? -%}Entrega{%- else -%}Envío y devoluciones{%- endif -%}</span>
+        <button type="button" class="pdp-tab__header" aria-expanded="false" aria-controls="pdp-tab-shipping-{{ section.id }}">
+          <span>{%- if product.gift_card? -%}{{ 'products.tabs.delivery' | t }}{%- else -%}{{ 'products.tabs.shipping' | t }}{%- endif -%}</span>
           <svg class="pdp-tab__icon" width="16" height="16" fill="none"
                stroke="currentColor" stroke-width="2" stroke-linecap="round"
                viewBox="0 0 24 24" aria-hidden="true">
             <polyline points="6 9 12 15 18 9"/>
           </svg>
         </button>
-        <div class="pdp-tab__body" hidden>
-          <div class="pdp-tab__content">
+        <div class="pdp-tab__body" id="pdp-tab-shipping-{{ section.id }}" hidden>
+          <div class="pdp-tab__content rte">
             {%- if product.gift_card? -%}
               <p>La tarjeta de regalo se envía por email al destinatario (o a ti, si no llenas el campo) en cuanto se confirma el pago.</p>
               <p>No tiene fecha de vencimiento y se puede usar en una o varias compras hasta agotar el saldo.</p>
             {%- else -%}
-              <p>Envío estándar 5–8 días hábiles · Express 2–3 días.</p>
-              <p>Producto personalizado con nombre grabado no acepta cambios ni devoluciones salvo defecto de fabricación.</p>
+              {{ section.settings.shipping_tab_content }}
+              {%- if shop.shipping_policy != blank or shop.refund_policy != blank -%}
+                <p>
+                  {%- if shop.shipping_policy != blank -%}<a href="{{ shop.shipping_policy.url }}">{{ shop.shipping_policy.title }}</a>{%- endif -%}
+                  {%- if shop.shipping_policy != blank and shop.refund_policy != blank %} &middot; {% endif -%}
+                  {%- if shop.refund_policy != blank -%}<a href="{{ shop.refund_policy.url }}">{{ shop.refund_policy.title }}</a>{%- endif -%}
+                </p>
+              {%- endif -%}
             {%- endif -%}
           </div>
         </div>
       </div>
+      {%- endif -%}
 
     </div><!-- /.pdp-tabs -->
 
@@ -457,39 +457,52 @@
   'use strict';
 
   /* ── Data ── */
-  var PRODUCT     = {{ product | json }};
-  var VARIANTS    = PRODUCT.variants;
-  var OPTIONS     = PRODUCT.options;
-  var S_ID        = {{ section.id | json }};
+  var PRODUCT      = {{ product | json }};
+  var VARIANTS     = PRODUCT.variants || [];
+  var OPTIONS      = PRODUCT.options || [];
+  var S_ID         = {{ section.id | json }};
   var MONEY_FORMAT = {{ shop.money_format | json }};
+  var CURRENT_ID   = {{ current_variant.id | json }};
+  var MONTHS       = {{ installment_months | json }};
 
-  /* ── Media id → resized gallery src, for variant image swaps ── */
+  /* ── Media id → resized gallery src / srcset, for variant image swaps ── */
   var MEDIA_SRC = {
     {%- for media in product.media limit: 8 -%}
       "{{ media.id }}": {{ media | image_url: width: 900 | json }}{% unless forloop.last %},{% endunless %}
     {%- endfor -%}
   };
+  var MEDIA_SRCSET = {
+    {%- for media in product.media limit: 8 -%}
+      {%- capture srcset -%}{{ media | image_url: width: 900 }} 900w, {{ media | image_url: width: 1800 }} 1800w{%- endcapture -%}
+      "{{ media.id }}": {{ srcset | json }}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  };
 
-  /* ── State: option index → selected value ── */
+  /* ── State: option index → selected value, seeded from the variant Liquid rendered ── */
   var selected = {};
-  var first = VARIANTS[0] || {};
+  var first = null;
+  for (var vi = 0; vi < VARIANTS.length; vi++) {
+    if (VARIANTS[vi].id === CURRENT_ID) { first = VARIANTS[vi]; break; }
+  }
+  first = first || VARIANTS[0] || {};
   OPTIONS.forEach(function (_, i) {
     selected[i] = first['option' + (i + 1)] || '';
   });
 
   /* ── Helpers ── */
   function findVariant() {
-    return VARIANTS.find(function (v) {
-      return OPTIONS.every(function (_, i) {
-        return v['option' + (i + 1)] === selected[i];
-      });
-    });
+    for (var i = 0; i < VARIANTS.length; i++) {
+      var v = VARIANTS[i];
+      var ok = true;
+      for (var j = 0; j < OPTIONS.length; j++) {
+        if (v['option' + (j + 1)] !== selected[j]) { ok = false; break; }
+      }
+      if (ok) return v;
+    }
+    return null;
   }
 
-  /* Shopify's standard money formatter — reads the shop's real
-     money_format (currency symbol, decimals, thousands separator)
-     instead of a hardcoded "$ ... MXN" string, so this keeps working
-     correctly if the store ever sells in more than one currency. */
+  /* Shopify's standard money formatter — reads the shop's real money_format. */
   function formatMoney(cents, format) {
     var formatString = format || MONEY_FORMAT;
     var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
@@ -534,56 +547,80 @@
     return match ? formatString.replace(placeholderRegex, value) : ('$' + value);
   }
 
+  function normalizeUrl(u) {
+    try { return new URL(u, window.location.href).href; } catch (e) { return u; }
+  }
+
+  function swapHero(src, srcset) {
+    var heroImg = document.getElementById('pdp-hero-img-' + S_ID);
+    if (!heroImg || !src) return;
+    if (normalizeUrl(src) === normalizeUrl(heroImg.currentSrc || heroImg.src)) return;
+    heroImg.style.opacity = '0.6';
+    if (srcset) {
+      heroImg.srcset = srcset;
+    } else {
+      heroImg.removeAttribute('srcset');
+    }
+    heroImg.src = src;
+    heroImg.onload = function () { heroImg.style.opacity = '1'; };
+  }
+
+  function setAtcState(btn, state) {
+    if (!btn) return;
+    var label = btn.querySelector('.pdp-atc__label');
+    var text = state === 'available' ? btn.dataset.labelAdd : (state === 'sold-out' ? btn.dataset.labelSoldOut : btn.dataset.labelUnavailable);
+    if (label) { label.textContent = text; } else { btn.textContent = text; }
+    btn.disabled = state !== 'available';
+  }
+
   function updateVariantUI() {
-    var v       = findVariant();
-    var priceEl = document.getElementById('pdp-price-' + S_ID);
-    var instEl  = document.getElementById('pdp-installment-' + S_ID);
-    var inputEl = document.getElementById('variant-id-' + S_ID);
-    var atcBtn  = document.getElementById('atc-btn-' + S_ID);
+    var v        = findVariant();
+    var priceEl  = document.getElementById('pdp-price-' + S_ID);
+    var cmpEl    = document.getElementById('pdp-compare-' + S_ID);
+    var instEl   = document.getElementById('pdp-installment-' + S_ID);
+    var inputEl  = document.getElementById('variant-id-' + S_ID);
+    var atcBtn   = document.getElementById('atc-btn-' + S_ID);
+    var qtyInput = document.getElementById('Quantity-' + S_ID);
 
     if (!v) {
-      if (atcBtn) {
-        atcBtn.disabled = true;
-        atcBtn.textContent = 'No disponible';
-      }
+      setAtcState(atcBtn, 'unavailable');
       return;
     }
 
     if (inputEl) inputEl.value = v.id;
     if (priceEl) priceEl.textContent = formatMoney(v.price);
-    if (instEl)  instEl.textContent  = formatMoney(Math.round(v.price / 6));
+    if (cmpEl) {
+      if (v.compare_at_price && v.compare_at_price > v.price) {
+        cmpEl.textContent = formatMoney(v.compare_at_price);
+        cmpEl.removeAttribute('hidden');
+      } else {
+        cmpEl.setAttribute('hidden', '');
+      }
+    }
+    if (instEl)  instEl.textContent = formatMoney(Math.floor(v.price / MONTHS));
+
+    /* Quantity cap when inventory is tracked and oversell is denied */
+    if (qtyInput) {
+      if (v.inventory_management === 'shopify' && v.inventory_policy === 'deny' && v.inventory_quantity > 0) {
+        qtyInput.max = v.inventory_quantity;
+        if (parseInt(qtyInput.value, 10) > v.inventory_quantity) qtyInput.value = v.inventory_quantity;
+      } else {
+        qtyInput.removeAttribute('max');
+      }
+    }
 
     /* Swap main image + active thumbnail when this variant has its own photo */
-    if (v.featured_image) {
-      var heroImg  = document.getElementById('pdp-hero-img-' + S_ID);
-      var mediaId  = String(v.featured_image.id);
-      var newSrc   = MEDIA_SRC[mediaId] || v.featured_image.src;
-
-      if (heroImg && newSrc && heroImg.src !== newSrc) {
-        heroImg.style.opacity = '0.6';
-        /* Drop srcset/sizes: while present they win over a plain .src
-           change, so the swap would silently do nothing. */
-        heroImg.removeAttribute('srcset');
-        heroImg.removeAttribute('sizes');
-        heroImg.src = newSrc;
-        heroImg.onload = function () { heroImg.style.opacity = '1'; };
-      }
-
+    var media = v.featured_media;
+    if (media && media.id) {
+      var mediaId = String(media.id);
+      var newSrc  = MEDIA_SRC[mediaId] || (v.featured_image && v.featured_image.src);
+      swapHero(newSrc, MEDIA_SRCSET[mediaId]);
       document.querySelectorAll('#pdp-thumbs-' + S_ID + ' .pdp-thumb').forEach(function (t) {
         t.classList.toggle('active', t.dataset.mediaId === mediaId);
       });
     }
 
-    if (atcBtn) {
-      if (v.available) {
-        atcBtn.disabled = false;
-        atcBtn.innerHTML =
-          '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Agregar al carrito';
-      } else {
-        atcBtn.disabled = true;
-        atcBtn.textContent = 'Agotado';
-      }
-    }
+    setAtcState(atcBtn, v.available ? 'available' : 'sold-out');
   }
 
   /* ── Swatch clicks ── */
@@ -594,18 +631,16 @@
 
       selected[idx] = val;
 
-      /* Update active state */
       document.querySelectorAll(
         '#MainProduct-' + S_ID + ' .kyn-swatch[data-option-index="' + idx + '"]'
       ).forEach(function (s) {
         s.classList.remove('selected');
-        s.setAttribute('aria-pressed', 'false');
+        s.setAttribute('aria-checked', 'false');
       });
       this.classList.add('selected');
-      this.setAttribute('aria-pressed', 'true');
+      this.setAttribute('aria-checked', 'true');
 
-      /* Update displayed label */
-      var label = document.getElementById('option-value-' + idx);
+      var label = document.getElementById('option-value-' + S_ID + '-' + idx);
       if (label) label.textContent = val;
 
       updateVariantUI();
@@ -613,20 +648,12 @@
   });
 
   /* ── Gallery thumbnails ── */
-  var thumbs  = document.querySelectorAll('#pdp-thumbs-' + S_ID + ' .pdp-thumb');
-  var heroImg = document.getElementById('pdp-hero-img-' + S_ID);
-
+  var thumbs = document.querySelectorAll('#pdp-thumbs-' + S_ID + ' .pdp-thumb');
   thumbs.forEach(function (thumb) {
     thumb.addEventListener('click', function () {
       thumbs.forEach(function (t) { t.classList.remove('active'); });
       this.classList.add('active');
-      if (heroImg) {
-        heroImg.style.opacity = '0.6';
-        heroImg.removeAttribute('srcset');
-        heroImg.removeAttribute('sizes');
-        heroImg.src = this.dataset.src;
-        heroImg.onload = function () { heroImg.style.opacity = '1'; };
-      }
+      swapHero(this.dataset.src, this.dataset.srcset);
     });
   });
 
@@ -643,6 +670,8 @@
         body.setAttribute('hidden', '');
       } else {
         body.removeAttribute('hidden');
+        var field = body.querySelector('input, textarea, select');
+        if (field) field.focus();
       }
     });
 
@@ -655,19 +684,44 @@
     }
   });
 
+  /* ── Required personalization: open the zone and block submit when empty ── */
+  var form = document.getElementById('product-form-' + S_ID);
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      var errorEl = document.getElementById('pdp-form-error-' + S_ID);
+      if (form.checkValidity()) {
+        if (errorEl) errorEl.setAttribute('hidden', '');
+        return;
+      }
+      e.preventDefault();
+      var bad = form.querySelector(':invalid');
+      if (bad) {
+        var zone = bad.closest('.pdp-zone');
+        if (zone) {
+          zone.querySelector('.pdp-zone__body').removeAttribute('hidden');
+          zone.querySelector('.pdp-zone__toggle').setAttribute('aria-expanded', 'true');
+        }
+        bad.focus();
+      }
+      if (errorEl) errorEl.removeAttribute('hidden');
+    });
+  }
+
+  /* ── Gift card: browser timezone offset for "Send on" ── */
+  var offsetEl = document.getElementById('Recipient-offset-' + S_ID);
+  if (offsetEl) offsetEl.value = new Date().getTimezoneOffset().toString();
+
   /* ── Accordion tabs ── */
   document.querySelectorAll('#pdp-tabs-' + S_ID + ' .pdp-tab__header').forEach(function (header) {
     header.addEventListener('click', function () {
       var body   = this.nextElementSibling;
       var isOpen = this.getAttribute('aria-expanded') === 'true';
 
-      /* Close all */
       document.querySelectorAll('#pdp-tabs-' + S_ID + ' .pdp-tab__header').forEach(function (h) {
         h.setAttribute('aria-expanded', 'false');
         h.nextElementSibling.setAttribute('hidden', '');
       });
 
-      /* Toggle clicked */
       if (!isOpen) {
         this.setAttribute('aria-expanded', 'true');
         body.removeAttribute('hidden');
@@ -684,7 +738,9 @@
 
     function clampQty() {
       var val = parseInt(qtyInput.value, 10);
+      var max = parseInt(qtyInput.max, 10);
       if (isNaN(val) || val < 1) val = 1;
+      if (!isNaN(max) && max > 0 && val > max) val = max;
       qtyInput.value = val;
       return val;
     }
@@ -698,6 +754,7 @@
     if (plusBtn) {
       plusBtn.addEventListener('click', function () {
         qtyInput.value = clampQty() + 1;
+        clampQty();
       });
     }
     qtyInput.addEventListener('change', clampQty);
@@ -715,6 +772,7 @@
   "name": "Product information",
   "tag": "section",
   "class": "section-main-product",
+  "enabled_on": { "templates": ["product"] },
   "settings": [
     {
       "type": "checkbox",
@@ -722,6 +780,31 @@
       "label": "Mostrar botón \"Comprar ahora\"",
       "default": false
     },
+    {
+      "type": "text",
+      "id": "handmade_badge",
+      "label": "Etiqueta junto al título",
+      "default": "Hecho a mano en México"
+    },
+
+    { "type": "header", "content": "Meses sin intereses" },
+    { "type": "paragraph", "content": "Solo actívalo si tu proveedor de pagos tiene meses sin intereses configurados en el checkout." },
+    { "type": "checkbox", "id": "show_installments", "label": "Mostrar leyenda de pagos a meses", "default": true },
+    { "type": "range", "id": "installments_months", "label": "Número de pagos", "min": 3, "max": 12, "step": 1, "default": 6 },
+    { "type": "text", "id": "installments_text", "label": "Texto después del monto", "default": "sin intereses con Mercado Pago" },
+    { "type": "text", "id": "secure_text", "label": "Texto de pago seguro (debajo del botón)", "default": "Pago seguro" },
+
+    { "type": "header", "content": "Íconos de confianza" },
+    { "type": "text", "id": "trust_1", "label": "Ícono 1 (escudo)", "default": "Latón sólido" },
+    { "type": "text", "id": "trust_2", "label": "Ícono 2 (gotas)", "default": "Impermeable" },
+    { "type": "text", "id": "trust_3", "label": "Ícono 3 (camión)", "default": "Envío a todo México" },
+    { "type": "text", "id": "trust_4", "label": "Ícono 4 (corazón)", "default": "Hecho a mano" },
+
+    { "type": "header", "content": "Pestañas" },
+    { "type": "paragraph", "content": "Los metafields custom.materials y custom.care del producto tienen prioridad sobre estos textos." },
+    { "type": "richtext", "id": "materials_tab_content", "label": "Materiales (texto por defecto)", "default": "<ul><li><strong>Biothane original</strong> — flexible, impermeable y resistente a los rayos UV.</li><li><strong>Herraje de latón sólido</strong> — macizo, sin baños ni recubrimientos que se pelen.</li><li><strong>Ensamble a mano</strong> — cortado, perforado y remachado pieza por pieza.</li></ul>" },
+    { "type": "richtext", "id": "care_tab_content", "label": "Cuidado (texto por defecto)", "default": "<p>Limpia con un trapo húmedo. No requiere acondicionadores ni aceites. El biothane no absorbe olores ni bacterias — solo enjuaga y seca al aire.</p>" },
+    { "type": "richtext", "id": "shipping_tab_content", "label": "Envío y devoluciones", "info": "Si tienes políticas de envío y devoluciones publicadas en Shopify, sus enlaces se agregan automáticamente al final.", "default": "<p>Cada pieza se fabrica bajo pedido. Te avisamos por email cuando tu paquete sale del taller.</p><p>Los productos personalizados con nombre grabado no aceptan cambios ni devoluciones, salvo defecto de fabricación.</p>" },
 
     { "type": "header", "content": "Tipografía — Título del producto" },
     { "type": "select", "id": "title_font", "label": "Fuente del título", "default": "display",

@@ -8,26 +8,27 @@
     <div class="site-footer__grid">
       <div class="site-footer__brand">
         {%- if section.settings.logo != blank -%}
-          <img class="mark" src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}">
+          {%- assign flogo_w = 30 | times: section.settings.logo.aspect_ratio | round -%}
+          {{ section.settings.logo | image_url: width: 400 | image_tag: class: 'mark', alt: shop.name, width: flogo_w, height: 30, loading: 'lazy' }}
         {%- else -%}
-          <img class="mark" src="{{ 'kyn-logo.png' | asset_url }}" alt="{{ shop.name }}">
+          <img class="mark" src="{{ 'kyn-logo.png' | asset_url }}" alt="{{ shop.name | escape }}" width="65" height="30" loading="lazy">
         {%- endif -%}
         {%- if section.settings.tagline != blank -%}<p>{{ section.settings.tagline }}</p>{%- endif -%}
         {%- assign footer_instagram = section.settings.instagram | default: settings.social_instagram -%}
         {%- assign footer_tiktok = section.settings.tiktok | default: settings.social_tiktok -%}
         {%- assign footer_youtube = section.settings.youtube | default: settings.social_youtube -%}
         <div class="site-footer__social">
-          {%- if footer_instagram != blank -%}<a href="{{ footer_instagram }}" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a>{%- endif -%}
-          {%- if footer_tiktok != blank -%}<a href="{{ footer_tiktok }}" aria-label="TikTok">{% render 'icon', name: 'tiktok' %}</a>{%- endif -%}
-          {%- if footer_youtube != blank -%}<a href="{{ footer_youtube }}" aria-label="YouTube">{% render 'icon', name: 'youtube' %}</a>{%- endif -%}
-          {%- if settings.social_facebook != blank -%}<a href="{{ settings.social_facebook }}" aria-label="Facebook">{% render 'icon', name: 'facebook' %}</a>{%- endif -%}
-          {%- if settings.social_pinterest != blank -%}<a href="{{ settings.social_pinterest }}" aria-label="Pinterest">{% render 'icon', name: 'pinterest' %}</a>{%- endif -%}
+          {%- if footer_instagram != blank -%}<a href="{{ footer_instagram }}" aria-label="{{ 'general.social.instagram' | t }}" rel="noopener" target="_blank">{% render 'icon', name: 'instagram' %}</a>{%- endif -%}
+          {%- if footer_tiktok != blank -%}<a href="{{ footer_tiktok }}" aria-label="{{ 'general.social.tiktok' | t }}" rel="noopener" target="_blank">{% render 'icon', name: 'tiktok' %}</a>{%- endif -%}
+          {%- if footer_youtube != blank -%}<a href="{{ footer_youtube }}" aria-label="{{ 'general.social.youtube' | t }}" rel="noopener" target="_blank">{% render 'icon', name: 'youtube' %}</a>{%- endif -%}
+          {%- if settings.social_facebook != blank -%}<a href="{{ settings.social_facebook }}" aria-label="{{ 'general.social.facebook' | t }}" rel="noopener" target="_blank">{% render 'icon', name: 'facebook' %}</a>{%- endif -%}
+          {%- if settings.social_pinterest != blank -%}<a href="{{ settings.social_pinterest }}" aria-label="{{ 'general.social.pinterest' | t }}" rel="noopener" target="_blank">{% render 'icon', name: 'pinterest' %}</a>{%- endif -%}
         </div>
       </div>
 
       {%- for block in section.blocks -%}
         <div {{ block.shopify_attributes }}>
-          <h5>{{ block.settings.title }}</h5>
+          <h2 class="site-footer__heading">{{ block.settings.title }}</h2>
           <ul>
             {%- for link in linklists[block.settings.menu].links -%}
               <li><a href="{{ link.url }}">{{ link.title }}</a></li>
@@ -35,11 +36,38 @@
           </ul>
         </div>
       {%- endfor -%}
+
+      {%- if section.settings.show_policies -%}
+        {%- assign has_policy = false -%}
+        {%- for policy in shop.policies -%}
+          {%- if policy != blank -%}{%- assign has_policy = true -%}{%- endif -%}
+        {%- endfor -%}
+        {%- if has_policy -%}
+          <div>
+            <h2 class="site-footer__heading">{{ section.settings.policies_title | default: 'Legales' }}</h2>
+            <ul>
+              {%- for policy in shop.policies -%}
+                {%- if policy != blank -%}
+                  <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
     </div>
 
     <div class="site-footer__bottom">
-      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }} · {{ section.settings.bottom_left | default: 'Made by hand, in small batches.' }}</span>
-      <span>{{ section.settings.bottom_right | default: 'Terms · Privacy · Accessibility' }}</span>
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}{% if section.settings.bottom_left != blank %} · {{ section.settings.bottom_left }}{% endif %}</span>
+      <span class="site-footer__bottom-links">
+        {%- if shop.privacy_policy != blank -%}
+          <a href="{{ shop.privacy_policy.url }}">{{ shop.privacy_policy.title }}</a>
+        {%- endif -%}
+        {%- if section.settings.bottom_right != blank -%}
+          {%- if shop.privacy_policy != blank %} · {% endif -%}
+          {{ section.settings.bottom_right }}
+        {%- endif -%}
+      </span>
     </div>
   </div>
 </footer>
@@ -49,7 +77,7 @@
     font-family: {{ tagline_font }};
     font-size: {{ section.settings.tagline_size }}px;
   }
-  #site-footer-{{ section.id }} h5{
+  #site-footer-{{ section.id }} .site-footer__heading{
     font-family: {{ heading_font }};
     font-size: {{ section.settings.heading_size }}px;
   }
@@ -67,9 +95,10 @@
 {
   "name": "Footer",
   "max_blocks": 4,
+  "enabled_on": { "groups": ["footer"] },
   "settings": [
     { "type": "image_picker", "id": "logo", "label": "Logo (white background)" },
-    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Handmade dog walk gear. Original biothane & solid brass — strong, durable, fully waterproof." },
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Correas y collares hechos a mano en biothane original y latón sólido — fuertes, duraderos y 100% impermeables." },
     { "type": "select", "id": "tagline_font", "label": "Tagline font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -83,6 +112,10 @@
     { "type": "url", "id": "instagram", "label": "Instagram URL" },
     { "type": "url", "id": "tiktok", "label": "TikTok URL" },
     { "type": "url", "id": "youtube", "label": "YouTube URL" },
+
+    { "type": "header", "content": "Policies" },
+    { "type": "checkbox", "id": "show_policies", "label": "Show a column with the store policies (privacy, shipping, returns, terms)", "default": true },
+    { "type": "text", "id": "policies_title", "label": "Policies column heading", "default": "Legales" },
 
     { "type": "header", "content": "Column headings & links" },
     { "type": "select", "id": "heading_font", "label": "Column heading font", "default": "sans",
@@ -101,8 +134,8 @@
     { "type": "range", "id": "link_size", "label": "Link size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14 },
 
     { "type": "header", "content": "Bottom row" },
-    { "type": "text", "id": "bottom_left", "label": "Bottom left text" },
-    { "type": "text", "id": "bottom_right", "label": "Bottom right text" },
+    { "type": "text", "id": "bottom_left", "label": "Bottom left text", "default": "Hecho a mano en México, en lotes pequeños." },
+    { "type": "text", "id": "bottom_right", "label": "Bottom right text", "info": "The privacy policy link is added automatically when it exists." },
     { "type": "select", "id": "bottom_font", "label": "Bottom row font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -116,16 +149,15 @@
       "type": "menu",
       "name": "Link column",
       "settings": [
-        { "type": "text", "id": "title", "label": "Heading", "default": "Shop" },
+        { "type": "text", "id": "title", "label": "Heading", "default": "Tienda" },
         { "type": "link_list", "id": "menu", "label": "Menu" }
       ]
     }
   ],
   "default": {
     "blocks": [
-      { "type": "menu", "settings": { "title": "Shop" } },
-      { "type": "menu", "settings": { "title": "Help" } },
-      { "type": "menu", "settings": { "title": "About" } }
+      { "type": "menu", "settings": { "title": "Tienda" } },
+      { "type": "menu", "settings": { "title": "Nosotros" } }
     ]
   }
 }

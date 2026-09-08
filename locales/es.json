@@ -1,27 +1,122 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin language editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "general": {
     "currency": "MXN",
-    "shop_name": "KYN Studio"
+    "shop_name": "KYN Studio",
+    "skip_to_content": "Ir al contenido",
+    "menu": "Menú",
+    "main_navigation": "Navegación principal",
+    "search": "Buscar",
+    "account": "Cuenta",
+    "cart": "Carrito",
+    "meta": {
+      "tags": "etiqueta: {{ tags }}",
+      "page": "Página {{ page }}"
+    },
+    "pagination": {
+      "previous": "« Anterior",
+      "next": "Siguiente »"
+    },
+    "social": {
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "youtube": "YouTube",
+      "facebook": "Facebook",
+      "pinterest": "Pinterest"
+    }
   },
   "products": {
     "general": {
-      "add_to_cart": "Agregar al Carrito",
-      "sold_out": "SOLD OUT!"
+      "add_to_cart": "Agregar al carrito",
+      "sold_out": "Agotado",
+      "unavailable": "No disponible",
+      "quantity": "Cantidad",
+      "decrease_quantity": "Reducir cantidad",
+      "increase_quantity": "Aumentar cantidad",
+      "view_image": "Ver imagen {{ index }}",
+      "new_badge": "Nuevo",
+      "best_seller_badge": "Más vendido",
+      "personalizable_badge": "Personalizable",
+      "gift_card_badge": "Tarjeta de regalo",
+      "handmade_badge": "Hecho a mano en México",
+      "breadcrumb_home": "Inicio",
+      "placeholder_name": "Nombre del producto",
+      "placeholder_desc": "Agrega productos a una colección para llenar esta cuadrícula.",
+      "product_price": "Precio",
+      "installments_prefix": "o {{ months }} pagos de"
+    },
+    "tabs": {
+      "description": "Descripción",
+      "materials": "Materiales",
+      "care": "Cuidado",
+      "shipping": "Envío y devoluciones",
+      "delivery": "Entrega"
+    },
+    "personalization": {
+      "select_option": "Selecciona una opción",
+      "preview": "Vista previa",
+      "required_error": "Este campo es obligatorio para agregar el producto."
+    },
+    "gift_card": {
+      "recipient_email": "Email del destinatario",
+      "recipient_name": "Nombre del destinatario (opcional)",
+      "message": "Mensaje (opcional)",
+      "send_on": "Enviar el (opcional)"
     }
   },
   "cart": {
     "general": {
-      "title": "Carrito"
+      "title": "Carrito",
+      "update": "Actualizar carrito",
+      "remove": "Quitar",
+      "quantity_for": "Cantidad de {{ product }}",
+      "decrease_for": "Reducir cantidad de {{ product }}",
+      "increase_for": "Aumentar cantidad de {{ product }}",
+      "subtotal": "Subtotal",
+      "item_count": {
+        "one": "{{ count }} artículo",
+        "other": "{{ count }} artículos"
+      }
     }
+  },
+  "search": {
+    "title": "Buscar",
+    "results_for": "Resultados para “{{ terms }}”",
+    "placeholder": "Buscar en KYN…",
+    "submit": "Buscar",
+    "count": {
+      "one": "{{ count }} resultado",
+      "other": "{{ count }} resultados"
+    },
+    "types": {
+      "product": "Producto",
+      "article": "Artículo",
+      "page": "Página"
+    }
+  },
+  "collections": {
+    "product_count": {
+      "one": "{{ count }} producto",
+      "other": "{{ count }} productos"
+    }
+  },
+  "blog": {
+    "read_more": "Leer más"
+  },
+  "contact": {
+    "name": "Nombre",
+    "email": "Email",
+    "phone": "Teléfono (opcional)",
+    "message": "Mensaje",
+    "send": "Enviar mensaje",
+    "success": "¡Gracias! Te respondemos muy pronto."
+  },
+  "password": {
+    "label": "Contraseña",
+    "submit": "Entrar",
+    "default_message": "Muy pronto en línea."
+  },
+  "footer": {
+    "policies": "Legales"
   },
   "reading": {
     "title": "Opciones de lectura",
@@ -37,6 +132,9 @@
     "bionic": "Resaltado guiado",
     "experimental": "Experimental",
     "bionic_note": "La evidencia científica sobre esta técnica es limitada — pruébala y usa lo que te funcione.",
-    "reset": "Restablecer"
+    "reset": "Restablecer",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "stars": "{{ count }} de 5 estrellas"
   }
 }

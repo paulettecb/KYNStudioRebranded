@@ -37,6 +37,7 @@
 {% schema %}
 {
   "name": "404",
+  "enabled_on": { "templates": ["404"] },
   "settings": [
     { "type": "header", "content": "Eyebrow" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "404" },
@@ -49,7 +50,7 @@
     { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 },
 
     { "type": "header", "content": "Heading" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Lost on the trail." },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Te perdiste en el paseo." },
     { "type": "select", "id": "heading_font", "label": "Heading font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -59,7 +60,7 @@
     { "type": "range", "id": "heading_size", "label": "Heading size", "min": 32, "max": 96, "step": 2, "unit": "px", "default": 72 },
 
     { "type": "header", "content": "Text" },
-    { "type": "textarea", "id": "text", "label": "Text", "default": "The page you're looking for has wandered off. Let's get you back to the pack." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "La página que buscas se fue a olfatear por ahí. Te llevamos de regreso a la manada." },
     { "type": "select", "id": "text_font", "label": "Text font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -69,7 +70,7 @@
     { "type": "range", "id": "text_size", "label": "Text size", "min": 14, "max": 24, "step": 1, "unit": "px", "default": 18 },
 
     { "type": "header", "content": "Button" },
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "Back to home" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Volver al inicio" },
     { "type": "url", "id": "button_link", "label": "Button link", "info": "Defaults to the homepage" },
     { "type": "select", "id": "button_font", "label": "Button font", "default": "sans",
       "options": [
@@ -78,7 +79,6 @@
         { "value": "accent", "label": "Accent (Farmhouse serif)" }
       ] },
     { "type": "range", "id": "button_size", "label": "Button size", "min": 12, "max": 22, "step": 1, "unit": "px", "default": 16 }
-  ],
-  "presets": [{ "name": "404" }]
+  ]
 }
 {% endschema %}

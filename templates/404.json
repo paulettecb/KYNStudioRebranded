@@ -2,8 +2,14 @@
   "sections": {
     "main": {
       "type": "main-404",
-      "settings": {}
+      "settings": {
+        "heading": "Te perdiste en el paseo.",
+        "text": "La página que buscas se fue a olfatear por ahí. Te llevamos de regreso a la manada.",
+        "button_label": "Volver al inicio"
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }

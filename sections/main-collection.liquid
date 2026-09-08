@@ -9,7 +9,8 @@
     <div class="collection-header">
       {%- if collection.image -%}
         <div class="collection-banner">
-          <img src="{{ collection.image | image_url: width: 1400 }}" alt="{{ collection.title | escape }}" width="1400" height="400" loading="eager">
+          {%- assign banner_alt = collection.image.alt | default: collection.title -%}
+          {{ collection.image | image_url: width: 1400 | image_tag: widths: '600, 900, 1200, 1400', sizes: '100vw', alt: banner_alt, width: 1400, height: 400, loading: 'eager', fetchpriority: 'high' }}
           <div class="collection-banner__overlay">
             <h1>{{ collection.title }}</h1>
           </div>
@@ -24,15 +25,21 @@
 
     <div class="product-grid">
       {%- for product in collection.products -%}
-        {% render 'product-card', product: product %}
+        {%- if forloop.index <= 4 -%}
+          {% render 'product-card', product: product, loading: 'eager' %}
+        {%- else -%}
+          {% render 'product-card', product: product %}
+        {%- endif -%}
       {%- else -%}
         <p class="collection-empty">{{ section.settings.empty_message }}</p>
       {%- endfor -%}
     </div>
 
     {%- if paginate.pages > 1 -%}
+      {%- assign prev_label = 'general.pagination.previous' | t -%}
+      {%- assign next_label = 'general.pagination.next' | t -%}
       <div class="pagination">
-        {{ paginate | default_pagination }}
+        {{ paginate | default_pagination: next: next_label, previous: prev_label }}
       </div>
     {%- endif -%}
   </div>
@@ -57,7 +64,7 @@
   font-size: {{ section.settings.desc_size }}px;
 }
 #main-collection-{{ section.id }} .collection-empty{
-  color: var(--ink-400);
+  color: var(--ink-500);
   font-family: {{ empty_font }};
   font-size: {{ section.settings.empty_size }}px;
 }
@@ -69,6 +76,7 @@
 {% schema %}
 {
   "name": "Collection",
+  "enabled_on": { "templates": ["collection"] },
   "settings": [
     { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
     { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
@@ -100,7 +108,6 @@
         { "value": "accent", "label": "Accent (Farmhouse serif)" }
       ] },
     { "type": "range", "id": "empty_size", "label": "Empty message size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 }
-  ],
-  "presets": [{ "name": "Collection" }]
+  ]
 }
 {% endschema %}

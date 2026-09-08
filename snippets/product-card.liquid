@@ -1,35 +1,53 @@
 {%- comment -%}
-  Product card snippet. Usage: {% render 'product-card', product: product %}
-  Falls back to a placeholder if product is nil.
+  Product card snippet.
+
+  Accepts:
+    - product           {Object}  — product (nil renders a placeholder card)
+    - loading           {String}  — 'eager' for above-the-fold cards, default 'lazy'
+    - placeholder_label {String}  — caption for the placeholder card
+
+  Usage: {% render 'product-card', product: product, loading: 'eager' %}
 {%- endcomment -%}
+{%- assign img_loading = loading | default: 'lazy' -%}
+
 {%- if product == blank or product == nil -%}
-  <a class="kyn-product" href="#" aria-hidden="true">
+  <div class="kyn-product" aria-hidden="true">
     <div class="kyn-product__media">
-      <div class="hero__media--placeholder" style="position:absolute;inset:0;border-radius:0;border:0;"><span class="hero__caption">{{ placeholder_label | default: 'product' }}</span></div>
+      <div class="hero__media--placeholder" style="position:absolute;inset:0;border-radius:0;border:0;"><span class="hero__caption">{{ placeholder_label | default: 'KYN' }}</span></div>
     </div>
     <div class="kyn-product__body">
-      <h3 class="kyn-product__name">Product name</h3>
-      <p class="kyn-product__desc">Add products to a collection to populate this grid.</p>
+      <h3 class="kyn-product__name">{{ 'products.general.placeholder_name' | t }}</h3>
+      <p class="kyn-product__desc">{{ 'products.general.placeholder_desc' | t }}</p>
       <div class="kyn-product__row"><span class="kyn-product__price">$—</span></div>
     </div>
-  </a>
+  </div>
 {%- else -%}
   <a class="kyn-product" href="{{ product.url }}">
     <div class="kyn-product__media">
       {%- if product.featured_image -%}
-        <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="600" height="600">
+        {%- assign card_alt = product.featured_image.alt | default: product.title -%}
+        {{ product.featured_image | image_url: width: 600 | image_tag:
+          widths: '180, 270, 360, 540, 600',
+          sizes: '(max-width: 480px) 45vw, (max-width: 900px) 30vw, 280px',
+          alt: card_alt,
+          loading: img_loading,
+          width: 600,
+          height: 600
+        }}
       {%- else -%}
         <div class="hero__media--placeholder" style="position:absolute;inset:0;border-radius:0;border:0;"><span class="hero__caption">{{ product.title | escape }}</span></div>
       {%- endif -%}
 
-      {%- if product.gift_card? -%}
-        <span class="kyn-badge kyn-badge--soft">Tarjeta de regalo</span>
-      {%- elsif product.tags contains 'new' -%}
-        <span class="kyn-badge kyn-badge--pop"><span>&#xF00E;e&#xF031;</span></span>
+      {%- if product.available == false -%}
+        <span class="kyn-badge kyn-badge--soft">{{ 'products.general.sold_out' | t }}</span>
+      {%- elsif product.gift_card? -%}
+        <span class="kyn-badge kyn-badge--soft">{{ 'products.general.gift_card_badge' | t }}</span>
+      {%- elsif product.tags contains 'new' or product.tags contains 'new-drop' -%}
+        <span class="kyn-badge kyn-badge--pop"><span aria-hidden="true">&#xF00E;e&#xF031;</span><span class="visually-hidden">{{ 'products.general.new_badge' | t }}</span></span>
       {%- elsif product.tags contains 'best-seller' or product.tags contains 'Best Seller' -%}
-        <span class="kyn-badge kyn-badge--brand">Best Seller</span>
+        <span class="kyn-badge kyn-badge--brand">{{ 'products.general.best_seller_badge' | t }}</span>
       {%- elsif product.tags contains 'personalize' -%}
-        <span class="kyn-badge kyn-badge--soft">Personalize</span>
+        <span class="kyn-badge kyn-badge--soft">{{ 'products.general.personalizable_badge' | t }}</span>
       {%- endif -%}
     </div>
 
@@ -41,11 +59,24 @@
         <p class="kyn-product__desc">{{ product.description | strip_html | truncate: 80 }}</p>
       {%- endif -%}
       <div class="kyn-product__row">
-        <span class="kyn-product__price">{{ product.price | money }}</span>
-        {%- if product.options_by_name['Color'] != blank -%}
-          <span class="kyn-product__swatches">
-            {%- for value in product.options_by_name['Color'].values limit: 4 -%}
-              <i style="background:{{ value | downcase | replace: ' ', '-' | prepend: '#' | default: '#8795D2' }}" title="{{ value }}"></i>
+        <span class="kyn-product__price">
+          {%- if product.price_varies -%}{{ product.price_min | money }}+{%- else -%}{{ product.price | money }}{%- endif -%}
+        </span>
+        {%- comment -%} Colour dots for the first colour/finish option {%- endcomment -%}
+        {%- assign color_option = blank -%}
+        {%- for option in product.options_with_values -%}
+          {%- assign name_lc = option.name | downcase -%}
+          {%- if color_option == blank -%}
+            {%- if name_lc contains 'color' or name_lc contains 'colour' or name_lc contains 'finish' or name_lc contains 'tono' or name_lc contains 'acabado' -%}
+              {%- assign color_option = option -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if color_option != blank -%}
+          <span class="kyn-product__swatches" aria-hidden="true">
+            {%- for value in color_option.values limit: 4 -%}
+              {%- capture hex -%}{% render 'color-hex', value: value %}{%- endcapture -%}
+              <i style="background:{{ hex | strip }}" title="{{ value | escape }}"></i>
             {%- endfor -%}
           </span>
         {%- endif -%}

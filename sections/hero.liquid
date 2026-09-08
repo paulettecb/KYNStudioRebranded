@@ -42,7 +42,16 @@
         <div class="hero__blob2"></div>
         <div class="hero__media{% if section.settings.image == blank %} hero__media--placeholder{% endif %}">
           {%- if section.settings.image != blank -%}
-            <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.image.alt | escape }}" width="400" height="480">
+            {%- assign hero_img_alt = section.settings.image.alt | default: section.settings.title | strip_html -%}
+            {{ section.settings.image | image_url: width: 1200 | image_tag:
+              widths: '220, 300, 400, 600, 800, 1200',
+              sizes: '(max-width: 480px) 220px, (max-width: 900px) 300px, 400px',
+              alt: hero_img_alt,
+              width: 400,
+              height: 480,
+              loading: 'eager',
+              fetchpriority: 'high'
+            }}
           {%- endif -%}
           {%- assign hero_caption = section.settings.image_caption -%}
           {%- if section.settings.image == blank and hero_caption == blank -%}
@@ -52,7 +61,7 @@
             <span class="hero__caption">{{ hero_caption }}</span>
           {%- endif -%}
           {%- if section.settings.show_badge -%}
-            <div class="hero__badge"><span>&#xF00E;e&#xF031;</span> ♥</div>
+            <div class="hero__badge"><span aria-hidden="true">&#xF00E;e&#xF031; ♥</span><span class="visually-hidden">{{ 'products.general.new_badge' | t }}</span></div>
           {%- endif -%}
         </div>
       </div>
@@ -105,14 +114,19 @@
     #hero-{{ section.id }} .hero__title{ font-size: {{ section.settings.title_size | times: 0.72 | round }}px; }
     #hero-{{ section.id }} .hero__title .spark{ font-size: {{ section.settings.spark_size | times: 0.72 | round }}px; }
   }
+  @media (max-width: 480px){
+    #hero-{{ section.id }} .hero__title{ font-size: {{ section.settings.title_size | times: 0.5 | round }}px; }
+    #hero-{{ section.id }} .hero__title .spark{ font-size: {{ section.settings.spark_size | times: 0.5 | round }}px; }
+  }
 </style>
 
 {% schema %}
 {
   "name": "Hero",
+  "disabled_on": { "groups": ["header", "footer"] },
   "settings": [
     { "type": "header", "content": "Eyebrow" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Handmade · Biothane & brass" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Hecho a mano · Biothane® & latón sólido" },
     { "type": "select", "id": "eyebrow_font", "label": "Eyebrow font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -122,7 +136,7 @@
     { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 },
 
     { "type": "header", "content": "Title" },
-    { "type": "text", "id": "title", "label": "Title", "default": "Gear up for the good walks." },
+    { "type": "text", "id": "title", "label": "Title", "default": "Un sistema, todos tus paseos." },
     { "type": "select", "id": "title_font", "label": "Title font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -130,7 +144,7 @@
         { "value": "accent", "label": "Accent (Farmhouse serif)" }
       ] },
     { "type": "range", "id": "title_size", "label": "Title size", "min": 40, "max": 120, "step": 2, "unit": "px", "default": 80 },
-    { "type": "text", "id": "spark_word", "label": "Spark word (rendered in Friendship)", "info": "Word inside the title to render as the brand spark.", "default": "good" },
+    { "type": "text", "id": "spark_word", "label": "Spark word (rendered in Friendship)", "info": "Word inside the title to render as the brand spark.", "default": "sistema" },
     { "type": "select", "id": "spark_font", "label": "Spark word font", "default": "display",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -140,7 +154,7 @@
     { "type": "range", "id": "spark_size", "label": "Spark word size", "min": 40, "max": 120, "step": 2, "unit": "px", "default": 80 },
 
     { "type": "header", "content": "Lead" },
-    { "type": "textarea", "id": "lead", "label": "Lead", "default": "Strong, waterproof, and built by hand from original biothane and solid brass — for the dogs who go everywhere." },
+    { "type": "textarea", "id": "lead", "label": "Lead", "default": "Collar, correa y crossbody que se combinan entre sí — mismo herraje, mismo biothane, para armar el set que tu paseo de hoy pide." },
     { "type": "select", "id": "lead_font", "label": "Lead font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -150,7 +164,7 @@
     { "type": "range", "id": "lead_size", "label": "Lead size", "min": 14, "max": 34, "step": 1, "unit": "px", "default": 19 },
 
     { "type": "header", "content": "Buttons" },
-    { "type": "text", "id": "cta1_label", "label": "Primary button label", "default": "Shop the collection" },
+    { "type": "text", "id": "cta1_label", "label": "Primary button label", "default": "Ver la colección" },
     { "type": "url",  "id": "cta1_link",  "label": "Primary button link" },
     { "type": "select", "id": "cta1_label_font", "label": "Primary button font", "default": "sans",
       "options": [
@@ -159,7 +173,7 @@
         { "value": "accent", "label": "Accent (Farmhouse serif)" }
       ] },
     { "type": "range", "id": "cta1_label_size", "label": "Primary button size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 16 },
-    { "type": "text", "id": "cta2_label", "label": "Secondary button label", "default": "Build a set" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary button label", "default": "Arma tu set" },
     { "type": "url",  "id": "cta2_link",  "label": "Secondary button link" },
     { "type": "select", "id": "cta2_label_font", "label": "Secondary button font", "default": "sans",
       "options": [
@@ -188,7 +202,7 @@
       "name": "Trust feature",
       "limit": 3,
       "settings": [
-        { "type": "text", "id": "label", "label": "Label", "default": "Waterproof" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Impermeable" },
         { "type": "select", "id": "label_font", "label": "Label font", "default": "sans",
           "options": [
             { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -196,7 +210,7 @@
             { "value": "accent", "label": "Accent (Farmhouse serif)" }
           ] },
         { "type": "range", "id": "label_size", "label": "Label size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 16 },
-        { "type": "text", "id": "sub",   "label": "Subtitle", "default": "Rinse & go" },
+        { "type": "text", "id": "sub",   "label": "Subtitle", "default": "Enjuaga y listo" },
         { "type": "select", "id": "sub_font", "label": "Subtitle font", "default": "sans",
           "options": [
             { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -210,9 +224,9 @@
   "presets": [{
     "name": "Hero",
     "blocks": [
-      { "type": "trust", "settings": { "label": "Waterproof", "sub": "Rinse & go" } },
-      { "type": "trust", "settings": { "label": "Solid brass", "sub": "Built tough" } },
-      { "type": "trust", "settings": { "label": "Small batch", "sub": "By hand" } }
+      { "type": "trust", "settings": { "label": "Impermeable", "sub": "Enjuaga y listo" } },
+      { "type": "trust", "settings": { "label": "Latón sólido", "sub": "Fuerte y confiable" } },
+      { "type": "trust", "settings": { "label": "Bajo pedido", "sub": "Hecho a mano" } }
     ]
   }]
 }

@@ -10,11 +10,28 @@
         "tiktok": "https://www.tiktok.com/@kynstudiomx"
       },
       "blocks": {
-        "col1": { "type": "menu", "settings": { "title": "Shop", "menu": "main-menu" } },
-        "col2": { "type": "menu", "settings": { "title": "Nosotros", "menu": "footer" } }
+        "col1": {
+          "type": "menu",
+          "settings": {
+            "title": "Tienda",
+            "menu": "main-menu"
+          }
+        },
+        "col2": {
+          "type": "menu",
+          "settings": {
+            "title": "Nosotros",
+            "menu": "footer"
+          }
+        }
       },
-      "block_order": ["col1", "col2"]
+      "block_order": [
+        "col1",
+        "col2"
+      ]
     }
   },
-  "order": ["footer"]
+  "order": [
+    "footer"
+  ]
 }

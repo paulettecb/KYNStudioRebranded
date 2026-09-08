@@ -73,7 +73,7 @@
         "cta2_label_font": "sans",
         "cta2_label_size": 16,
         "image": "shopify://shop_images/collar_new_3.png",
-        "image_caption": "P R O X I M A M E N T E",
+        "image_caption": "",
         "placeholder_label": "",
         "caption_font": "display",
         "caption_size": 15,
@@ -159,7 +159,7 @@
         "cta_label": "Ver todo",
         "cta_label_font": "sans",
         "cta_label_size": 13,
-        "cta_link": ""
+        "cta_link": "shopify://collections/all"
       }
     },
     "color-story": {
@@ -251,7 +251,7 @@
         "cta_label": "Conoce la historia",
         "cta_label_font": "sans",
         "cta_label_size": 15,
-        "cta_link": ""
+        "cta_link": "shopify://pages/our-story"
       }
     },
     "reviews": {
@@ -267,7 +267,8 @@
         "spark_word": "felices!",
         "spark_font": "display",
         "spark_size": 42
-      }
+      },
+      "disabled": true
     },
     "video-spotlight": {
       "type": "video-spotlight",
