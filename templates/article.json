@@ -28,7 +28,7 @@
         "show_reading_time": true,
         "words_per_minute": 200,
         "show_tags": true,
-        "tags_heading": "Tags",
+        "tags_heading": "Etiquetas",
         "used_heading": "Se usó en este artículo",
         "show_related": true,
         "related_heading": "También te puede interesar",
@@ -37,7 +37,6 @@
         "accent_color": "#e85da0",
         "eyebrow_color": "#6b7ac1",
         "show_reading_controls": true,
-        "reading_controls_position": "body",
         "enable_bionic": true
       }
     }

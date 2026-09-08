@@ -1,0 +1,87 @@
+{%- capture title_font -%}{% render 'font-stack', key: section.settings.title_font %}{%- endcapture -%}
+
+<section class="section" id="main-contact-{{ section.id }}">
+  <div class="container contact">
+    <div class="contact__intro">
+      {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h1 class="contact__title">{{ page.title }}</h1>
+      {%- if page.content != blank -%}
+        <div class="rte contact__content">{{ page.content }}</div>
+      {%- endif -%}
+      {%- if section.settings.show_email and shop.email != blank -%}
+        <p class="contact__direct"><a href="mailto:{{ shop.email }}">{{ shop.email }}</a></p>
+      {%- endif -%}
+    </div>
+
+    <div class="contact__form-wrap">
+      {%- form 'contact', class: 'contact__form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="contact__success" role="status">{{ 'contact.success' | t }}</p>
+        {%- endif -%}
+        {%- if form.errors -%}
+          <div class="contact__errors" role="alert">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+
+        <div class="contact__field">
+          <label for="contact-name-{{ section.id }}">{{ 'contact.name' | t }}</label>
+          <input class="kyn-input" type="text" id="contact-name-{{ section.id }}" name="contact[name]" autocomplete="name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+        </div>
+        <div class="contact__field">
+          <label for="contact-email-{{ section.id }}">{{ 'contact.email' | t }}</label>
+          <input class="kyn-input" type="email" id="contact-email-{{ section.id }}" name="contact[email]" autocomplete="email" required value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+        </div>
+        <div class="contact__field">
+          <label for="contact-phone-{{ section.id }}">{{ 'contact.phone' | t }}</label>
+          <input class="kyn-input" type="tel" id="contact-phone-{{ section.id }}" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+        </div>
+        <div class="contact__field">
+          <label for="contact-message-{{ section.id }}">{{ 'contact.message' | t }}</label>
+          <textarea class="kyn-input" id="contact-message-{{ section.id }}" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
+        </div>
+        <button type="submit" class="kyn-btn kyn-btn--primary kyn-btn--lg">{{ 'contact.send' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 64px; align-items: start; }
+  .contact__title { margin: 12px 0 18px; }
+  .contact__content { color: var(--ink-700); line-height: 1.7; }
+  .contact__content p { margin-bottom: 14px; }
+  .contact__direct a { color: var(--periwinkle-800); text-decoration: underline; }
+  .contact__form { display: flex; flex-direction: column; gap: 16px; background: var(--white); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-sm); }
+  .contact__field { display: flex; flex-direction: column; gap: 6px; }
+  .contact__field label { font-size: 13px; font-weight: 600; color: var(--ink-700); }
+  .contact__success { color: var(--periwinkle-800); font-weight: 600; margin: 0; }
+  .contact__errors { color: #A23A3A; font-size: 14px; }
+  .contact__errors ul { padding-left: 18px; margin: 6px 0 0; }
+  #main-contact-{{ section.id }} .contact__title{
+    font-family: {{ title_font }};
+    font-size: {{ section.settings.title_size }}px;
+  }
+  @media (max-width: 900px) {
+    .contact { grid-template-columns: 1fr; gap: 32px; }
+    .contact__form { padding: 24px 20px; }
+    #main-contact-{{ section.id }} .contact__title{ font-size: {{ section.settings.title_size | times: 0.65 | round }}px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "enabled_on": { "templates": ["page"] },
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Escríbenos" },
+    { "type": "checkbox", "id": "show_email", "label": "Show the store email above the form", "default": true },
+    { "type": "select", "id": "title_font", "label": "Title font", "default": "display",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "title_size", "label": "Title size", "min": 28, "max": 64, "step": 2, "unit": "px", "default": 44 }
+  ],
+  "presets": [{ "name": "Contact form" }]
+}
+{% endschema %}

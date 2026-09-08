@@ -6,7 +6,7 @@
       <div class="trust-feat" {{ block.shopify_attributes }}>
         <span class="trust-feat__icon">{% render 'icon', name: block.settings.icon %}</span>
         <div>
-          <h4 style="font-family:{{ block_title_font }}; font-size:{{ block.settings.title_size }}px;">{{ block.settings.title }}</h4>
+          <p class="trust-feat__title" style="font-family:{{ block_title_font }}; font-size:{{ block.settings.title_size }}px;">{{ block.settings.title }}</p>
           <p style="font-family:{{ block_subtitle_font }}; font-size:{{ block.settings.subtitle_size }}px;">{{ block.settings.subtitle }}</p>
         </div>
       </div>
@@ -17,6 +17,7 @@
 {% schema %}
 {
   "name": "Trust band",
+  "disabled_on": { "groups": ["header", "footer"] },
   "max_blocks": 6,
   "blocks": [
     {
@@ -35,7 +36,7 @@
           ]
         },
         { "type": "header", "content": "Title" },
-        { "type": "text", "id": "title", "label": "Title", "default": "Fully waterproof" },
+        { "type": "text", "id": "title", "label": "Title", "default": "100% impermeable" },
         { "type": "select", "id": "title_font", "label": "Title font", "default": "sans",
           "options": [
             { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -45,7 +46,7 @@
         { "type": "range", "id": "title_size", "label": "Title size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 15 },
 
         { "type": "header", "content": "Subtitle" },
-        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Original biothane — rinse, ride home, dry." },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Biothane original — enjuaga y seca." },
         { "type": "select", "id": "subtitle_font", "label": "Subtitle font", "default": "sans",
           "options": [
             { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -59,10 +60,10 @@
   "presets": [{
     "name": "Trust band",
     "blocks": [
-      { "type": "feature", "settings": { "icon": "droplets", "title": "Fully waterproof", "subtitle": "Original biothane — rinse, ride home, dry." } },
-      { "type": "feature", "settings": { "icon": "gem", "title": "Solid brass hardware", "subtitle": "Built to outlast a thousand walks." } },
-      { "type": "feature", "settings": { "icon": "hand", "title": "Made by hand", "subtitle": "Small batches, cut & riveted in-house." } },
-      { "type": "feature", "settings": { "icon": "truck", "title": "Free shipping $60+", "subtitle": "1-year warranty on every piece." } }
+      { "type": "feature", "settings": { "icon": "droplets", "title": "100% impermeable", "subtitle": "Biothane original — enjuaga y seca." } },
+      { "type": "feature", "settings": { "icon": "gem", "title": "Latón sólido", "subtitle": "Herraje macizo para miles de paseos." } },
+      { "type": "feature", "settings": { "icon": "hand", "title": "Hecho a mano", "subtitle": "Lotes pequeños, cortado y remachado en casa." } },
+      { "type": "feature", "settings": { "icon": "truck", "title": "Envío a todo México", "subtitle": "Te avisamos cuando tu pieza sale del taller." } }
     ]
   }]
 }

@@ -1,0 +1,31 @@
+{%- comment -%}
+  Maps a colour / finish option value to a hex colour for swatches.
+  Single source of truth shared by product-swatches.liquid (PDP) and
+  product-card.liquid (grids).
+
+  Accepts:
+    - value  {String}  — option value, e.g. "Skyline Blue"
+
+  Outputs a hex string (e.g. "#8795d2"). Unknown values fall back to #cccccc.
+
+  Usage:
+    {%- capture hex -%}{% render 'color-hex', value: value %}{%- endcapture -%}
+{%- endcomment -%}
+{%- assign v = value | downcase | strip -%}
+{%- case v -%}
+  {%- when 'skyline blue', 'azul', 'blue', 'periwinkle', 'periwinkle blue' -%}#8795d2
+  {%- when 'brownstone' -%}#8a5a3c
+  {%- when 'olive district' -%}#5f6b32
+  {%- when 'forest green', 'forest', 'verde', 'green' -%}#3a5c40
+  {%- when 'ink', 'negro', 'black', 'tinta' -%}#1a1a1a
+  {%- when 'rose', 'rosa', 'pink', 'magenta' -%}#e8427c
+  {%- when 'arena', 'sand', 'beige', 'camel' -%}#c9b99a
+  {%- when 'latón', 'laton', 'brass', 'gold', 'dorado', 'bronce' -%}#b8965a
+  {%- when 'oat', 'avena', 'cream', 'crema', 'marfil', 'ivory' -%}#f4f0e8
+  {%- when 'white', 'blanco' -%}#ffffff
+  {%- when 'red', 'rojo' -%}#c94040
+  {%- when 'navy', 'marino', 'dark blue', 'dark navy' -%}#2f3658
+  {%- when 'olive', 'olivo' -%}#6b7a3a
+  {%- when 'lilac', 'lila', 'lavender', 'lavanda' -%}#c9b8e8
+  {%- else -%}#cccccc
+{%- endcase -%}

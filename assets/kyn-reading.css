@@ -129,7 +129,7 @@
   outline-offset: -2px;
 }
 .rd-btn[aria-pressed="true"] {
-  background: var(--periwinkle-500, #6b7bd6);
+  background: var(--periwinkle-700, #5562A4);
   color: #fff;
 }
 .rd-btn--toggle {
@@ -173,4 +173,9 @@
 
 @media (max-width: 480px) {
   .rd-panel__body { width: calc(100vw - 24px); padding: 14px 16px; }
+}
+
+/* Mobile: keep the toolbar out of the first lines of text */
+@media (max-width: 820px) {
+  .rd-toolbar { position: static; display: flex; justify-content: flex-end; margin: 0 0 12px; }
 }

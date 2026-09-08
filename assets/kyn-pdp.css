@@ -44,7 +44,15 @@
 .pdp-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+}
+.pdp-thumb:focus-visible,
+.kyn-swatch:focus-visible,
+.pdp-tab__header:focus-visible,
+.pdp-zone__toggle:focus-visible,
+.pdp-qty__btn:focus-visible {
+  outline: 2px solid var(--periwinkle-700);
+  outline-offset: 2px;
 }
 .pdp-thumb.active,
 .pdp-thumb:hover {
@@ -55,6 +63,7 @@
   position: relative;
 }
 
+.pdp-main-img__placeholder { width: 100%; height: 100%; }
 .pdp-main-img {
   position: relative;
   border-radius: var(--radius-lg);
@@ -65,7 +74,7 @@
 .pdp-main-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   transition: opacity var(--dur-base) var(--ease-out);
 }
@@ -141,7 +150,7 @@
 }
 .pdp-price--compare {
   font-size: 18px;
-  color: var(--ink-300);
+  color: var(--ink-500);
   text-decoration: line-through;
   font-weight: 400;
 }
@@ -188,7 +197,7 @@
 
 .kyn-option__value {
   font-size: 13px;
-  color: var(--ink-400);
+  color: var(--ink-500);
   font-style: italic;
 }
 
@@ -355,7 +364,8 @@
   font-weight: 600;
 }
 .pdp-zone__preview-text {
-  font-family: var(--font-accent);
+  /* Friendship has the Spanish accented glyphs; Farmhouse maps é→e and ñ→n */
+  font-family: var(--font-display);
   font-size: 28px;
   color: var(--ink-900);
   line-height: 1;
@@ -386,7 +396,8 @@
   width: 100%;
   margin: 0 0 6px;
 }
-.kyn-input:focus { border-color: var(--periwinkle-300); outline: none; }
+.kyn-input:focus { border-color: var(--periwinkle-500); outline: 2px solid var(--periwinkle-700); outline-offset: 2px; }
+.pdp-form__error { color: #A23A3A; font-size: 13px; margin: 8px 0 0; }
 textarea.kyn-input { resize: vertical; min-height: 60px; }
 
 /* ── Quantity stepper ── */
@@ -435,7 +446,8 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
   margin: 0;
 }
 .pdp-qty__input:focus {
-  outline: none;
+  outline: 2px solid var(--periwinkle-700);
+  outline-offset: -2px;
 }
 
 /* ── Buy buttons ── */
@@ -565,7 +577,12 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
   .pdp-thumbs {
     flex-direction: row;
     order: 2;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: 4px;
   }
+  .pdp-wrap { overflow-x: hidden; }
   .pdp-thumb {
     width: 60px;
     height: 72px;

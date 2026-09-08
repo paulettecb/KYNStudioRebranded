@@ -10,7 +10,7 @@
   <div class="container">
     <div class="video-spotlight__frame">
       {%- if section.settings.video != blank -%}
-        {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, class: 'video-spotlight__video' }}
+        {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, preload: 'metadata', class: 'video-spotlight__video' }}
       {%- else -%}
         <div class="video-spotlight__placeholder">{{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder' }}</div>
       {%- endif -%}
@@ -56,6 +56,7 @@
 {% schema %}
 {
   "name": "Video spotlight",
+  "disabled_on": { "groups": ["header", "footer"] },
   "settings": [
     { "type": "color", "id": "bg", "label": "Background", "default": "#FFFDF8" },
     { "type": "video", "id": "video", "label": "Video" },

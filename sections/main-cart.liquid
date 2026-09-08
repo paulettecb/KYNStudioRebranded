@@ -11,16 +11,17 @@
     {%- if cart.item_count == 0 -%}
       <div style="text-align:center;padding:60px 0;">
         <p class="cart-empty__message" style="color:var(--ink-700);margin-bottom:24px;">{{ section.settings.empty_message }}</p>
-        <a class="kyn-btn kyn-btn--primary" href="{{ routes.root_url }}">{{ section.settings.continue_shopping_label }}</a>
+        <a class="kyn-btn kyn-btn--primary kyn-btn--md" href="{{ routes.all_products_collection_url }}">{{ section.settings.continue_shopping_label }}</a>
       </div>
     {%- else -%}
-      <form action="{{ routes.cart_url }}" method="post" id="cart-form">
-        <div class="cart-items">
+      <form action="{{ routes.cart_url }}" method="post" id="cart-form-{{ section.id }}" class="cart-form">
+        <div class="cart-items" role="list">
           {%- for item in cart.items -%}
-            <div class="cart-item">
-              <a href="{{ item.url }}">
+            <div class="cart-item" role="listitem">
+              <a href="{{ item.url }}" class="cart-item__media" aria-hidden="true" tabindex="-1">
                 {%- if item.image -%}
-                  <img src="{{ item.image | image_url: width: 120 }}" alt="{{ item.image.alt | escape }}" width="80" height="80" loading="lazy">
+                  {%- assign item_alt = item.image.alt | default: item.product.title -%}
+                  {{ item.image | image_url: width: 160 | image_tag: alt: item_alt, width: 80, height: 80, loading: 'lazy' }}
                 {%- endif -%}
               </a>
               <div class="cart-item__info">
@@ -29,13 +30,24 @@
                   <p class="cart-item__variant">{{ item.variant.title }}</p>
                 {%- endunless -%}
                 {%- for property in item.properties -%}
-                  {%- unless property.last == blank -%}
-                    <p class="cart-item__property"><em>{{ property.first }}:</em> {{ property.last }}</p>
-                  {%- endunless -%}
+                  {%- assign property_first_char = property.first | slice: 0 -%}
+                  {%- if property.last != blank and property_first_char != '_' -%}
+                    <p class="cart-item__property">
+                      <em>{{ property.first }}:</em>
+                      {%- if property.last contains '/uploads/' -%}
+                        <a href="{{ property.last }}" target="_blank" rel="noopener">{{ property.last | split: '/' | last }}</a>
+                      {%- else -%}
+                        {{ property.last }}
+                      {%- endif -%}
+                    </p>
+                  {%- endif -%}
                 {%- endfor -%}
+                {%- if item.selling_plan_allocation -%}
+                  <p class="cart-item__property">{{ item.selling_plan_allocation.selling_plan.name }}</p>
+                {%- endif -%}
                 <div class="cart-item__row">
                   <div class="cart-qty">
-                    <button type="button" class="cart-qty__btn" data-action="minus" data-line="{{ forloop.index }}">−</button>
+                    <button type="button" class="cart-qty__btn" data-action="minus" data-line="{{ forloop.index }}" aria-label="{{ 'cart.general.decrease_for' | t: product: item.product.title | escape }}">−</button>
                     <input
                       type="number"
                       name="updates[]"
@@ -43,10 +55,17 @@
                       min="0"
                       class="cart-qty__input"
                       data-line="{{ forloop.index }}"
+                      aria-label="{{ 'cart.general.quantity_for' | t: product: item.product.title | escape }}"
                     >
-                    <button type="button" class="cart-qty__btn" data-action="plus" data-line="{{ forloop.index }}">+</button>
+                    <button type="button" class="cart-qty__btn" data-action="plus" data-line="{{ forloop.index }}" aria-label="{{ 'cart.general.increase_for' | t: product: item.product.title | escape }}">+</button>
                   </div>
-                  <span class="cart-item__price">{{ item.final_line_price | money }}</span>
+                  <a href="{{ item.url_to_remove }}" class="cart-item__remove">{{ 'cart.general.remove' | t }}</a>
+                  <span class="cart-item__price">
+                    {%- if item.original_line_price != item.final_line_price -%}
+                      <s class="cart-item__price--compare">{{ item.original_line_price | money }}</s>
+                    {%- endif -%}
+                    {{ item.final_line_price | money }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -54,33 +73,81 @@
         </div>
 
         <div class="cart-footer">
+          {%- if section.settings.show_note -%}
+            <label for="cart-note-{{ section.id }}" class="cart-note__label">{{ section.settings.note_label }}</label>
+            <textarea id="cart-note-{{ section.id }}" name="note" class="kyn-input cart-note" rows="2">{{ cart.note }}</textarea>
+          {%- endif -%}
+
+          {%- if cart.cart_level_discount_applications.size > 0 -%}
+            <ul class="cart-discounts">
+              {%- for discount in cart.cart_level_discount_applications -%}
+                <li>{{ discount.title }} · −{{ discount.total_allocated_amount | money }}</li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
           <div class="cart-totals">
-            <span>Subtotal</span>
+            <span>{{ 'cart.general.subtotal' | t }}</span>
             <span class="cart-totals__price">{{ cart.total_price | money }}</span>
           </div>
           {%- if section.settings.show_shipping_note -%}
-            <p class="cart-shipping-note" style="color:var(--ink-400);margin-bottom:20px;">{{ section.settings.shipping_note }}</p>
+            <p class="cart-shipping-note" style="color:var(--ink-500);margin-bottom:20px;">{{ section.settings.shipping_note }}</p>
           {%- endif -%}
+
+          <button type="submit" name="update" class="kyn-btn kyn-btn--secondary kyn-btn--md cart-update" style="width:100%;margin-bottom:10px;">
+            {{ 'cart.general.update' | t }}
+          </button>
           <button type="submit" name="checkout" class="kyn-btn kyn-btn--primary kyn-btn--lg" style="width:100%;">
             {{ section.settings.checkout_label }}
           </button>
-          <a href="{{ routes.root_url }}" class="kyn-btn kyn-btn--ghost kyn-btn--sm" style="width:100%;margin-top:10px;text-align:center;">
+          {%- if section.settings.show_dynamic_checkout -%}
+            <div class="cart-additional-checkout">{{ content_for_additional_checkout_buttons }}</div>
+          {%- endif -%}
+          <a href="{{ routes.all_products_collection_url }}" class="kyn-btn kyn-btn--ghost kyn-btn--sm" style="width:100%;margin-top:10px;text-align:center;">
             {{ section.settings.continue_shopping_label }}
           </a>
         </div>
-
-        <input type="hidden" name="return_to" value="/cart">
       </form>
 
       <script>
       (function () {
-        document.querySelectorAll('.cart-qty__btn').forEach(function (btn) {
+        var form = document.getElementById('cart-form-{{ section.id }}');
+        if (!form) return;
+        var submitting = false;
+
+        /* Apply the quantity change: POST /cart with updates[] and come back to /cart.
+           No AJAX cart yet — a full reload keeps totals, discounts and stock checks server-side. */
+        function submitUpdate() {
+          if (submitting) return;
+          submitting = true;
+          form.querySelectorAll('.cart-qty__btn, .cart-update').forEach(function (b) { b.disabled = true; });
+          if (typeof form.requestSubmit === 'function') {
+            var updateBtn = form.querySelector('.cart-update');
+            form.requestSubmit(updateBtn || undefined);
+          } else {
+            form.submit();
+          }
+        }
+
+        form.querySelectorAll('.cart-qty__btn').forEach(function (btn) {
           btn.addEventListener('click', function () {
             var line  = this.dataset.line;
-            var input = document.querySelector('.cart-qty__input[data-line="' + line + '"]');
+            var input = form.querySelector('.cart-qty__input[data-line="' + line + '"]');
             if (!input) return;
             var val = parseInt(input.value, 10) || 0;
             input.value = this.dataset.action === 'plus' ? val + 1 : Math.max(0, val - 1);
+            submitUpdate();
+          });
+        });
+
+        form.querySelectorAll('.cart-qty__input').forEach(function (input) {
+          input.addEventListener('change', function () {
+            if (parseInt(this.value, 10) < 0 || isNaN(parseInt(this.value, 10))) this.value = 0;
+            submitUpdate();
+          });
+          /* Enter inside the quantity box must update, not go to checkout */
+          input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); submitUpdate(); }
           });
         });
       }());
@@ -93,18 +160,27 @@
 .section__title { margin-bottom: 32px; }
 .cart-items { display: flex; flex-direction: column; gap: 24px; margin-bottom: 32px; }
 .cart-item { display: flex; gap: 20px; padding-bottom: 24px; border-bottom: 1px solid var(--sand, #f0ece4); }
-.cart-item img { border-radius: 8px; object-fit: cover; width: 80px; height: 80px; flex-shrink: 0; }
-.cart-item__info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.cart-item img { border-radius: 8px; object-fit: contain; background: var(--oat); width: 80px; height: 80px; flex-shrink: 0; }
+.cart-item__info { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .cart-item__title { font-weight: 600; text-decoration: none; color: inherit; }
-.cart-item__variant, .cart-item__property { color: var(--ink-400, #888); }
-.cart-item__row { display: flex; align-items: center; gap: 16px; margin-top: auto; }
-.cart-qty { display: flex; align-items: center; border: 1.5px solid var(--sand, #f0ece4); border-radius: 6px; overflow: hidden; }
-.cart-qty__btn { background: none; border: none; width: 32px; height: 36px; font-size: 18px; cursor: pointer; }
-.cart-qty__input { width: 44px; border: none; text-align: center; font-family: inherit; font-size: 14px; -moz-appearance: textfield; }
+.cart-item__variant, .cart-item__property { color: var(--ink-500, #75737F); }
+.cart-item__property a { color: var(--periwinkle-700); text-decoration: underline; }
+.cart-item__row { display: flex; align-items: center; gap: 16px; margin-top: auto; flex-wrap: wrap; }
+.cart-qty { display: flex; align-items: center; border: 1.5px solid var(--sand, #f0ece4); border-radius: 6px; overflow: hidden; background: var(--white); }
+.cart-qty__btn { background: none; border: none; width: 36px; height: 36px; font-size: 18px; cursor: pointer; color: var(--ink-900); }
+.cart-qty__btn:disabled { opacity: .5; cursor: progress; }
+.cart-qty__input { width: 44px; height: 36px; border: none; text-align: center; font-family: inherit; font-size: 14px; -moz-appearance: textfield; }
 .cart-qty__input::-webkit-inner-spin-button, .cart-qty__input::-webkit-outer-spin-button { display: none; }
-.cart-item__price { font-weight: 600; margin-left: auto; }
+.cart-item__remove { font-size: 13px; color: var(--ink-500); text-decoration: underline; text-underline-offset: 2px; }
+.cart-item__remove:hover { color: var(--ink-900); }
+.cart-item__price { font-weight: 600; margin-left: auto; display: flex; gap: 8px; align-items: baseline; }
+.cart-item__price--compare { color: var(--ink-500); font-weight: 400; font-size: 13px; }
 .cart-footer { max-width: 400px; margin-left: auto; }
+.cart-note__label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-700); margin-bottom: 6px; }
+.cart-note { margin-bottom: 16px; resize: vertical; }
+.cart-discounts { list-style: none; padding: 0; margin: 0 0 10px; color: var(--periwinkle-700); font-size: 14px; }
 .cart-totals { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 8px; }
+.cart-additional-checkout { margin-top: 10px; }
 
 #main-cart-{{ section.id }} .section__title{
   font-family: {{ title_font }};
@@ -129,12 +205,14 @@
 }
 @media (max-width: 749px){
   #main-cart-{{ section.id }} .section__title{ font-size: {{ section.settings.title_size | times: 0.61 | round }}px; }
+  .cart-footer { max-width: none; }
 }
 </style>
 
 {% schema %}
 {
   "name": "Cart",
+  "enabled_on": { "templates": ["cart"] },
   "settings": [
     { "type": "header", "content": "Title" },
     { "type": "text", "id": "title", "label": "Title", "default": "Tu carrito" },
@@ -159,6 +237,11 @@
     { "type": "header", "content": "Buttons" },
     { "type": "text", "id": "continue_shopping_label", "label": "Continue shopping button label", "default": "Seguir comprando" },
     { "type": "text", "id": "checkout_label", "label": "Checkout button label", "default": "Finalizar compra" },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show accelerated checkout buttons (Shop Pay, Apple Pay, Google Pay)", "default": true },
+
+    { "type": "header", "content": "Order note" },
+    { "type": "checkbox", "id": "show_note", "label": "Show order note field", "default": true },
+    { "type": "text", "id": "note_label", "label": "Note label", "default": "Notas para el taller (opcional)" },
 
     { "type": "header", "content": "Line item text" },
     { "type": "select", "id": "item_variant_font", "label": "Variant / property text font", "default": "sans",
@@ -188,7 +271,6 @@
         { "value": "accent", "label": "Accent (Farmhouse serif)" }
       ] },
     { "type": "range", "id": "totals_size", "label": "Cart totals size", "min": 14, "max": 28, "step": 1, "unit": "px", "default": 18 }
-  ],
-  "presets": [{ "name": "Cart" }]
+  ]
 }
 {% endschema %}

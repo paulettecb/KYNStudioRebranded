@@ -19,13 +19,8 @@
           <a href="{{ collection.url }}" class="collist-card">
             {%- if collection.image -%}
               <div class="collist-card__img">
-                <img
-                  src="{{ collection.image | image_url: width: 600 }}"
-                  alt="{{ collection.image.alt | default: collection.title | escape }}"
-                  width="600"
-                  height="600"
-                  loading="lazy"
-                >
+                {%- assign coll_alt = collection.image.alt | default: collection.title -%}
+                {{ collection.image | image_url: width: 600 | image_tag: widths: '300, 600', sizes: '(max-width: 900px) 100vw, 33vw', alt: coll_alt, width: 600, height: 600, loading: 'lazy' }}
               </div>
             {%- else -%}
               <div class="collist-card__img collist-card__img--placeholder">
@@ -41,7 +36,7 @@
                 <p class="collist-card__desc">{{ collection.description | strip_html | truncate: 80 }}</p>
               {%- endif -%}
               <span class="collist-card__cta">
-                {{ collection.products_count }} product{% if collection.products_count != 1 %}s{% endif %} →
+                {{ 'collections.product_count' | t: count: collection.products_count }} →
               </span>
             </div>
           </a>
@@ -52,7 +47,9 @@
     </div>
 
     {%- if paginate.pages > 1 -%}
-      <div class="pagination">{{ paginate | default_pagination }}</div>
+      {%- assign prev_label = 'general.pagination.previous' | t -%}
+      {%- assign next_label = 'general.pagination.next' | t -%}
+      <div class="pagination">{{ paginate | default_pagination: next: next_label, previous: prev_label }}</div>
     {%- endif -%}
 
   </div>
@@ -100,11 +97,12 @@
 {% schema %}
 {
   "name": "Collections list",
+  "enabled_on": { "templates": ["list-collections"] },
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Everything KYN" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by Collection" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Todo KYN" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Compra por colección" },
     { "type": "range", "id": "collections_per_page", "label": "Collections per page", "min": 4, "max": 24, "step": 4, "default": 12 },
-    { "type": "text", "id": "empty_message", "label": "Empty state message", "default": "No collections yet." },
+    { "type": "text", "id": "empty_message", "label": "Empty state message", "default": "Aún no hay colecciones." },
 
     { "type": "header", "content": "Heading typography" },
     { "type": "select", "id": "heading_font", "label": "Heading font", "default": "sans",
@@ -141,7 +139,6 @@
         { "value": "accent", "label": "Accent (Farmhouse serif)" }
       ] },
     { "type": "range", "id": "card_cta_size", "label": "Card CTA size", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 13 }
-  ],
-  "presets": [{ "name": "Collections list" }]
+  ]
 }
 {% endschema %}

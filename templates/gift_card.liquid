@@ -9,7 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap">
+  {{ content_for_header }}
   {{ 'theme.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
   <style>
     @font-face {
       font-family: 'Friendship';
@@ -147,7 +149,7 @@
 </head>
 <body>
   <div class="gc-card">
-    <img class="gc-logo" src="{{ 'kyn-logo.png' | asset_url }}" alt="{{ shop.name }}">
+    <img class="gc-logo" src="{{ 'kyn-logo.png' | asset_url }}" alt="{{ shop.name | escape }}" width="56" height="26">
 
     <p class="gc-eyebrow">Tarjeta de regalo</p>
     <p class="gc-value">{{ gift_card.initial_value | money_without_trailing_zeros }}</p>
@@ -161,7 +163,7 @@
     <div class="gc-divider" aria-hidden="true"></div>
 
     <div class="gc-qr">
-      <canvas id="gc-qr-canvas" width="140" height="140"></canvas>
+      <div id="gc-qr-code" data-identifier="{{ gift_card.qr_identifier | escape }}" aria-label="Código QR de la tarjeta de regalo" role="img"></div>
     </div>
 
     <div class="gc-code-wrap">
@@ -189,17 +191,11 @@
   </div>
 
   <script>
-    (function() {
-      var canvas = document.getElementById('gc-qr-canvas');
-      var qrId = {{ gift_card.qr_identifier | json }};
-      if (!canvas || !qrId) return;
-      var img = document.createElement('img');
-      img.src = 'https://chart.googleapis.com/chart?chs=160x160&cht=qr&chl=' + encodeURIComponent(qrId) + '&choe=UTF-8';
-      img.width = 140;
-      img.height = 140;
-      img.alt = 'Código QR de la tarjeta de regalo';
-      canvas.parentNode.replaceChild(img, canvas);
-    })();
+    window.addEventListener('DOMContentLoaded', function () {
+      var el = document.getElementById('gc-qr-code');
+      if (!el || !el.dataset.identifier || typeof QRCode === 'undefined') return;
+      new QRCode(el, { text: el.dataset.identifier, width: 140, height: 140 });
+    });
   </script>
 </body>
 </html>

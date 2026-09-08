@@ -27,8 +27,8 @@
 
       {%- form 'customer', class: 'newsletter__form' -%}
         <input type="hidden" name="contact[tags]" value="newsletter">
-        <label class="visually-hidden" for="newsletter-email">Email</label>
-        <input id="newsletter-email"
+        <label class="visually-hidden" for="newsletter-email-{{ section.id }}">Email</label>
+        <input id="newsletter-email-{{ section.id }}"
                type="email"
                name="contact[email]"
                placeholder="{{ section.settings.placeholder | escape }}"
@@ -92,6 +92,7 @@
 {% schema %}
 {
   "name": "Newsletter",
+  "disabled_on": { "groups": ["header", "footer"] },
   "settings": [
     { "type": "color", "id": "bg", "label": "Background", "default": "#E5E9F4" },
 

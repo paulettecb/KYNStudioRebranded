@@ -47,6 +47,23 @@
 {%- capture body_heading_font -%}{% render 'font-stack', key: section.settings.body_heading_font %}{%- endcapture -%}
 {%- capture quote_font -%}{% render 'font-stack', key: section.settings.quote_font %}{%- endcapture -%}
 
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": {{ article.title | json }},
+    "url": {{ request.origin | append: article.url | json }},
+    {%- if article.image %}
+    "image": [{{ article.image | image_url: width: 1920 | prepend: 'https:' | json }}],
+    {%- endif %}
+    "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%z' | json }},
+    "dateModified": {{ article.updated_at | date: '%Y-%m-%dT%H:%M:%S%z' | json }},
+    "author": { "@type": "Person", "name": {{ article.author | json }} },
+    "publisher": { "@type": "Organization", "name": {{ shop.name | json }}, "logo": { "@type": "ImageObject", "url": {{ 'kyn-logo.png' | asset_url | prepend: 'https:' | json }} } },
+    "description": {{ article.excerpt_or_content | strip_html | truncate: 300 | json }}
+  }
+</script>
+
 <article class="kyn-article" id="main-article-{{ section.id }}" style="--kyn-accent: {{ accent }}; --kyn-eyebrow: {{ eyebrow_c }};">
 
   {%- if section.settings.show_breadcrumb -%}
@@ -62,9 +79,9 @@
     <header class="kyn-hero kyn-hero--ratio-{{ section.settings.hero_ratio }}{% if section.settings.title_on_hero %} kyn-hero--overlaytitle{% endif %}">
       {%- if article.image -%}
         <img class="kyn-hero__img" src="{{ article.image | image_url: width: 1920 }}"
-             srcset="{{ article.image | image_url: width: 960 }} 960w, {{ article.image | image_url: width: 1920 }} 1920w"
-             sizes="100vw" alt="{{ article.image.alt | default: article.title | escape }}"
-             width="1920" height="820" loading="eager">
+             srcset="{{ article.image | image_url: width: 720 }} 720w, {{ article.image | image_url: width: 960 }} 960w, {{ article.image | image_url: width: 1200 }} 1200w, {{ article.image | image_url: width: 1920 }} 1920w"
+             sizes="(min-width: 900px) {{ section.settings.max_width }}px, 100vw" alt="{{ article.image.alt | default: article.title | escape }}"
+             width="1920" height="820" loading="eager" fetchpriority="high">
       {%- else -%}
         <div class="kyn-hero__img kyn-hero__img--placeholder" aria-hidden="true"></div>
       {%- endif -%}
@@ -95,7 +112,7 @@
   <div class="kyn-article__grid{% unless section.settings.show_sidebar %} kyn-article__grid--nosidebar{% endunless %}">
 
     <div class="kyn-article__main">
-      {%- if section.settings.reading_controls_position == 'body' and section.settings.show_reading_controls -%}
+      {%- if section.settings.show_reading_controls -%}
         {% render 'reading-controls', enable_bionic: section.settings.enable_bionic %}
       {%- endif -%}
 
@@ -111,13 +128,13 @@
         <nav class="kyn-article__nav">
           {%- if blog.previous_article -%}
             <a href="{{ blog.previous_article }}" class="kyn-article__navlink kyn-article__navlink--prev">
-              <span class="kyn-article__navdir">← {{ 'reading.prev' | t | default: 'Anterior' }}</span>
+              <span class="kyn-article__navdir">← {{ 'reading.prev' | t }}</span>
               <span class="kyn-article__navt">{{ blog.previous_article.title | truncate: 60 }}</span>
             </a>
           {%- endif -%}
           {%- if blog.next_article -%}
             <a href="{{ blog.next_article }}" class="kyn-article__navlink kyn-article__navlink--next">
-              <span class="kyn-article__navdir">{{ 'reading.next' | t | default: 'Siguiente' }} →</span>
+              <span class="kyn-article__navdir">{{ 'reading.next' | t }} →</span>
               <span class="kyn-article__navt">{{ blog.next_article.title | truncate: 60 }}</span>
             </a>
           {%- endif -%}
@@ -254,7 +271,7 @@
      the section ID would out-rank that rule and silently break the "sans" toggle. */
   .kyn-article__body.rte h2 { font-family: {{ body_heading_font }}; font-size: {{ section.settings.body_heading_size }}px; line-height: 1.25; color: var(--periwinkle-600); margin: 36px 0 14px; }
   .kyn-article__body.rte h3 { font-family: {{ body_heading_font }}; font-size: {{ section.settings.body_heading_size | times: 0.769 | round }}px; color: var(--periwinkle-600); margin: 28px 0 12px; }
-  .kyn-article__body.rte a { color: var(--periwinkle-600); }
+  .kyn-article__body.rte a { color: var(--periwinkle-800); text-decoration: underline; text-underline-offset: 2px; }
   .kyn-article__body.rte img { border-radius: 12px; max-width: 100%; height: auto; }
   .kyn-article__body.rte ul, .kyn-article__body.rte ol { padding-left: 24px; margin: 0 0 20px; }
   .kyn-article__body.rte li { margin-bottom: 8px; }
@@ -337,6 +354,7 @@
 {
   "name": "Article",
   "tag": "section",
+  "enabled_on": { "templates": ["article"] },
   "settings": [
     { "type": "header", "content": "Layout" },
     { "type": "range", "id": "max_width", "label": "Content max width (px)", "min": 720, "max": 1100, "step": 20, "default": 860 },
@@ -412,7 +430,7 @@
 
     { "type": "header", "content": "Tags" },
     { "type": "checkbox", "id": "show_tags", "label": "Show tags", "default": true },
-    { "type": "text", "id": "tags_heading", "label": "Tags heading", "default": "Tags" },
+    { "type": "text", "id": "tags_heading", "label": "Tags heading", "default": "Etiquetas" },
 
     { "type": "header", "content": "Used in this article" },
     { "type": "text", "id": "used_heading", "label": "Heading", "default": "Se usó en este artículo", "info": "Add products with the blocks below." },
@@ -429,8 +447,6 @@
 
     { "type": "header", "content": "Reading options panel" },
     { "type": "checkbox", "id": "show_reading_controls", "label": "Show reading options panel", "default": true },
-    { "type": "select", "id": "reading_controls_position", "label": "Panel position", "default": "body",
-      "options": [ { "value": "body", "label": "Top of article body" } ] },
     { "type": "checkbox", "id": "enable_bionic", "label": "Enable bionic highlighting (experimental)", "info": "Evidence for this technique is limited. Off by default for readers.", "default": true }
   ],
   "blocks": [
@@ -442,7 +458,6 @@
       ]
     }
   ],
-  "max_blocks": 6,
-  "presets": [{ "name": "Article" }]
+  "max_blocks": 6
 }
 {% endschema %}

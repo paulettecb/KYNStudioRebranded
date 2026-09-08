@@ -14,7 +14,7 @@
       "settings": {
         "eyebrow": "Blogs",
         "posts_per_page": 12,
-        "empty_message": "No posts yet — check back soon."
+        "empty_message": "Aún no hay artículos — vuelve pronto."
       }
     }
   },

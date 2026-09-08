@@ -21,7 +21,7 @@
         leading: p.leading === 'wide' ? 'wide' : 'normal',
         spaced: !!p.spaced,
         sans: !!p.sans,
-        bionic: !!p.bionic
+        bionic: !!p.bionic && !!panel.querySelector('[data-rd="bionic"]')
       };
     } catch (e) {
       return Object.assign({}, DEFAULTS);
@@ -84,7 +84,10 @@
   /* ---- Apply prefs to DOM ---- */
   function apply(prefs) {
     body.classList.remove('rd-size-0', 'rd-size-1', 'rd-size-2', 'rd-leading-normal', 'rd-leading-wide');
-    body.classList.add('rd-size-' + prefs.size, 'rd-leading-' + prefs.leading);
+    /* Only add modifier classes when the reader deviates from the defaults, so the
+       customizer's "Body text size" / line-height settings stay in charge otherwise. */
+    if (prefs.size !== DEFAULTS.size) body.classList.add('rd-size-' + prefs.size);
+    if (prefs.leading !== DEFAULTS.leading) body.classList.add('rd-leading-' + prefs.leading);
     body.classList.toggle('rd-spaced', prefs.spaced);
     body.classList.toggle('rd-sans', prefs.sans);
 

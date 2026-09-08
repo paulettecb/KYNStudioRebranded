@@ -1,0 +1,39 @@
+{%- comment -%}
+  Organization + WebSite structured data for the homepage.
+{%- endcomment -%}
+{%- assign same_as = '' -%}
+{%- assign social_keys = 'social_instagram,social_tiktok,social_youtube,social_facebook,social_pinterest' | split: ',' -%}
+{%- for handle in social_keys -%}
+  {%- assign url = settings[handle] -%}
+  {%- if url != blank -%}
+    {%- assign same_as = same_as | append: url | append: '|' -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign same_as_list = same_as | split: '|' -%}
+{%- assign search_target = shop.url | append: '/search?q=' | append: '{' | append: 'search_term_string' | append: '}' -%}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    "url": {{ shop.url | json }},
+    "logo": {{ 'kyn-logo.png' | asset_url | prepend: 'https:' | json }},
+    "email": {{ shop.email | json }}
+    {%- if same_as_list.size > 0 -%}
+    ,"sameAs": {{ same_as_list | json }}
+    {%- endif -%}
+  }
+</script>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": {{ shop.name | json }},
+    "url": {{ shop.url | json }},
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {{ search_target | json }},
+      "query-input": "required name=search_term_string"
+    }
+  }
+</script>

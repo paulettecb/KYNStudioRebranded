@@ -4,11 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="{{ settings.color_accent }}">
+  <link rel="canonical" href="{{ canonical_url }}">
 
   <title>
     {{ page_title }}
-    {%- if current_tags %} &ndash; tagged {{ current_tags | join: ', ' }}{% endif %}
-    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}
+    {%- if current_tags -%}{%- assign tag_list = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: tag_list }}{%- endif %}
+    {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}
     {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
   </title>
 
@@ -17,23 +18,39 @@
     <meta property="og:description" content="{{ page_description | escape }}">
   {%- endif -%}
 
+  {%- comment -%} Open Graph / Twitter. Image URLs must be absolute (https:) — image_url is protocol-relative. {%- endcomment -%}
   {%- assign kyn_social_image = settings.social_share_image -%}
   {%- if template.name == 'product' and product.featured_media -%}
     {%- assign kyn_social_image = product.featured_media -%}
+  {%- elsif template.name == 'article' and article.image -%}
+    {%- assign kyn_social_image = article.image -%}
+  {%- elsif template.name == 'collection' and collection.image -%}
+    {%- assign kyn_social_image = collection.image -%}
   {%- endif -%}
   {%- if kyn_social_image != blank -%}
-    <meta property="og:image" content="{{ kyn_social_image | image_url: width: 1200 }}">
-    <meta name="twitter:image" content="{{ kyn_social_image | image_url: width: 1200 }}">
+    <meta property="og:image" content="https:{{ kyn_social_image | image_url: width: 1200 }}">
+    <meta property="og:image:secure_url" content="https:{{ kyn_social_image | image_url: width: 1200 }}">
+    <meta property="og:image:width" content="1200">
+    <meta name="twitter:image" content="https:{{ kyn_social_image | image_url: width: 1200 }}">
   {%- else -%}
-    <meta property="og:image" content="{{ 'kyn-preview.svg' | asset_url }}">
-    <meta name="twitter:image" content="{{ 'kyn-preview.svg' | asset_url }}">
+    <meta property="og:image" content="https:{{ 'kyn-logo.png' | asset_url }}">
+    <meta name="twitter:image" content="https:{{ 'kyn-logo.png' | asset_url }}">
   {%- endif -%}
   <meta property="og:title" content="{{ page_title | escape }}">
   <meta property="og:site_name" content="{{ shop.name | escape }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:type" content="{% if template.name == 'product' %}product{% elsif template.name == 'article' %}article{% else %}website{% endif %}">
+  <meta property="og:locale" content="es_MX">
+  {%- if template.name == 'product' -%}
+    <meta property="product:price:amount" content="{{ product.selected_or_first_available_variant.price | money_without_currency | strip_html | remove: ',' }}">
+    <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+  {%- endif -%}
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title | escape }}">
 
   {%- if settings.favicon != blank -%}
     <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
   {%- else -%}
     <link rel="icon" type="image/png" href="{{ 'kyn-logo.png' | asset_url }}">
   {%- endif -%}
@@ -41,15 +58,20 @@
   {%- if template.name == 'product' -%}
     {% render 'structured-data-product' %}
   {%- endif -%}
+  {%- if template.name == 'index' -%}
+    {% render 'structured-data-organization' %}
+  {%- endif -%}
+
+  <!-- KYN: Custom fonts (preloaded — the hero headline depends on them) -->
+  {{ 'Friendship-Medium.otf' | asset_url | preload_tag: as: 'font', type: 'font/otf', crossorigin: 'anonymous' }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   {{ content_for_header }}
 
   <!-- KYN: Hanken Grotesk from Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- KYN: Custom fonts -->
   <style>
     @font-face {
       font-family: 'Friendship';
@@ -97,6 +119,8 @@
 </head>
 
 <body class="template-{{ template.name }}{% if template.suffix != blank %}-{{ template.suffix }}{% endif %}">
+
+  <a class="skip-link" href="#main-content">{{ 'general.skip_to_content' | t }}</a>
 
   {%- sections 'header-group' -%}
 

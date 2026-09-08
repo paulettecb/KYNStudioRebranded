@@ -27,13 +27,21 @@
 
     <div class="color-story__grid">
       {%- for block in section.blocks -%}
-        <a href="{{ block.settings.link }}" class="color-swatch" {{ block.shopify_attributes }}>
+        {%- if block.settings.link != blank -%}
+          <a href="{{ block.settings.link }}" class="color-swatch" {{ block.shopify_attributes }}>
+        {%- else -%}
+          <div class="color-swatch color-swatch--static" {{ block.shopify_attributes }}>
+        {%- endif -%}
           <span class="color-swatch__dot" style="background: {{ block.settings.color }};"></span>
           <span class="color-swatch__name">{{ block.settings.name | escape }}</span>
           {%- if block.settings.note != blank -%}
             <span class="color-swatch__note">{{ block.settings.note | escape }}</span>
           {%- endif -%}
-        </a>
+        {%- if block.settings.link != blank -%}
+          </a>
+        {%- else -%}
+          </div>
+        {%- endif -%}
       {%- endfor -%}
     </div>
   </div>
@@ -78,11 +86,12 @@
 {% schema %}
 {
   "name": "Color story",
+  "disabled_on": { "groups": ["header", "footer"] },
   "settings": [
     { "type": "color", "id": "bg", "label": "Background", "default": "#F4F0E8" },
 
     { "type": "header", "content": "Eyebrow" },
-    { "type": "text",  "id": "eyebrow", "label": "Eyebrow", "default": "Colors that suit them" },
+    { "type": "text",  "id": "eyebrow", "label": "Eyebrow", "default": "Colores que combinan" },
     { "type": "select", "id": "eyebrow_font", "label": "Eyebrow font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -92,7 +101,7 @@
     { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 },
 
     { "type": "header", "content": "Title" },
-    { "type": "text",  "id": "title", "label": "Title", "default": "Made in shades they look" },
+    { "type": "text",  "id": "title", "label": "Title", "default": "Colores curados para verse" },
     { "type": "select", "id": "title_font", "label": "Title font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -100,7 +109,7 @@
         { "value": "accent", "label": "Accent (Farmhouse serif)" }
       ] },
     { "type": "range", "id": "title_size", "label": "Title size", "min": 24, "max": 72, "step": 2, "unit": "px", "default": 40 },
-    { "type": "text",  "id": "spark_word", "label": "Spark word", "default": "good in." },
+    { "type": "text",  "id": "spark_word", "label": "Spark word", "default": "increíble." },
     { "type": "select", "id": "spark_font", "label": "Spark word font", "default": "display",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -110,7 +119,7 @@
     { "type": "range", "id": "spark_size", "label": "Spark word size", "min": 20, "max": 80, "step": 2, "unit": "px", "default": 42 },
 
     { "type": "header", "content": "Lead text" },
-    { "type": "text",  "id": "lead", "label": "Lead", "default": "Every color is hand-picked, small-batch, and looks like it belongs on them." },
+    { "type": "text",  "id": "lead", "label": "Lead", "default": "Cada color se elige a mano, en lotes pequeños, para que se vea como si fuera suyo." },
     { "type": "select", "id": "lead_font", "label": "Lead font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
@@ -143,7 +152,7 @@
       "settings": [
         { "type": "color", "id": "color", "label": "Color", "default": "#8795D2" },
         { "type": "text", "id": "name", "label": "Name", "default": "Periwinkle" },
-        { "type": "text", "id": "note", "label": "Note (optional)", "default": "the original" },
+        { "type": "text", "id": "note", "label": "Note (optional)", "default": "el original" },
         { "type": "url", "id": "link", "label": "Link to collection / product" }
       ]
     }
@@ -153,12 +162,9 @@
     {
       "name": "Color story",
       "blocks": [
-        { "type": "swatch", "settings": { "color": "#8795D2", "name": "Periwinkle", "note": "the original" } },
-        { "type": "swatch", "settings": { "color": "#D4B89E", "name": "Sand", "note": "warm neutral" } },
-        { "type": "swatch", "settings": { "color": "#1F1F23", "name": "Onyx", "note": "everyday classic" } },
-        { "type": "swatch", "settings": { "color": "#C9A4B8", "name": "Blush", "note": "soft & quiet" } },
-        { "type": "swatch", "settings": { "color": "#6F8C7A", "name": "Sage", "note": "outdoors-ready" } },
-        { "type": "swatch", "settings": { "color": "#E6DACB", "name": "Bone", "note": "minimal & clean" } }
+        { "type": "swatch", "settings": { "color": "#8795d2", "name": "Skyline Blue", "note": "el original" } },
+        { "type": "swatch", "settings": { "color": "#5f6b32", "name": "Olive District", "note": "el statement" } },
+        { "type": "swatch", "settings": { "color": "#8a5a3c", "name": "Brownstone", "note": "el clásico" } }
       ]
     }
   ]
