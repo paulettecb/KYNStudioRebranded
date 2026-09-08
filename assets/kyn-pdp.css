@@ -600,6 +600,7 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--periwinkle-50);
+  container-type: inline-size;
 }
 .pdp-3d[hidden] { display: none; }
 .pdp-3d__canvas {
@@ -695,7 +696,12 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
   .pdp-gallery.is-3d .pdp-3d { box-shadow: var(--shadow-md); }
   .pdp-seg button { padding: 7px 11px; font-size: 12px; }
   .pdp-3d__hint { display: none; }
-  .pdp-3d__combo { max-width: 60%; }
+}
+/* En un marco angosto (celular, tablets) el botón de agarradera y el combo se
+   encimaban; los nombres ya se leen en el formulario, así que quedan los puntos */
+@container (max-width: 470px) {
+  .pdp-3d__combo-text { display: none; }
+  .pdp-3d__combo { padding: 9px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pdp-seg button, .pdp-3d__handle svg { transition: none; }

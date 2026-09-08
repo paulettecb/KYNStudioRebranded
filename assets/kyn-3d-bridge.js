@@ -100,7 +100,10 @@
         dot.style.background = hex(v);
         combo.appendChild(dot);
       });
-      combo.appendChild(document.createTextNode(state.corta + ' × ' + state.larga + ' · ' + cfg.largo + ' m'));
+      var text = document.createElement('span');
+      text.className = 'pdp-3d__combo-text';
+      text.textContent = state.corta + ' × ' + state.larga + ' · ' + cfg.largo + ' m';
+      combo.appendChild(text);
     }
 
     function setStatus(text) {
