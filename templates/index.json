@@ -18,7 +18,7 @@
             "label": "Waterproof",
             "label_font": "display",
             "label_size": 16,
-            "sub": "Enjuaga y listo!",
+            "sub": "¡Enjuaga y listo!",
             "sub_font": "sans",
             "sub_size": 13
           }
@@ -37,7 +37,7 @@
         "small_batch": {
           "type": "trust",
           "settings": {
-            "label": "Construídos por orden",
+            "label": "Bajo pedido",
             "label_font": "display",
             "label_size": 16,
             "sub": "Hecho a mano",
@@ -87,7 +87,7 @@
           "type": "feature",
           "settings": {
             "icon": "droplets",
-            "title": "100% waterproof",
+            "title": "100% impermeable",
             "title_font": "display",
             "title_size": 15,
             "subtitle": "Biothane® — enjuaga y seca.",
@@ -114,7 +114,7 @@
             "title": "Hecho a mano",
             "title_font": "display",
             "title_size": 15,
-            "subtitle": "Batches pequeños, cortado & ensamblado in-house.",
+            "subtitle": "Lotes pequeños, cortados y ensamblados en casa.",
             "subtitle_font": "sans",
             "subtitle_size": 13
           }
@@ -143,13 +143,13 @@
     "featured": {
       "type": "featured-products",
       "settings": {
-        "eyebrow": "Best sellers",
+        "eyebrow": "Los favoritos de la manada",
         "eyebrow_font": "sans",
         "eyebrow_size": 13,
-        "heading": "La manada ama! estas piezas, conócelas",
+        "heading": "La manada ama estas piezas, conócelas",
         "heading_font": "sans",
         "heading_size": 48,
-        "spark_word": "ama!",
+        "spark_word": "ama",
         "spark_font": "display",
         "spark_size": 48,
         "collection": "the-kyn-modular-system",
@@ -165,48 +165,38 @@
     "color-story": {
       "type": "color-story",
       "blocks": {
-        "swatch_VbiqHw": {
+        "skyline": {
           "type": "swatch",
           "settings": {
             "color": "#8795d2",
-            "name": "Periwinkle",
-            "note": "the original",
-            "link": ""
+            "name": "Skyline Blue",
+            "note": "el original",
+            "link": "shopify://collections/all"
           }
         },
-        "periwinkle": {
+        "olive": {
           "type": "swatch",
           "settings": {
-            "color": "#2f3658",
-            "name": "Dark Navy",
-            "note": "the elegance",
-            "link": ""
+            "color": "#5f6b32",
+            "name": "Olive District",
+            "note": "el statement",
+            "link": "shopify://collections/all"
           }
         },
-        "sand": {
+        "brownstone": {
           "type": "swatch",
           "settings": {
-            "color": "#5e5c43",
-            "name": "Olive",
-            "note": "the statement",
-            "link": ""
-          }
-        },
-        "onyx": {
-          "type": "swatch",
-          "settings": {
-            "color": "#934926",
-            "name": "Camel",
-            "note": "everyday classic",
-            "link": ""
+            "color": "#8a5a3c",
+            "name": "Brownstone",
+            "note": "el clásico",
+            "link": "shopify://collections/all"
           }
         }
       },
       "block_order": [
-        "swatch_VbiqHw",
-        "periwinkle",
-        "sand",
-        "onyx"
+        "skyline",
+        "olive",
+        "brownstone"
       ],
       "settings": {
         "bg": "#c9d0ed",
@@ -216,7 +206,7 @@
         "title": "Colores curados y elegidos para verse",
         "title_font": "sans",
         "title_size": 40,
-        "spark_word": "increible.",
+        "spark_word": "increíble.",
         "spark_font": "display",
         "spark_size": 42,
         "lead": "",
