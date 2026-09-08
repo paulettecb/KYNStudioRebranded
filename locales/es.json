@@ -61,6 +61,18 @@
       "recipient_name": "Nombre del destinatario (opcional)",
       "message": "Mensaje (opcional)",
       "send_on": "Enviar el (opcional)"
+    },
+    "constructor": {
+      "photos": "Fotos",
+      "design": "Diseña la tuya",
+      "mode_label": "Modo de la galería",
+      "thumb_label": "Ver tu correa en 3D",
+      "canvas_label": "Tu correa en 3D. Arrastra para girarla.",
+      "drag_hint": "Gira con el dedo",
+      "close_handle": "Cerrar agarradera",
+      "open_handle": "Abrir agarradera",
+      "loading": "Armando tu correa…",
+      "unsupported": "Tu navegador no puede mostrar el 3D."
     }
   },
   "cart": {

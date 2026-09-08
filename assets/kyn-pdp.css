@@ -562,6 +562,151 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
 .rte ul { padding-left: 20px; margin: 8px 0; }
 .rte a { color: var(--periwinkle-700); text-decoration: underline; }
 
+/* ── Constructor 3D · "Diseña la tuya" (snippets/pdp-3d.liquid) ── */
+.pdp-seg {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  background: rgba(255, 255, 255, .92);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+}
+.pdp-seg[hidden] { display: none; }
+.pdp-seg button {
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-pill);
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-700);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.pdp-seg button[aria-pressed="true"] { background: var(--ink-900); color: var(--white); }
+.pdp-seg button:focus-visible { outline: 2px solid var(--periwinkle-700); outline-offset: 2px; }
+
+.pdp-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--periwinkle-50);
+  container-type: inline-size;
+}
+.pdp-3d[hidden] { display: none; }
+.pdp-3d__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+.pdp-3d__canvas:active { cursor: grabbing; }
+.pdp-3d__hint,
+.pdp-3d__status,
+.pdp-3d__handle,
+.pdp-3d__combo {
+  position: absolute;
+  z-index: 3;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-700);
+  background: rgba(255, 255, 255, .92);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+}
+.pdp-3d__hint { top: 14px; left: 14px; padding: 6px 10px; font-weight: 500; color: var(--ink-500); box-shadow: none; background: rgba(255, 255, 255, .75); }
+.pdp-3d__hint[hidden] { display: none; }
+.pdp-3d__status {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 9px 16px;
+  font-size: 13px;
+}
+.pdp-3d__status[hidden] { display: none; }
+.pdp-3d__handle {
+  left: 14px;
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 10px;
+  border: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pdp-3d__handle[hidden] { display: none; }
+.pdp-3d__handle svg { width: 16px; height: 16px; }
+.pdp-3d__handle[aria-pressed="true"] svg { transform: rotate(45deg); }
+.pdp-3d__handle:focus-visible { outline: 2px solid var(--periwinkle-700); outline-offset: 2px; }
+.pdp-3d__combo {
+  right: 14px;
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  max-width: calc(100% - 28px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pdp-3d__combo:empty { display: none; }
+.pdp-3d__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12);
+}
+.pdp-thumb--3d {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  background: var(--periwinkle-50);
+  color: var(--periwinkle-800);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+.pdp-thumb--3d svg { width: 22px; height: 22px; }
+
+@media (max-width: 900px) {
+  .pdp-gallery.is-3d .pdp-main-wrap { position: sticky; top: var(--pdp-sticky-top, 8px); z-index: 4; }
+  .pdp-gallery.is-3d .pdp-main-img { aspect-ratio: 5 / 4; }
+  .pdp-gallery.is-3d .pdp-3d { box-shadow: var(--shadow-md); }
+  .pdp-seg button { padding: 7px 11px; font-size: 12px; }
+  .pdp-3d__hint { display: none; }
+}
+/* En un marco angosto (celular, tablets) el botón de agarradera y el combo se
+   encimaban; los nombres ya se leen en el formulario, así que quedan los puntos */
+@container (max-width: 470px) {
+  .pdp-3d__combo-text { display: none; }
+  .pdp-3d__combo { padding: 9px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdp-seg button, .pdp-3d__handle svg { transition: none; }
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .pdp-wrap {

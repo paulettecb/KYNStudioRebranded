@@ -1,0 +1,109 @@
+{%- comment -%}
+  Constructor 3D en la galería del producto ("Diseña la tuya").
+
+  Se muestra cuando el ajuste "Constructor 3D" está activo, el producto tiene
+  la etiqueta configurada (constructor-3d) y tiene las dos opciones de
+  acabado: la tira corta (agarradera) y la tira larga. Los mismos círculos de
+  color del formulario pintan la correa; no hay nada que guardar.
+
+  Params:
+    - product  {Object}
+    - section  {Object}  — usa section.settings.enable_3d / tag_3d / option_corta / option_larga
+
+  Emite el control Fotos / Diseña la tuya, la capa 3D (oculta hasta que se
+  toca) y un JSON con lo que vive en Shopify. El motor (assets/kyn-3d.js) y
+  los modelos solo se descargan al tocar "Diseña la tuya"; sin JavaScript o
+  sin WebGL2 la galería se queda como está.
+{%- endcomment -%}
+{%- liquid
+  assign show_3d = false
+  assign tag_3d = section.settings.tag_3d | default: 'constructor-3d'
+  if section.settings.enable_3d and product.tags contains tag_3d
+    assign show_3d = true
+  endif
+
+  assign name_corta = section.settings.option_corta | default: 'Primary Finish' | downcase | strip
+  assign name_larga = section.settings.option_larga | default: 'Secondary Finish' | downcase | strip
+  assign idx_corta = -1
+  assign idx_larga = -1
+  for option in product.options_with_values
+    assign oname = option.name | downcase | strip
+    if oname == name_corta
+      assign idx_corta = forloop.index0
+    elsif oname == name_larga
+      assign idx_larga = forloop.index0
+    endif
+  endfor
+  if idx_corta < 0 or idx_larga < 0
+    assign show_3d = false
+  endif
+
+  assign largo = product.metafields.kyn.largo_m | default: ''
+  if largo == blank
+    assign pista = product.handle | append: ' ' | append: product.title | downcase
+    if pista contains '1-2' or pista contains '1.2' or pista contains '1,2'
+      assign largo = '1.2'
+    else
+      assign largo = '1.6'
+    endif
+  endif
+-%}
+{%- if show_3d -%}
+  {%- assign cv = product.selected_or_first_available_variant -%}
+  {%- assign draco_wrapper = 'kyn3d-draco_wasm_wrapper.js' | asset_url -%}
+  {%- assign draco_path = draco_wrapper | split: 'draco_wasm_wrapper.js' | first -%}
+  {%- capture finishes_json -%}
+    {
+    {%- for option in product.options_with_values -%}
+      {%- if forloop.index0 == idx_corta or forloop.index0 == idx_larga -%}
+        {%- for value in option.values -%}
+          {%- capture hex -%}{% render 'color-hex', value: value %}{%- endcapture -%}
+          {{ value | json }}: {{ hex | strip | json }},
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+    "": ""
+    }
+  {%- endcapture -%}
+
+  <div class="pdp-3d" id="kyn3d-{{ section.id }}" data-kyn3d data-section-id="{{ section.id }}" hidden>
+    <canvas class="pdp-3d__canvas" aria-label="{{ 'products.constructor.canvas_label' | t }}"></canvas>
+    <span class="pdp-3d__hint" data-kyn3d-hint aria-hidden="true">{{ 'products.constructor.drag_hint' | t }}</span>
+    <p class="pdp-3d__status" data-kyn3d-status role="status" hidden></p>
+    <button type="button" class="pdp-3d__handle" data-kyn3d-handle aria-pressed="true" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg>
+      <span>{{ 'products.constructor.open_handle' | t }}</span>
+    </button>
+    <span class="pdp-3d__combo" data-kyn3d-combo aria-live="polite"></span>
+  </div>
+  <div class="pdp-seg" role="group" aria-label="{{ 'products.constructor.mode_label' | t }}" data-kyn3d-seg hidden>
+    <button type="button" data-kyn3d-mode="photos" aria-pressed="true">{{ 'products.constructor.photos' | t }}</button>
+    <button type="button" data-kyn3d-mode="3d" aria-pressed="false">{{ 'products.constructor.design' | t }}</button>
+  </div>
+  <script type="application/json" id="kyn3d-config-{{ section.id }}">
+  {
+    "largo": {{ largo | json }},
+    "idxCorta": {{ idx_corta }},
+    "idxLarga": {{ idx_larga }},
+    "finishes": {{ finishes_json }},
+    "initial": { "corta": {{ cv.options[idx_corta] | json }}, "larga": {{ cv.options[idx_larga] | json }} },
+    "engine": {{ 'kyn-3d.js' | asset_url | json }},
+    "dracoPath": {{ draco_path | json }},
+    "models": {
+      "mosqueton-perno.glb": {{ 'kyn3d-mosqueton-perno.glb' | asset_url | json }},
+      "mosqueton-gatillo.glb": {{ 'kyn3d-mosqueton-gatillo.glb' | asset_url | json }},
+      "d-ring.glb": {{ 'kyn3d-d-ring.glb' | asset_url | json }},
+      "tornillo-macho.glb": {{ 'kyn3d-tornillo-macho.glb' | asset_url | json }},
+      "tornillo-hembra.glb": {{ 'kyn3d-tornillo-hembra.glb' | asset_url | json }}
+    },
+    "strings": {
+      "thumbLabel": {{ 'products.constructor.thumb_label' | t | json }},
+      "loading": {{ 'products.constructor.loading' | t | json }},
+      "unsupported": {{ 'products.constructor.unsupported' | t | json }},
+      "openHandle": {{ 'products.constructor.open_handle' | t | json }},
+      "closeHandle": {{ 'products.constructor.close_handle' | t | json }}
+    }
+  }
+  </script>
+  <script src="{{ 'kyn-3d-bridge.js' | asset_url }}" defer></script>
+{%- endif -%}

@@ -11,9 +11,10 @@ Shopify Online Store 2.0 theme built from the **KYN Design System**. Renders the
 - **Layout** — `layout/theme.liquid` (global wrapper: canonical, Open Graph, fonts, skip link, structured data), `layout/password.liquid` (shell for the password page)
 - **Templates** — home (`index.json`), product (`product.json`), collection, cart, search, blog, article, page, `page.contact.json` (contact form), list-collections, 404, `password.json`, gift card
 - **Sections** — announcement bar, header/footer (+ groups), hero, trust band, featured products, color story, story, video spotlight, reviews (manual testimonial blocks + app blocks — not a reviews app by itself), newsletter, and the `main-*` sections backing every template above (`main-product`, `main-cart`, `main-collection`, `main-search`, `main-blog`, `main-article`, `main-page`, `main-contact`, `main-list-collections`, `main-404`, `main-password`). `main-*` sections are restricted to their template with `enabled_on`.
-- **Snippets** — `product-card`, `product-swatches` (variant/colour pills), `color-hex` (single colour-name → hex map shared by cards and swatches), `pdp-personalization-zone` (engraving/personalization line-item properties), `structured-data-product` (schema.org Product + BreadcrumbList + AggregateRating from `reviews.*` metafields), `structured-data-organization` (Organization + WebSite on the home page), `font-stack`, `icon`, `reading-controls`
+- **Snippets** — `product-card`, `product-swatches` (variant/colour pills), `color-hex` (single colour-name → hex map shared by cards, swatches and the 3D constructor), `pdp-3d` (the "Diseña la tuya" 3D constructor inside the product gallery, see below), `pdp-personalization-zone` (engraving/personalization line-item properties), `structured-data-product` (schema.org Product + BreadcrumbList + AggregateRating from `reviews.*` metafields), `structured-data-organization` (Organization + WebSite on the home page), `font-stack`, `icon`, `reading-controls`
 - **Locales** — `locales/es.json` (the published locale) and `locales/en.default.json`. All shopper-facing chrome strings go through `| t`; section copy lives in section settings.
 - **Assets** — `theme.css`, `kyn-pdp.css`, `kyn-reading.css`/`.js`, brand fonts (`Farmhouse.otf`, `Friendship-Medium.otf`), `kyn-logo.png`, `kyn-preview.svg`
+- **3D constructor** — `assets/kyn-3d.js` (Three.js engine built from `constructor/`, loaded on demand), `assets/kyn-3d-bridge.js` (glue between the gallery and the engine), `assets/kyn3d-*.glb` (hardware models) and `assets/kyn3d-draco_*` (Draco decoder). Products tagged `constructor-3d` get a **Fotos / Diseña la tuya** switch in the gallery; the product's finish swatches paint the leash live (short strap = Primary Finish, long strap = Secondary Finish). See [`constructor/README.md`](constructor/README.md) for how the engine is regenerated from the `kyn-catalogo` repo.
 
 ## Validation
 
@@ -54,6 +55,14 @@ Two Liquid rules that already bit this theme once:
 9. **Password page** — the customizer shows a "Password page" section when the store is password-protected; the admin password message takes precedence over the section text.
 10. **Announcement bar** — add it to the header group from the editor (up to 4 messages).
 
+## 3D constructor ("Diseña la tuya")
+
+- **Where:** product gallery, only for products tagged `constructor-3d` (The Urban Leash 1.2 m and 1.6 m today) and only when the product has both finish options. Everything else is untouched; without WebGL2 or JavaScript the gallery stays as it is.
+- **What drives it:** the normal variant swatches. `sections/main-product.liquid` dispatches a `kyn:variant` event on every variant change; `assets/kyn-3d-bridge.js` maps the selected values to hex through `snippets/color-hex.liquid` and repaints the 3D leash. Nothing to save: what the shopper sees is the variant that goes to the cart.
+- **Length:** locked per product. Read from the `kyn.largo_m` metafield when present, otherwise `1.2` if the handle/title mentions 1.2, else `1.6`.
+- **Settings:** Customizer › Product information › *Constructor 3D* — enable/disable, activating tag, and the option names for the short strap (handle) and long strap.
+- **Weight:** the engine (626 KB, 165 KB gzip), decoder and models download only when someone opens "Diseña la tuya"; the product page itself does not get heavier.
+
 ## Notes on fonts & swashes
 
 - **Hanken Grotesk** loads from Google Fonts — the workhorse font, used for everything structural.
@@ -70,6 +79,7 @@ Two Liquid rules that already bit this theme once:
 ```
 .
 ├── assets/
+├── constructor/        # source + build of assets/kyn-3d.js (not uploaded to Shopify)
 ├── config/
 │   ├── settings_data.json
 │   └── settings_schema.json
