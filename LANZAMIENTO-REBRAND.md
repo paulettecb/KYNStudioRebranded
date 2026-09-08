@@ -72,21 +72,34 @@ Header (Carrito, Menú, Buscar, Cuenta), búsqueda completa, página 404, lista 
 
 Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 después.** Cada punto dice quién y dónde.
 
-### P0 · Antes de publicar (Shopify admin, ~2 horas)
+### P0 · Antes de publicar (Shopify admin)
 
-1. **Políticas legales.** Configuración › Políticas. Crear *Política de envíos*, *Política de devoluciones* y *Términos del servicio*, y revisar el *Aviso de privacidad* (LFPDPPP). El tema ya las enlaza solo (pie de página y pestaña "Envío y devoluciones" del PDP). Deben coincidir con lo que promete el home: "Envíos gratis en todos nuestros productos" y "1 año de garantía en defectos de construcción" (sección Trust band). Si alguna de esas dos promesas no va, editar la sección.
-2. **Menú del pie "Nosotros".** Tienda online › Navegación › menú "footer" (hoy solo tiene "Search"). Sugerido: Nuestra historia (/pages/our-story), Por qué Biothane (/pages/why-biothane), Por qué latón sólido (/pages/why-solid-brass), Contacto (/pages/contact), Buscar (/search). Opcional: renombrar "All About Our Dogs" en el menú principal.
-3. **Página de contacto.** Tienda online › Páginas › "Contact": cambiar el título a "Contacto" y asignarle la plantilla **page.contact** (aparece después de publicar/sincronizar este tema).
-4. **Logo del header.** El archivo actual (A-2.png) es 4:3 y a 30 px de alto se ve como un cuadrito de 40 px. Subir un wordmark horizontal (PNG transparente o SVG) en Personalizar › Header, y ajustar "Logo height".
-5. **Meses sin intereses.** Configuración › Pagos: confirmar que Mercado Pago (o el proveedor activo) tiene meses sin intereses. Si no, desactivar "Mostrar leyenda de pagos a meses" en Personalizar › Product information. Publicar una promesa de MSI que el checkout no cumple es un riesgo con PROFECO.
-6. **Reseñas.** Decidir: (a) agregar el bloque de app de Judge.me a la sección Reviews del home y a la plantilla de producto (ya soportan bloques de app), o (b) escribir reseñas reales con permiso de las clientas, o (c) dejar la sección oculta como quedó. No usar nombres inventados.
-7. **Textos del home.** Revisar en Personalizar › Página de inicio: "Algo lindo está por llegar." (video spotlight: era teaser de prelanzamiento), eyebrow "Best sellers" (en inglés y la colección mostrada es The KYN Walking System), "Construídos por orden" → "Construidos bajo pedido", "increible." → "increíble.", "Enjuaga y listo!" → "¡Enjuaga y listo!", "Batches pequeños… in-house" → "Lotes pequeños, cortado y ensamblado en casa".
-8. **Color story.** Los swatches dicen Periwinkle / Dark Navy / Olive / Camel con notas en inglés, pero los acabados que se venden son Skyline Blue / Olive District / Brownstone. Renombrar, poner notas en español y enlazar cada uno (por ejemplo a /collections/all).
-9. **Videos generados por IA.** El video spotlight (`gemini_generated_video…`) y uno de los videos de la sección Story (`Puedes_cambiar_el_fondo_a_Peri.mp4`) son generados. Para una marca hecha a mano conviene material real del taller o quitar la sección.
-10. **Personalización por producto.** El bloque "Personalizar nombre" sale en todos los productos (correas largas, crossbody, collar). Decidir cuáles se graban. Si no son todos: duplicar la plantilla de producto (product.personalizable) con el bloque y asignarla solo a los grabables, y quitar el bloque de la plantilla base. Conciliar con la opción "Personalization: No/Si" del producto en borrador.
-11. **Etiquetas de productos.** El tema usa `new` / `new-drop` (badge "new ♥"), `best-seller` y `personalize`. Hoy ningún producto las tiene. Etiquetar lo que corresponda.
-12. **Catálogo.** Traffic Handle está en borrador desde marzo; hay un borrador duplicado "Urban Leash 1.6m — Brownstone / Olive District"; la Long Leash 5m tiene variantes a $1,240 y $1,420 (confirmar cuál es el bueno); el Urban Collar (destino del botón secundario del hero) tiene 1 unidad y una sola variante sin acabados. Sin SKUs ni títulos SEO (ver PR #42, sesión S2).
-13. **Publicar y redirigir.** Tienda online › Temas › publicar `KYNStudioRebranded/main`. Antes, anotar las URLs del tema anterior que cambian y crear redirecciones (Navegación › Redirecciones de URL). Quitar la contraseña de la tienda al final.
+**Estado al 8 de septiembre por la tarde:** ✅ ya quedó hecho (por API o en este repo); ⏳ sigue en tus manos porque esta sesión no tiene ese permiso o es una decisión tuya.
+
+1. ⏳ **Políticas legales.** Los tres textos están en `POLITICAS-PARA-PEGAR.md`, listos para Configuración › Políticas (el acceso de esta sesión no incluye `write_legal_policies`). Además hay que crear la tarifa de envío gratis para pedidos mayores a $1,000 en Configuración › Envíos y entregas › Tarifas. El home, la pestaña "Envío y devoluciones" del PDP y las políticas ya dicen lo mismo.
+2. ✅ **Menú del pie "Nosotros".** Creado por API: Nuestra historia, Por qué Biothane, Por qué latón sólido, Contacto, Buscar.
+3. ✅ **Página de contacto.** Título "Contacto" y plantilla `page.contact` asignada.
+4. ✅ **Logo del header.** El tema usa el wordmark horizontal incluido (`assets/kyn-logo.png`). Si quieres otro archivo, súbelo en Personalizar › Header.
+5. ✅ **Meses sin intereses.** Decisión: 6 MSI con Mercado Pago; la leyenda del PDP sigue activa. Solo confirma en Configuración › Pagos que Mercado Pago tenga las cuotas activadas.
+6. ⏳ **Reseñas.** No hace falta Judge.me: la sección Reviews del home acepta bloques manuales (estrellas, cita, nombre, nombre del perro y foto opcional). Mándame las reseñas reales, con permiso de las clientas, y las cargo en `templates/index.json`; o agrégalas tú en Personalizar › Reviews › Agregar bloque y activa la sección (hoy está desactivada). Judge.me queda como opción para más adelante, si quieres que las clientas las escriban solas desde el correo posterior a la compra.
+7. ✅ **Textos del home.** Corregidos en `templates/index.json`. Queda uno: el título del video spotlight sigue diciendo "Algo lindo está por llegar" (era teaser de prelanzamiento). Dime el texto nuevo o cámbialo en Personalizar › Video spotlight. El video se queda.
+8. ✅ **Color story.** Skyline Blue / Olive District / Brownstone, notas en español y enlace a la colección.
+9. ⏳ **Nombres de archivos.** Imágenes: listo. Las tres `ChatGPT_Image_…png` de The Urban Leash ahora se llaman `kyn-urban-leash-01/02/03.png` y tienen texto alternativo. Videos: la API de Shopify solo permite renombrar imágenes y archivos genéricos, no videos, y esta sesión no puede descargarlos del CDN para resubirlos con otro nombre. El paso es tuyo: en Contenido › Archivos sube los mismos videos con estos nombres y avísame para apuntar el tema a los nuevos (o elígelos tú en Personalizar › Story y Video spotlight). Los originales no se tocaron porque el tema publicado hoy los usa.
+
+   | Video actual | Súbelo como | Dónde se usa |
+   |---|---|---|
+   | `mp_.mp4` | `kyn-historia-01.mp4` | Story, video 1 (tema nuevo y tema en vivo) |
+   | `Puedes_cambiar_el_fondo_a_Peri.mp4` | `kyn-historia-02.mp4` | Story, video 2 (tema nuevo y tema en vivo) |
+   | `gemini_generated_video_207DBF5A.mp4` | `kyn-spotlight.mp4` | Video spotlight (tema nuevo) |
+   | `Whisk_m2n3ymnlbznmljz40iykjgotitm0qtl1mgn40so.mov` | `kyn-clip-01.mov` | Tema en vivo |
+   | `Whisk_m2n3ymnlbznmljz40iykjgotitm0qtl1mgn40so.mp4` | `kyn-clip-01.mp4` | Sin uso |
+   | `gemini_generated_video_2C3E92CC.mp4` | `kyn-clip-02.mp4` | Sin uso |
+
+   Cuando el tema nuevo esté publicado, los archivos viejos se pueden borrar desde Contenido › Archivos.
+10. ✅ **Personalización.** El bloque de grabado se quitó de la plantilla de producto (ningún producto se graba por ahora). Sigue disponible en el editor para cuando vuelva.
+11. ✅ **Etiquetas.** `best-seller` en The Urban Crossbody y The Urban Leash 1.6 m. Si quieres el badge "new ♥" en algún producto, etiquétalo `new`.
+12. ⏳ **Catálogo.** Traffic Handle está en borrador desde marzo; hay un borrador duplicado "Urban Leash 1.6m — Brownstone / Olive District"; la Long Leash 5m tiene variantes a $1,240 y $1,420 (confirmar cuál es el bueno); el Urban Collar (destino del botón secundario del hero) tiene 1 unidad y una sola variante sin acabados. Sin SKUs ni títulos SEO (ver PR #42, sesión S2).
+13. ⏳ **Publicar y redirigir.** Tienda online › Temas › publicar `KYNStudioRebranded/main`. Antes, anotar las URLs del tema anterior que cambian y crear redirecciones (Navegación › Redirecciones de URL). Quitar la contraseña de la tienda al final.
 
 ### P1 · Primera semana (código, este repo)
 
@@ -106,14 +119,16 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 
 ## 4. Checklist del día del lanzamiento
 
-- [ ] Políticas creadas y enlazadas (abrir el pie y la pestaña de envío del PDP).
-- [ ] Menú "Nosotros" del pie completo.
-- [ ] Página Contacto con plantilla `page.contact` (enviar un mensaje de prueba).
-- [ ] Logo horizontal en el header, visible en móvil.
-- [ ] Leyenda de meses sin intereses confirmada o apagada.
-- [ ] Sección Reviews: con reseñas reales o desactivada.
-- [ ] Textos del home revisados (sin "próximamente", sin inglés, sin typos).
-- [ ] Pedido de prueba completo: elegir acabados en una correa de 18 variantes, personalizar nombre con acento, cambiar cantidad en el carrito, quitar un producto, pagar con Shop Pay y reembolsar.
+- [ ] Políticas pegadas desde `POLITICAS-PARA-PEGAR.md` y tarifa de envío gratis para pedidos mayores a $1,000 creada (abrir el pie y la pestaña de envío del PDP).
+- [x] Menú "Nosotros" del pie completo.
+- [x] Página Contacto con plantilla `page.contact`.
+- [ ] Enviar un mensaje de prueba desde /pages/contact.
+- [x] Logo horizontal en el header (revisar que se vea bien en móvil).
+- [ ] Cuotas de Mercado Pago confirmadas en Configuración › Pagos.
+- [ ] Sección Reviews: con reseñas reales o desactivada (hoy está desactivada).
+- [ ] Título del video spotlight cambiado ("Algo lindo está por llegar").
+- [ ] Videos resubidos con los nombres nuevos y el tema apuntando a ellos.
+- [ ] Pedido de prueba completo: elegir acabados en una correa de 18 variantes, cambiar cantidad en el carrito, quitar un producto, pagar con Shop Pay y reembolsar.
 - [ ] Probar en iPhone y Android: hero, PDP (miniaturas), carrito, menú.
 - [ ] Compartir un enlace de producto por WhatsApp y confirmar que sale la imagen.
 - [ ] Publicar el tema, crear redirecciones, quitar contraseña.
