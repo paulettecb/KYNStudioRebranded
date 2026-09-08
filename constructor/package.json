@@ -1,0 +1,19 @@
+{
+  "name": "kyn-constructor-3d",
+  "private": true,
+  "version": "0.1.0",
+  "description": "KYN · motor 3D de la Urban Leash empaquetado como asset del tema (assets/kyn-3d.js)",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "three": "0.166.1"
+  },
+  "devDependencies": {
+    "@types/three": "0.166.0",
+    "typescript": "5.5.4",
+    "vite": "5.4.11"
+  }
+}

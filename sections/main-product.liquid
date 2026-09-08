@@ -67,6 +67,7 @@
           <span class="pdp-img-badge" aria-hidden="true">new ♥</span>
         {%- endif -%}
       </div>
+      {% render 'pdp-3d', product: product, section: section %}
     </div>
 
   </div><!-- /.pdp-gallery -->
@@ -621,6 +622,10 @@
     }
 
     setAtcState(atcBtn, v.available ? 'available' : 'sold-out');
+
+    /* Avisa a quien escuche (el constructor 3D, por ejemplo) qué valores quedaron elegidos */
+    var selectedValues = OPTIONS.map(function (_, i) { return selected[i]; });
+    document.dispatchEvent(new CustomEvent('kyn:variant', { detail: { sectionId: S_ID, selected: selectedValues, variant: v } }));
   }
 
   /* ── Swatch clicks ── */
@@ -793,6 +798,13 @@
     { "type": "range", "id": "installments_months", "label": "Número de pagos", "min": 3, "max": 12, "step": 1, "default": 6 },
     { "type": "text", "id": "installments_text", "label": "Texto después del monto", "default": "sin intereses con Mercado Pago" },
     { "type": "text", "id": "secure_text", "label": "Texto de pago seguro (debajo del botón)", "default": "Pago seguro" },
+
+    { "type": "header", "content": "Constructor 3D (Diseña la tuya)" },
+    { "type": "paragraph", "content": "Muestra el constructor 3D en la galería de los productos con la etiqueta indicada. Los círculos de acabado del formulario pintan la correa: la tira corta es la agarradera. Sin WebGL la galería se queda normal." },
+    { "type": "checkbox", "id": "enable_3d", "label": "Activar el constructor 3D", "default": true },
+    { "type": "text", "id": "tag_3d", "label": "Etiqueta de producto que lo activa", "default": "constructor-3d" },
+    { "type": "text", "id": "option_corta", "label": "Opción de la tira corta (agarradera)", "default": "Primary Finish" },
+    { "type": "text", "id": "option_larga", "label": "Opción de la tira larga", "default": "Secondary Finish" },
 
     { "type": "header", "content": "Íconos de confianza" },
     { "type": "text", "id": "trust_1", "label": "Ícono 1 (escudo)", "default": "Latón sólido" },

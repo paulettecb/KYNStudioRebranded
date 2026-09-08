@@ -61,6 +61,18 @@
       "recipient_name": "Recipient name (optional)",
       "message": "Message (optional)",
       "send_on": "Send on (optional)"
+    },
+    "constructor": {
+      "photos": "Photos",
+      "design": "Design yours",
+      "mode_label": "Gallery mode",
+      "thumb_label": "See your leash in 3D",
+      "canvas_label": "Your leash in 3D. Drag to rotate it.",
+      "drag_hint": "Drag to rotate",
+      "close_handle": "Close the handle",
+      "open_handle": "Open the handle",
+      "loading": "Assembling your leash…",
+      "unsupported": "Your browser can't show the 3D view."
     }
   },
   "cart": {
