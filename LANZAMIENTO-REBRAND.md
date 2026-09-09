@@ -76,7 +76,7 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 
 **Estado al 9 de septiembre (segunda pasada), verificado contra la tienda por API:** ✅ ya quedó hecho (por API o en este repo); ⏳ sigue en tus manos porque esta sesión no tiene ese permiso o es una decisión tuya.
 
-1. ⏳ **Políticas legales.** En la tienda solo existe el Aviso de privacidad (la plantilla de Shopify). Faltan Política de envíos, Política de cambios y devoluciones y Términos del servicio: los tres textos están en `POLITICAS-PARA-PEGAR.md`, listos para Configuración › Políticas (el acceso de esta sesión no incluye `write_legal_policies`). **Envío gratis: resuelto en $1,500.** La tarifa "Estándar" ya arranca en $1,500 (cambiada por API); abajo de eso cuesta $150, Expreso $195, Internacional $330. El home, la pestaña de envío del PDP y las políticas dicen lo mismo.
+1. ⏳ **Políticas legales.** En la tienda solo existe el Aviso de privacidad (la plantilla de Shopify). Faltan Política de envíos, Política de cambios y devoluciones y Términos del servicio: los tres textos están en `POLITICAS-PARA-PEGAR.md`, listos para Configuración › Políticas (el acceso de esta sesión no incluye `write_legal_policies`). **Envío gratis: resuelto en $1,500.** La tarifa "Estándar" ya arranca en $1,500 (cambiada por API); abajo de eso cuesta $150, Expreso $195, Internacional $330. Además existía un descuento automático "Free Shipping México" **sin mínimo**, que regalaba el envío a todo México y anulaba la tarifa; ahora pide $1,500 de subtotal. El home, la pestaña de envío del PDP y las políticas dicen lo mismo.
 2. ✅ **Menú del pie "Nosotros".** Creado por API: Nuestra historia, Por qué Biothane, Por qué latón sólido, Contacto, Buscar.
 3. ✅ **Página de contacto.** Título "Contacto" y plantilla `page.contact` asignada.
 4. ✅ **Logo del header.** El tema usa el wordmark horizontal incluido (`assets/kyn-logo.png`). Si quieres otro archivo, súbelo en Personalizar › Header.
@@ -98,10 +98,11 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
    Cuando el tema nuevo esté publicado, los archivos viejos se pueden borrar desde Contenido › Archivos.
 10. ✅ **Personalización.** El bloque de grabado se quitó de la plantilla de producto (ningún producto se graba por ahora). Sigue disponible en el editor para cuando vuelva.
 11. ✅ **Etiquetas.** `best-seller` en The Urban Crossbody y The Urban Leash 1.6 m. Si quieres el badge "new ♥" en algún producto, etiquétalo `new`.
-12. ✅ **Catálogo.** Decisión: Traffic Handle y el duplicado "The Urban Leash 1.6m — Brownstone / Olive District" se quedan en borrador (no salen en la tienda; borrarlos es opcional). Queda solo confirmar el precio de la Long Leash 5m: Olive District está a $1,240 y los otros dos acabados a $1,420. El Urban Collar ya tiene 20 piezas a $500.
+12. ✅ **Catálogo y precios.** Traffic Handle y el duplicado "The Urban Leash 1.6m — Brownstone / Olive District" se quedan en borrador, por decisión. Los precios de la tienda ya son los de la lista de julio (cambiados por API): Urban Leash 1.6 m $1,480 (slider $1,550), 1.2 m $1,390 (slider $1,490), Crossbody $1,078, Long Leash 3 m $1,113, Long Leash 5 m $1,426 en los tres acabados, Collar $566. El Urban Collar tiene 20 piezas.
 13. ⏳ **Publicar y redirigir.** El tema en vivo sigue siendo `kynStudio/main`; `KYNStudioRebranded/main` ya tiene todo lo mergeado hasta el PR #45 (incluidos los modelos `.glb` y el descodificador `.wasm` del constructor, verificado por API). Antes de publicar, anotar las URLs del tema anterior que cambian y crear redirecciones (Navegación › Redirecciones de URL). Quitar la contraseña de la tienda al final.
 14. ✅ **App embeds copiados del tema en vivo.** Los app embeds (scripts de apps) viven por tema y el nuevo no tenía ninguno: sin el de Judge.me no salía la reseña, y sin el de Mercado Pago no corría su antifraude. Ya están los cuatro en `config/settings_data.json`: Judge.me, Mercado Pago antifraude, chat de Shopify Inbox (botón en periwinkle) y Shopify Forms. Si no quieres el chat, se apaga en Personalizar › App embeds.
-15. ✅ **Constructor 3D (PR #45).** "Diseña la tuya" en la galería de las dos Urban Leash, pintado por los círculos de acabado. Pendientes suyos, ninguno bloquea el lanzamiento: probarlo en un iPhone y un Android reales (aquí solo hubo render por software), conectar el slider cuando exista el modelo en kyn-catalogo, y si quieres saber cuánta gente lo usa, agregar un evento de analítica al tocar "Diseña la tuya".
+15. ✅ **Sets y descuentos por piezas (sin app).** Regla acordada: 2 piezas de las colecciones Walking System o Training Bundle = 10%, 3 o más = 15%. Viven como dos descuentos automáticos en Shopify ("Arma tu set · 2 piezas 10%" y "· 3 piezas o más 15%"; el porcentaje se calcula sobre el precio real de la variante, con o sin slider). El descuento viejo de $300 quedó desactivado y el de envío gratis ahora combina con ellos. En el tema: sección **Sets con nombre** en el home (Walk System, Duo, Pack, con precio calculado solo), la línea de la regla en la página de producto y, en el carrito, el ahorro aplicado más la sugerencia de la siguiente pieza. Los sets "New" (correa para dos perros) y los Long Leash Bundle esperan a que existan sus productos.
+16. ✅ **Constructor 3D (PR #45).** "Diseña la tuya" en la galería de las dos Urban Leash, pintado por los círculos de acabado. Pendientes suyos, ninguno bloquea el lanzamiento: probarlo en un iPhone y un Android reales (aquí solo hubo render por software), conectar el slider cuando exista el modelo en kyn-catalogo, y si quieres saber cuánta gente lo usa, agregar un evento de analítica al tocar "Diseña la tuya".
 
 ### P1 · Primera semana (código, este repo)
 
@@ -114,6 +115,8 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 - **Encabezados.** Revisar jerarquía h1→h2 en el home (trust band ya no usa h4; el pie usa h2 con estilo de eyebrow).
 
 ### P2 · Después
+
+- **Bundles sin app.** Ya existe uno: el descuento automático "The urban walk system" ($300 de descuento al llevar 2 piezas entre Urban Leash 1.2, Urban Leash 1.6 y Crossbody; se combina con descuentos de pedido). Las colecciones "The KYN Walking System" (collar, correas, crossbody) y "The KYN Training Bundle" (crossbody, correas largas) ya agrupan las piezas. Opciones sin pagar: (a) más descuentos automáticos por combinación, (b) una sección "Arma tu set" en el tema que agregue collar + correa + crossbody al carrito de un solo clic con sus acabados y muestre el ahorro, (c) la app gratuita Shopify Bundles si algún día se quiere el set como un producto con su propia página y precio fijo.
 
 - Ver el plan maestro del PR #42 (constructor 3D, cross-sell, canales, 3D/AR, contenido). Nada de eso bloquea el lanzamiento.
 - Metafields opcionales que el tema ya lee: `custom.tagline` (texto), `custom.materials` y `custom.care` (texto enriquecido), `kyn.short_desc` (texto corto para la tarjeta). Definirlos en Configuración › Datos personalizados › Productos si quieres textos por producto.
@@ -137,7 +140,8 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 - [ ] Pedido de prueba completo: elegir acabados en una correa de 18 variantes, cambiar cantidad en el carrito, quitar un producto, pagar con Shop Pay y reembolsar.
 - [ ] Probar en iPhone y Android: hero, PDP (miniaturas y "Diseña la tuya"), carrito, menú.
 - [ ] Compartir un enlace de producto por WhatsApp y confirmar que sale la imagen.
-- [ ] Precio de la Long Leash 5m Olive District ($1,240 vs $1,420).
+- [x] Precios alineados con la lista de julio; Long Leash 5m en $1,426 los tres acabados.
+- [ ] Probar en la vista previa: agregar correa + crossbody al carrito y ver el 10%; con tres piezas, el 15%.
 - [ ] Publicar el tema, crear redirecciones, quitar contraseña.
 
 ## 5. Cómo se hizo esta revisión

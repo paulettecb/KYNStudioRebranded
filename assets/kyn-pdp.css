@@ -562,6 +562,19 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
 .rte ul { padding-left: 20px; margin: 8px 0; }
 .rte a { color: var(--periwinkle-700); text-decoration: underline; }
 
+/* ── Arma tu set (regla por piezas) ── */
+.pdp-set-promo {
+  display: inline-block;
+  margin: -10px 0 22px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--periwinkle-50);
+  color: var(--periwinkle-800);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 /* ── Constructor 3D · "Diseña la tuya" (snippets/pdp-3d.liquid) ── */
 .pdp-seg {
   position: absolute;

@@ -86,6 +86,31 @@
             </ul>
           {%- endif -%}
 
+          {%- liquid
+            assign set_items = 0
+            assign set_h1 = section.settings.set_collection_1
+            assign set_h2 = section.settings.set_collection_2
+            for item in cart.items
+              for c in item.product.collections
+                if c.handle == set_h1 or c.handle == set_h2
+                  assign set_items = set_items | plus: item.quantity
+                  break
+                endif
+              endfor
+            endfor
+            assign saved = cart.total_discount | money
+          -%}
+          {%- if cart.total_discount > 0 -%}
+            <p class="cart-savings">{{ 'cart.general.savings' | t: amount: saved }}</p>
+          {%- endif -%}
+          {%- if section.settings.show_set_nudge -%}
+            {%- if set_items == 1 and section.settings.nudge_2 != blank -%}
+              <p class="cart-nudge">{{ section.settings.nudge_2 }}</p>
+            {%- elsif set_items == 2 and section.settings.nudge_3 != blank -%}
+              <p class="cart-nudge">{{ section.settings.nudge_3 }}</p>
+            {%- endif -%}
+          {%- endif -%}
+
           <div class="cart-totals">
             <span>{{ 'cart.general.subtotal' | t }}</span>
             <span class="cart-totals__price">{{ cart.total_price | money }}</span>
@@ -179,6 +204,8 @@
 .cart-note__label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-700); margin-bottom: 6px; }
 .cart-note { margin-bottom: 16px; resize: vertical; }
 .cart-discounts { list-style: none; padding: 0; margin: 0 0 10px; color: var(--periwinkle-700); font-size: 14px; }
+.cart-savings { margin: 0 0 10px; color: var(--periwinkle-700); font-size: 14px; font-weight: 600; }
+.cart-nudge { margin: 0 0 14px; padding: 9px 12px; border-radius: var(--radius-sm); background: var(--periwinkle-50); color: var(--periwinkle-800); font-size: 13px; font-weight: 600; }
 .cart-totals { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 8px; }
 .cart-additional-checkout { margin-top: 10px; }
 
@@ -255,6 +282,12 @@
     { "type": "header", "content": "Shipping note" },
     { "type": "checkbox", "id": "show_shipping_note", "label": "Show shipping/taxes note", "default": true },
     { "type": "text", "id": "shipping_note", "label": "Shipping/taxes note", "default": "Impuestos y envío calculados al finalizar la compra." },
+    { "type": "header", "content": "Arma tu set" },
+    { "type": "checkbox", "id": "show_set_nudge", "label": "Sugerir la siguiente pieza", "default": true },
+    { "type": "text", "id": "set_collection_1", "label": "Colección 1 que cuenta para el set (handle)", "default": "the-kyn-modular-system" },
+    { "type": "text", "id": "set_collection_2", "label": "Colección 2 que cuenta para el set (handle)", "default": "the-kyn-training-bundle" },
+    { "type": "text", "id": "nudge_2", "label": "Con 1 pieza en el carrito", "default": "Agrega otra pieza de la Walking System y ahorra 10% en las dos." },
+    { "type": "text", "id": "nudge_3", "label": "Con 2 piezas en el carrito", "default": "Con una pieza más, el descuento sube a 15%." },
     { "type": "select", "id": "shipping_note_font", "label": "Shipping note font", "default": "sans",
       "options": [
         { "value": "sans", "label": "Sans (Hanken Grotesk)" },
