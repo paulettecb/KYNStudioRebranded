@@ -76,7 +76,7 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 
 **Estado al 9 de septiembre (segunda pasada), verificado contra la tienda por API:** ✅ ya quedó hecho (por API o en este repo); ⏳ sigue en tus manos porque esta sesión no tiene ese permiso o es una decisión tuya.
 
-1. ⏳ **Políticas legales.** En la tienda solo existe el Aviso de privacidad (la plantilla de Shopify). Faltan Política de envíos, Política de cambios y devoluciones y Términos del servicio: los tres textos están en `POLITICAS-PARA-PEGAR.md`, listos para Configuración › Políticas (el acceso de esta sesión no incluye `write_legal_policies`). **Envío gratis: resuelto en $1,500.** La tarifa "Estándar" ya arranca en $1,500 (cambiada por API); abajo de eso cuesta $150, Expreso $195, Internacional $330. El home, la pestaña de envío del PDP y las políticas dicen lo mismo.
+1. ⏳ **Políticas legales.** En la tienda solo existe el Aviso de privacidad (la plantilla de Shopify). Faltan Política de envíos, Política de cambios y devoluciones y Términos del servicio: los tres textos están en `POLITICAS-PARA-PEGAR.md`, listos para Configuración › Políticas (el acceso de esta sesión no incluye `write_legal_policies`). **Envío gratis: resuelto en $1,500.** La tarifa "Estándar" ya arranca en $1,500 (cambiada por API); abajo de eso cuesta $150, Expreso $195, Internacional $330. Además existía un descuento automático "Free Shipping México" **sin mínimo**, que regalaba el envío a todo México y anulaba la tarifa; ahora pide $1,500 de subtotal. El home, la pestaña de envío del PDP y las políticas dicen lo mismo.
 2. ✅ **Menú del pie "Nosotros".** Creado por API: Nuestra historia, Por qué Biothane, Por qué latón sólido, Contacto, Buscar.
 3. ✅ **Página de contacto.** Título "Contacto" y plantilla `page.contact` asignada.
 4. ✅ **Logo del header.** El tema usa el wordmark horizontal incluido (`assets/kyn-logo.png`). Si quieres otro archivo, súbelo en Personalizar › Header.
@@ -114,6 +114,8 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 - **Encabezados.** Revisar jerarquía h1→h2 en el home (trust band ya no usa h4; el pie usa h2 con estilo de eyebrow).
 
 ### P2 · Después
+
+- **Bundles sin app.** Ya existe uno: el descuento automático "The urban walk system" ($300 de descuento al llevar 2 piezas entre Urban Leash 1.2, Urban Leash 1.6 y Crossbody; se combina con descuentos de pedido). Las colecciones "The KYN Walking System" (collar, correas, crossbody) y "The KYN Training Bundle" (crossbody, correas largas) ya agrupan las piezas. Opciones sin pagar: (a) más descuentos automáticos por combinación, (b) una sección "Arma tu set" en el tema que agregue collar + correa + crossbody al carrito de un solo clic con sus acabados y muestre el ahorro, (c) la app gratuita Shopify Bundles si algún día se quiere el set como un producto con su propia página y precio fijo.
 
 - Ver el plan maestro del PR #42 (constructor 3D, cross-sell, canales, 3D/AR, contenido). Nada de eso bloquea el lanzamiento.
 - Metafields opcionales que el tema ya lee: `custom.tagline` (texto), `custom.materials` y `custom.care` (texto enriquecido), `kyn.short_desc` (texto corto para la tarjeta). Definirlos en Configuración › Datos personalizados › Productos si quieres textos por producto.
