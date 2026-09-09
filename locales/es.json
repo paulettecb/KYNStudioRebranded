@@ -73,6 +73,10 @@
       "open_handle": "Abrir agarradera",
       "loading": "Armando tu correa…",
       "unsupported": "Tu navegador no puede mostrar el 3D."
+    },
+    "sets": {
+      "loose": "Sueltas",
+      "save": "Ahorra {{ percent }}%"
     }
   },
   "cart": {
@@ -87,7 +91,8 @@
       "item_count": {
         "one": "{{ count }} artículo",
         "other": "{{ count }} artículos"
-      }
+      },
+      "savings": "Ahorras {{ amount }} con Arma tu set"
     }
   },
   "search": {

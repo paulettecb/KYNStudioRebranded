@@ -98,10 +98,11 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
    Cuando el tema nuevo esté publicado, los archivos viejos se pueden borrar desde Contenido › Archivos.
 10. ✅ **Personalización.** El bloque de grabado se quitó de la plantilla de producto (ningún producto se graba por ahora). Sigue disponible en el editor para cuando vuelva.
 11. ✅ **Etiquetas.** `best-seller` en The Urban Crossbody y The Urban Leash 1.6 m. Si quieres el badge "new ♥" en algún producto, etiquétalo `new`.
-12. ✅ **Catálogo.** Decisión: Traffic Handle y el duplicado "The Urban Leash 1.6m — Brownstone / Olive District" se quedan en borrador (no salen en la tienda; borrarlos es opcional). Queda solo confirmar el precio de la Long Leash 5m: Olive District está a $1,240 y los otros dos acabados a $1,420. El Urban Collar ya tiene 20 piezas a $500.
+12. ✅ **Catálogo y precios.** Traffic Handle y el duplicado "The Urban Leash 1.6m — Brownstone / Olive District" se quedan en borrador, por decisión. Los precios de la tienda ya son los de la lista de julio (cambiados por API): Urban Leash 1.6 m $1,480 (slider $1,550), 1.2 m $1,390 (slider $1,490), Crossbody $1,078, Long Leash 3 m $1,113, Long Leash 5 m $1,426 en los tres acabados, Collar $566. El Urban Collar tiene 20 piezas.
 13. ⏳ **Publicar y redirigir.** El tema en vivo sigue siendo `kynStudio/main`; `KYNStudioRebranded/main` ya tiene todo lo mergeado hasta el PR #45 (incluidos los modelos `.glb` y el descodificador `.wasm` del constructor, verificado por API). Antes de publicar, anotar las URLs del tema anterior que cambian y crear redirecciones (Navegación › Redirecciones de URL). Quitar la contraseña de la tienda al final.
 14. ✅ **App embeds copiados del tema en vivo.** Los app embeds (scripts de apps) viven por tema y el nuevo no tenía ninguno: sin el de Judge.me no salía la reseña, y sin el de Mercado Pago no corría su antifraude. Ya están los cuatro en `config/settings_data.json`: Judge.me, Mercado Pago antifraude, chat de Shopify Inbox (botón en periwinkle) y Shopify Forms. Si no quieres el chat, se apaga en Personalizar › App embeds.
-15. ✅ **Constructor 3D (PR #45).** "Diseña la tuya" en la galería de las dos Urban Leash, pintado por los círculos de acabado. Pendientes suyos, ninguno bloquea el lanzamiento: probarlo en un iPhone y un Android reales (aquí solo hubo render por software), conectar el slider cuando exista el modelo en kyn-catalogo, y si quieres saber cuánta gente lo usa, agregar un evento de analítica al tocar "Diseña la tuya".
+15. ✅ **Sets y descuentos por piezas (sin app).** Regla acordada: 2 piezas de las colecciones Walking System o Training Bundle = 10%, 3 o más = 15%. Viven como dos descuentos automáticos en Shopify ("Arma tu set · 2 piezas 10%" y "· 3 piezas o más 15%"; el porcentaje se calcula sobre el precio real de la variante, con o sin slider). El descuento viejo de $300 quedó desactivado y el de envío gratis ahora combina con ellos. En el tema: sección **Sets con nombre** en el home (Walk System, Duo, Pack, con precio calculado solo), la línea de la regla en la página de producto y, en el carrito, el ahorro aplicado más la sugerencia de la siguiente pieza. Los sets "New" (correa para dos perros) y los Long Leash Bundle esperan a que existan sus productos.
+16. ✅ **Constructor 3D (PR #45).** "Diseña la tuya" en la galería de las dos Urban Leash, pintado por los círculos de acabado. Pendientes suyos, ninguno bloquea el lanzamiento: probarlo en un iPhone y un Android reales (aquí solo hubo render por software), conectar el slider cuando exista el modelo en kyn-catalogo, y si quieres saber cuánta gente lo usa, agregar un evento de analítica al tocar "Diseña la tuya".
 
 ### P1 · Primera semana (código, este repo)
 
@@ -139,7 +140,8 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 - [ ] Pedido de prueba completo: elegir acabados en una correa de 18 variantes, cambiar cantidad en el carrito, quitar un producto, pagar con Shop Pay y reembolsar.
 - [ ] Probar en iPhone y Android: hero, PDP (miniaturas y "Diseña la tuya"), carrito, menú.
 - [ ] Compartir un enlace de producto por WhatsApp y confirmar que sale la imagen.
-- [ ] Precio de la Long Leash 5m Olive District ($1,240 vs $1,420).
+- [x] Precios alineados con la lista de julio; Long Leash 5m en $1,426 los tres acabados.
+- [ ] Probar en la vista previa: agregar correa + crossbody al carrito y ver el 10%; con tres piezas, el 15%.
 - [ ] Publicar el tema, crear redirecciones, quitar contraseña.
 
 ## 5. Cómo se hizo esta revisión

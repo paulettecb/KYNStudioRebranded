@@ -125,6 +125,10 @@
       </p>
     {%- endif -%}
 
+    {%- if section.settings.set_promo != blank -%}
+      <p class="pdp-set-promo">{{ section.settings.set_promo }}</p>
+    {%- endif -%}
+
     <!-- Short tagline -->
     {%- if product.metafields.custom.tagline != blank -%}
       <p class="pdp-tagline">{{ product.metafields.custom.tagline }}</p>
@@ -798,6 +802,9 @@
     { "type": "range", "id": "installments_months", "label": "Número de pagos", "min": 3, "max": 12, "step": 1, "default": 6 },
     { "type": "text", "id": "installments_text", "label": "Texto después del monto", "default": "sin intereses con Mercado Pago" },
     { "type": "text", "id": "secure_text", "label": "Texto de pago seguro (debajo del botón)", "default": "Pago seguro" },
+
+    { "type": "header", "content": "Arma tu set" },
+    { "type": "text", "id": "set_promo", "label": "Línea de la regla por piezas", "info": "Debe coincidir con los descuentos automáticos \"Arma tu set\". Vacío = no se muestra.", "default": "Arma tu set: 2 piezas con 10% de descuento, 3 o más con 15%. Se aplica solo en el carrito." },
 
     { "type": "header", "content": "Constructor 3D (Diseña la tuya)" },
     { "type": "paragraph", "content": "Muestra el constructor 3D en la galería de los productos con la etiqueta indicada. Los círculos de acabado del formulario pintan la correa: la tira corta es la agarradera. Sin WebGL la galería se queda normal." },

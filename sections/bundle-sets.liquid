@@ -1,0 +1,184 @@
+{%- comment -%}
+  Sets con nombre ("Arma tu set").
+
+  Cada bloque es un set de hasta cuatro piezas; un producto puede repetirse
+  (tres correas y una crossbody). El precio se calcula solo con los precios
+  reales de los productos y la regla por piezas de esta sección
+  (2 piezas = discount_2 %, 3 o más = discount_3 %). Esa regla debe coincidir
+  con los descuentos automáticos de Shopify (Descuentos › "Arma tu set"),
+  que son los que de verdad descuentan en el carrito.
+{%- endcomment -%}
+{%- assign heading = section.settings.heading -%}
+{%- assign spark = section.settings.spark_word -%}
+{%- if spark != blank -%}
+  {%- capture spark_html -%}<span class="spark">{{ spark }}</span>{%- endcapture -%}
+  {%- assign heading = heading | replace: spark, spark_html -%}
+{%- endif -%}
+{%- capture eyebrow_font -%}{% render 'font-stack', key: section.settings.eyebrow_font %}{%- endcapture -%}
+{%- capture heading_font -%}{% render 'font-stack', key: section.settings.heading_font %}{%- endcapture -%}
+{%- capture spark_font -%}{% render 'font-stack', key: section.settings.spark_font %}{%- endcapture -%}
+
+<section id="bundle-sets-{{ section.id }}" class="section bundle-sets">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+        <h2>{{ heading }}</h2>
+        {%- if section.settings.promo_text != blank -%}<p class="bundle-sets__promo">{{ section.settings.promo_text }}</p>{%- endif -%}
+      </div>
+    </div>
+
+    <div class="bundle-sets__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign pieces = 0
+          assign total = 0
+          assign handles = ''
+          for i in (1..4)
+            assign key = 'product_' | append: i
+            assign prod = block.settings[key]
+            if prod != blank
+              assign pieces = pieces | plus: 1
+              assign total = total | plus: prod.price_min
+              assign handles = handles | append: prod.handle | append: ','
+            endif
+          endfor
+          assign list = handles | split: ','
+          assign uniq = list | uniq
+          assign discount = 0
+          if pieces >= 3
+            assign discount = section.settings.discount_3
+          elsif pieces >= 2
+            assign discount = section.settings.discount_2
+          endif
+          assign keep = 100 | minus: discount
+          assign set_price = total | times: keep | divided_by: 100
+          assign first_handle = uniq | first
+          assign first_product = all_products[first_handle]
+          assign cta_url = block.settings.cta_link | default: first_product.url
+        -%}
+        {%- if pieces > 0 -%}
+          <article class="set-card" {{ block.shopify_attributes }}>
+            <div class="set-card__media">
+              {%- for h in uniq -%}
+                {%- assign sp = all_products[h] -%}
+                {%- if sp.featured_image != blank -%}
+                  {%- assign alt = sp.title | escape -%}
+                  {{ sp.featured_image | image_url: width: 320 | image_tag: alt: alt, width: 120, height: 150, loading: 'lazy', class: 'set-card__img' }}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            <div class="set-card__body">
+              <h3 class="set-card__name">{{ block.settings.name }}</h3>
+              {%- if block.settings.tagline != blank -%}<p class="set-card__tagline">{{ block.settings.tagline }}</p>{%- endif -%}
+              <ul class="set-card__pieces">
+                {%- for h in uniq -%}
+                  {%- assign sp = all_products[h] -%}
+                  {%- assign count = 0 -%}
+                  {%- for x in list -%}{%- if x == h -%}{%- assign count = count | plus: 1 -%}{%- endif -%}{%- endfor -%}
+                  <li>{{ count }} × {{ sp.title }}</li>
+                {%- endfor -%}
+              </ul>
+              <div class="set-card__price">
+                {%- if discount > 0 -%}
+                  <span class="set-card__loose"><span class="visually-hidden">{{ 'products.sets.loose' | t }}:</span> <s>{{ total | money }}</s></span>
+                {%- endif -%}
+                <strong>{{ set_price | money }}</strong>
+                {%- if discount > 0 -%}
+                  <span class="kyn-badge kyn-badge--pop">{{ 'products.sets.save' | t: percent: discount }}</span>
+                {%- endif -%}
+              </div>
+              <a class="kyn-btn kyn-btn--primary kyn-btn--md set-card__cta" href="{{ cta_url }}">{{ section.settings.cta_label }}</a>
+            </div>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  #bundle-sets-{{ section.id }} .eyebrow{ font-family: {{ eyebrow_font }}; font-size: {{ section.settings.eyebrow_size }}px; }
+  #bundle-sets-{{ section.id }} .sec-head h2{ font-family: {{ heading_font }}; font-size: {{ section.settings.heading_size }}px; }
+  #bundle-sets-{{ section.id }} .sec-head h2 .spark{ font-family: {{ spark_font }}; font-size: {{ section.settings.spark_size }}px; }
+  .bundle-sets__promo { margin: 12px 0 0; color: var(--ink-700); font-size: 16px; max-width: 60ch; }
+  .bundle-sets__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 40px; }
+  .set-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+  .set-card__media { display: flex; justify-content: center; align-items: flex-end; gap: 0; padding: 28px 24px 0; background: var(--periwinkle-50); min-height: 190px; }
+  .set-card__img { width: 120px; height: 150px; object-fit: contain; margin: 0 -14px; filter: drop-shadow(0 6px 12px rgba(47, 54, 88, .12)); }
+  .set-card__body { padding: 22px 24px 26px; display: grid; gap: 10px; align-content: start; }
+  .set-card__name { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+  .set-card__tagline { margin: 0; color: var(--ink-700); font-size: 15px; }
+  .set-card__pieces { list-style: none; margin: 0; padding: 0; color: var(--ink-550); font-size: 14px; display: grid; gap: 2px; }
+  .set-card__price { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .set-card__price strong { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+  .set-card__loose { color: var(--ink-500); font-size: 15px; }
+  .set-card__price .kyn-badge { align-self: center; }
+  .set-card__cta { margin-top: 8px; justify-self: start; }
+  @media (max-width: 900px) {
+    .bundle-sets__grid { grid-template-columns: 1fr; gap: 16px; margin-top: 28px; }
+    .set-card__media { min-height: 150px; padding-top: 20px; }
+    .set-card__img { width: 96px; height: 120px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Sets con nombre",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "paragraph", "content": "Cada set suma los precios reales de sus piezas y aplica la regla de abajo. La regla debe ser la misma que los descuentos automáticos \"Arma tu set\" de Shopify, que son los que descuentan en el carrito." },
+    { "type": "header", "content": "Eyebrow" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Arma tu set" },
+    { "type": "select", "id": "eyebrow_font", "label": "Eyebrow font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "eyebrow_size", "label": "Eyebrow size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 13 },
+
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Más piezas, más ahorro." },
+    { "type": "select", "id": "heading_font", "label": "Heading font", "default": "sans",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 28, "max": 72, "step": 2, "unit": "px", "default": 48 },
+    { "type": "text", "id": "spark_word", "label": "Spark word", "default": "ahorro." },
+    { "type": "select", "id": "spark_font", "label": "Spark word font", "default": "display",
+      "options": [
+        { "value": "sans", "label": "Sans (Hanken Grotesk)" },
+        { "value": "display", "label": "Display (Friendship script)" },
+        { "value": "accent", "label": "Accent (Farmhouse serif)" }
+      ] },
+    { "type": "range", "id": "spark_size", "label": "Spark word size", "min": 24, "max": 84, "step": 2, "unit": "px", "default": 48 },
+    { "type": "text", "id": "promo_text", "label": "Texto de la regla", "default": "Llévate 2 piezas y ahorra 10%. Con 3 o más, 15%. El descuento se aplica solo en el carrito." },
+
+    { "type": "header", "content": "Regla de descuento" },
+    { "type": "range", "id": "discount_2", "label": "2 piezas: % de descuento", "min": 0, "max": 30, "step": 1, "unit": "%", "default": 10 },
+    { "type": "range", "id": "discount_3", "label": "3 piezas o más: % de descuento", "min": 0, "max": 30, "step": 1, "unit": "%", "default": 15 },
+    { "type": "text", "id": "cta_label", "label": "Texto del botón", "default": "Armar este set" }
+  ],
+  "blocks": [
+    {
+      "type": "set",
+      "name": "Set",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Nombre", "default": "The Urban Walk System" },
+        { "type": "text", "id": "tagline", "label": "Una línea" },
+        { "type": "product", "id": "product_1", "label": "Pieza 1" },
+        { "type": "product", "id": "product_2", "label": "Pieza 2" },
+        { "type": "product", "id": "product_3", "label": "Pieza 3" },
+        { "type": "product", "id": "product_4", "label": "Pieza 4", "info": "Repite un producto para \"3 × correa\"." },
+        { "type": "url", "id": "cta_link", "label": "Enlace del botón", "info": "Si se deja vacío, abre la primera pieza." }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Sets con nombre", "blocks": [ { "type": "set" }, { "type": "set" }, { "type": "set" } ] }
+  ]
+}
+{% endschema %}

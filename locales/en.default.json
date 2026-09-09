@@ -73,6 +73,10 @@
       "open_handle": "Open the handle",
       "loading": "Assembling your leash…",
       "unsupported": "Your browser can't show the 3D view."
+    },
+    "sets": {
+      "loose": "Separately",
+      "save": "Save {{ percent }}%"
     }
   },
   "cart": {
@@ -87,7 +91,8 @@
       "item_count": {
         "one": "{{ count }} item",
         "other": "{{ count }} items"
-      }
+      },
+      "savings": "You save {{ amount }} with Build your set"
     }
   },
   "search": {
