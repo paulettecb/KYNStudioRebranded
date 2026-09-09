@@ -5,12 +5,12 @@
 **Dónde se pegan:** Shopify admin → **Configuración → Políticas**. Cada bloque va en su campo (hay un editor de texto enriquecido; pega el contenido tal cual y ajusta lo que quieras). Al guardar, el tema las enlaza solo: aparecen en la columna "Legales" del pie, en la línea inferior y en la pestaña "Envío y devoluciones" de cada producto.
 
 **Bases que usé** (tus respuestas del 8 de septiembre):
-- Envío gratis en compras mayores a **$1,000 MXN**; abajo de eso, tarifa calculada en el checkout.
+- Envío gratis en compras mayores a **$1,500 MXN**; abajo de eso, tarifa calculada en el checkout.
 - Piezas hechas a mano **bajo pedido**: 3 a 5 días hábiles de fabricación.
 - **1 año de garantía** contra defectos de construcción.
 - **15 días** para cambios en piezas sin personalizar; las personalizadas no aceptan cambio ni devolución salvo defecto.
 
-> ⚠️ **Falta un paso además de pegar esto:** crear la tarifa de envío gratis en **Configuración → Envíos y entregas → Tarifas de envío**, con la condición "el precio del pedido es mayor a $1,000". Sin esa tarifa, la promesa aparece en el sitio pero el checkout sigue cobrando el envío.
+> La tarifa de envío gratis para pedidos de $1,500 en adelante ya existe en Configuración → Envíos y entregas (tarifa "Estándar"); abajo de eso el envío estándar cuesta $150 y el expreso $195.
 
 ---
 
@@ -38,7 +38,7 @@
 <h3>Costo de envío</h3>
 
 <ul>
-<li><strong>Envío gratis</strong> en compras mayores a $1,000 MXN.</li>
+<li><strong>Envío gratis</strong> en compras mayores a $1,500 MXN.</li>
 <li>En compras menores, el costo del envío se calcula al finalizar la compra según tu código postal.</li>
 </ul>
 

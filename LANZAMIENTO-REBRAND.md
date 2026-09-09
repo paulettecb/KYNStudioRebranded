@@ -74,17 +74,17 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 
 ### P0 · Antes de publicar (Shopify admin)
 
-**Estado al 9 de septiembre, verificado contra la tienda por API:** ✅ ya quedó hecho (por API o en este repo); ⏳ sigue en tus manos porque esta sesión no tiene ese permiso o es una decisión tuya.
+**Estado al 9 de septiembre (segunda pasada), verificado contra la tienda por API:** ✅ ya quedó hecho (por API o en este repo); ⏳ sigue en tus manos porque esta sesión no tiene ese permiso o es una decisión tuya.
 
-1. ⏳ **Políticas legales.** En la tienda solo existe el Aviso de privacidad (la plantilla de Shopify). Faltan Política de envíos, Política de cambios y devoluciones y Términos del servicio: los tres textos están en `POLITICAS-PARA-PEGAR.md`, listos para Configuración › Políticas (el acceso de esta sesión no incluye `write_legal_policies`). **La tarifa de envío gratis ya existe**, pero su umbral es **$1,050**, no $1,000: "Estándar" cuesta $0 desde $1,050 y $150 abajo de eso (Expreso $195, Internacional $330). El home, la pestaña de envío del PDP y las políticas dicen "mayores a $1,000", así que un pedido de $1,020 pagaría envío. Elige: bajar la condición a $1,000 en Configuración › Envíos y entregas, o me dices y cambio los textos a $1,050.
+1. ⏳ **Políticas legales.** En la tienda solo existe el Aviso de privacidad (la plantilla de Shopify). Faltan Política de envíos, Política de cambios y devoluciones y Términos del servicio: los tres textos están en `POLITICAS-PARA-PEGAR.md`, listos para Configuración › Políticas (el acceso de esta sesión no incluye `write_legal_policies`). **Envío gratis: resuelto en $1,500.** La tarifa "Estándar" ya arranca en $1,500 (cambiada por API); abajo de eso cuesta $150, Expreso $195, Internacional $330. El home, la pestaña de envío del PDP y las políticas dicen lo mismo.
 2. ✅ **Menú del pie "Nosotros".** Creado por API: Nuestra historia, Por qué Biothane, Por qué latón sólido, Contacto, Buscar.
 3. ✅ **Página de contacto.** Título "Contacto" y plantilla `page.contact` asignada.
 4. ✅ **Logo del header.** El tema usa el wordmark horizontal incluido (`assets/kyn-logo.png`). Si quieres otro archivo, súbelo en Personalizar › Header.
 5. ✅ **Meses sin intereses.** Decisión: 6 MSI con Mercado Pago; la leyenda del PDP sigue activa. Solo confirma en Configuración › Pagos que Mercado Pago tenga las cuotas activadas.
-6. ⏳ **Reseñas.** No hace falta Judge.me: la sección Reviews del home acepta bloques manuales (estrellas, cita, nombre, nombre del perro y foto opcional). Mándame las reseñas reales, con permiso de las clientas, y las cargo en `templates/index.json`; o agrégalas tú en Personalizar › Reviews › Agregar bloque y activa la sección (hoy está desactivada). Judge.me queda como opción para más adelante, si quieres que las clientas las escriban solas desde el correo posterior a la compra.
-7. ✅ **Textos del home.** Corregidos en `templates/index.json`. Queda uno: el título del video spotlight sigue diciendo "Algo lindo está por llegar" (era teaser de prelanzamiento). Dime el texto nuevo o cámbialo en Personalizar › Video spotlight. El video se queda.
+6. ✅ **Reseñas (Judge.me, plan gratis).** La única reseña real está en The Urban Leash 1.2 m (5 estrellas, escrita desde la app Shop, comprador verificado). El tema nuevo ya trae el app embed de Judge.me y el carrusel de reseñas en la página de producto, igual que el tema en vivo pero con los colores del rebrand. La sección Reviews del home sigue apagada: con una sola reseña, y tuya, se vería vacía; se enciende cuando lleguen dos o tres de clientas (Judge.me gratis manda el correo después de la compra). Si quieres apagar el carrusel del PDP, Personalizar › Product information › bloque Judge.me.
+7. ✅ **Textos del home.** Corregidos en `templates/index.json`, incluido el video spotlight, que ahora dice "Algo lindo está por llegar a tu **vida.**".
 8. ✅ **Color story.** Skyline Blue / Olive District / Brownstone, notas en español y enlace a la colección.
-9. ⏳ **Nombres de archivos.** Imágenes: listo. Las tres `ChatGPT_Image_…png` de The Urban Leash ahora se llaman `kyn-urban-leash-01/02/03.png` y tienen texto alternativo. Videos: la API de Shopify solo permite renombrar imágenes y archivos genéricos, no videos, y esta sesión no puede descargarlos del CDN para resubirlos con otro nombre. El paso es tuyo: en Contenido › Archivos sube los mismos videos con estos nombres y avísame para apuntar el tema a los nuevos (o elígelos tú en Personalizar › Story y Video spotlight). Los originales no se tocaron porque el tema publicado hoy los usa.
+9. ⏳ **Nombres de archivos.** Imágenes: listo (`kyn-urban-leash-01/02/03.png`, con texto alternativo). Videos: Shopify no permite renombrarlos por API y esta sesión no puede descargarlos para resubirlos; cuando quieras, en Contenido › Archivos sube los mismos videos con los nombres de la tabla y me avisas para apuntar el tema. No bloquea nada: los originales siguen funcionando.
 
    | Video actual | Súbelo como | Dónde se usa |
    |---|---|---|
@@ -98,9 +98,10 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
    Cuando el tema nuevo esté publicado, los archivos viejos se pueden borrar desde Contenido › Archivos.
 10. ✅ **Personalización.** El bloque de grabado se quitó de la plantilla de producto (ningún producto se graba por ahora). Sigue disponible en el editor para cuando vuelva.
 11. ✅ **Etiquetas.** `best-seller` en The Urban Crossbody y The Urban Leash 1.6 m. Si quieres el badge "new ♥" en algún producto, etiquétalo `new`.
-12. ⏳ **Catálogo.** Siguen en borrador Traffic Handle y el duplicado "The Urban Leash 1.6m — Brownstone / Olive District" (borrar o activar). La Long Leash 5m tiene Olive District a $1,240 y los otros dos acabados a $1,420: confirmar cuál es el bueno. El Urban Collar ya tiene 20 piezas a $500 (resuelto). Sin SKUs ni títulos SEO (ver PR #42).
+12. ✅ **Catálogo.** Decisión: Traffic Handle y el duplicado "The Urban Leash 1.6m — Brownstone / Olive District" se quedan en borrador (no salen en la tienda; borrarlos es opcional). Queda solo confirmar el precio de la Long Leash 5m: Olive District está a $1,240 y los otros dos acabados a $1,420. El Urban Collar ya tiene 20 piezas a $500.
 13. ⏳ **Publicar y redirigir.** El tema en vivo sigue siendo `kynStudio/main`; `KYNStudioRebranded/main` ya tiene todo lo mergeado hasta el PR #45 (incluidos los modelos `.glb` y el descodificador `.wasm` del constructor, verificado por API). Antes de publicar, anotar las URLs del tema anterior que cambian y crear redirecciones (Navegación › Redirecciones de URL). Quitar la contraseña de la tienda al final.
-14. ✅ **Constructor 3D (PR #45).** "Diseña la tuya" en la galería de las dos Urban Leash, pintado por los círculos de acabado. Pendientes suyos, ninguno bloquea el lanzamiento: probarlo en un iPhone y un Android reales (aquí solo hubo render por software), conectar el slider cuando exista el modelo en kyn-catalogo, y si quieres saber cuánta gente lo usa, agregar un evento de analítica al tocar "Diseña la tuya".
+14. ✅ **App embeds copiados del tema en vivo.** Los app embeds (scripts de apps) viven por tema y el nuevo no tenía ninguno: sin el de Judge.me no salía la reseña, y sin el de Mercado Pago no corría su antifraude. Ya están los cuatro en `config/settings_data.json`: Judge.me, Mercado Pago antifraude, chat de Shopify Inbox (botón en periwinkle) y Shopify Forms. Si no quieres el chat, se apaga en Personalizar › App embeds.
+15. ✅ **Constructor 3D (PR #45).** "Diseña la tuya" en la galería de las dos Urban Leash, pintado por los círculos de acabado. Pendientes suyos, ninguno bloquea el lanzamiento: probarlo en un iPhone y un Android reales (aquí solo hubo render por software), conectar el slider cuando exista el modelo en kyn-catalogo, y si quieres saber cuánta gente lo usa, agregar un evento de analítica al tocar "Diseña la tuya".
 
 ### P1 · Primera semana (código, este repo)
 
@@ -120,20 +121,23 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 
 ## 4. Checklist del día del lanzamiento
 
+**Para probar sin publicar:** Tienda online › Temas › `KYNStudioRebranded/main` › **Personalizar** abre el tema completo con carrito y checkout funcionando, o el menú "…" › **Vista previa** te da un enlace para abrirlo en el teléfono. Nada de eso lo ve nadie más.
+
+
 - [ ] Políticas pegadas desde `POLITICAS-PARA-PEGAR.md` (abrir el pie y la pestaña de envío del PDP).
-- [ ] Umbral de envío gratis alineado: hoy la tarifa arranca en $1,050 y el sitio promete $1,000.
+- [x] Umbral de envío gratis alineado en $1,500 (tarifa y textos).
 - [x] Menú "Nosotros" del pie completo.
 - [x] Página Contacto con plantilla `page.contact`.
 - [ ] Enviar un mensaje de prueba desde /pages/contact.
 - [x] Logo horizontal en el header (revisar que se vea bien en móvil).
 - [ ] Cuotas de Mercado Pago confirmadas en Configuración › Pagos.
-- [ ] Sección Reviews: con reseñas reales o desactivada (hoy está desactivada).
+- [ ] Reseña de la Urban Leash 1.2 m visible en el carrusel de Judge.me de la página de producto (vista previa del tema nuevo).
 - [ ] Título del video spotlight cambiado ("Algo lindo está por llegar").
 - [ ] Videos resubidos con los nombres nuevos y el tema apuntando a ellos.
 - [ ] Pedido de prueba completo: elegir acabados en una correa de 18 variantes, cambiar cantidad en el carrito, quitar un producto, pagar con Shop Pay y reembolsar.
 - [ ] Probar en iPhone y Android: hero, PDP (miniaturas y "Diseña la tuya"), carrito, menú.
 - [ ] Compartir un enlace de producto por WhatsApp y confirmar que sale la imagen.
-- [ ] Decidir el catálogo: Traffic Handle y el duplicado de la Urban Leash (borrador), precio de la Long Leash 5m Olive District.
+- [ ] Precio de la Long Leash 5m Olive District ($1,240 vs $1,420).
 - [ ] Publicar el tema, crear redirecciones, quitar contraseña.
 
 ## 5. Cómo se hizo esta revisión
