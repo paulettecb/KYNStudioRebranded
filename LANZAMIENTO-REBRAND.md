@@ -74,9 +74,9 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 
 ### P0 · Antes de publicar (Shopify admin)
 
-**Estado al 8 de septiembre por la tarde:** ✅ ya quedó hecho (por API o en este repo); ⏳ sigue en tus manos porque esta sesión no tiene ese permiso o es una decisión tuya.
+**Estado al 9 de septiembre, verificado contra la tienda por API:** ✅ ya quedó hecho (por API o en este repo); ⏳ sigue en tus manos porque esta sesión no tiene ese permiso o es una decisión tuya.
 
-1. ⏳ **Políticas legales.** Los tres textos están en `POLITICAS-PARA-PEGAR.md`, listos para Configuración › Políticas (el acceso de esta sesión no incluye `write_legal_policies`). Además hay que crear la tarifa de envío gratis para pedidos mayores a $1,000 en Configuración › Envíos y entregas › Tarifas. El home, la pestaña "Envío y devoluciones" del PDP y las políticas ya dicen lo mismo.
+1. ⏳ **Políticas legales.** En la tienda solo existe el Aviso de privacidad (la plantilla de Shopify). Faltan Política de envíos, Política de cambios y devoluciones y Términos del servicio: los tres textos están en `POLITICAS-PARA-PEGAR.md`, listos para Configuración › Políticas (el acceso de esta sesión no incluye `write_legal_policies`). **La tarifa de envío gratis ya existe**, pero su umbral es **$1,050**, no $1,000: "Estándar" cuesta $0 desde $1,050 y $150 abajo de eso (Expreso $195, Internacional $330). El home, la pestaña de envío del PDP y las políticas dicen "mayores a $1,000", así que un pedido de $1,020 pagaría envío. Elige: bajar la condición a $1,000 en Configuración › Envíos y entregas, o me dices y cambio los textos a $1,050.
 2. ✅ **Menú del pie "Nosotros".** Creado por API: Nuestra historia, Por qué Biothane, Por qué latón sólido, Contacto, Buscar.
 3. ✅ **Página de contacto.** Título "Contacto" y plantilla `page.contact` asignada.
 4. ✅ **Logo del header.** El tema usa el wordmark horizontal incluido (`assets/kyn-logo.png`). Si quieres otro archivo, súbelo en Personalizar › Header.
@@ -98,8 +98,9 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
    Cuando el tema nuevo esté publicado, los archivos viejos se pueden borrar desde Contenido › Archivos.
 10. ✅ **Personalización.** El bloque de grabado se quitó de la plantilla de producto (ningún producto se graba por ahora). Sigue disponible en el editor para cuando vuelva.
 11. ✅ **Etiquetas.** `best-seller` en The Urban Crossbody y The Urban Leash 1.6 m. Si quieres el badge "new ♥" en algún producto, etiquétalo `new`.
-12. ⏳ **Catálogo.** Traffic Handle está en borrador desde marzo; hay un borrador duplicado "Urban Leash 1.6m — Brownstone / Olive District"; la Long Leash 5m tiene variantes a $1,240 y $1,420 (confirmar cuál es el bueno); el Urban Collar (destino del botón secundario del hero) tiene 1 unidad y una sola variante sin acabados. Sin SKUs ni títulos SEO (ver PR #42, sesión S2).
-13. ⏳ **Publicar y redirigir.** Tienda online › Temas › publicar `KYNStudioRebranded/main`. Antes, anotar las URLs del tema anterior que cambian y crear redirecciones (Navegación › Redirecciones de URL). Quitar la contraseña de la tienda al final.
+12. ⏳ **Catálogo.** Siguen en borrador Traffic Handle y el duplicado "The Urban Leash 1.6m — Brownstone / Olive District" (borrar o activar). La Long Leash 5m tiene Olive District a $1,240 y los otros dos acabados a $1,420: confirmar cuál es el bueno. El Urban Collar ya tiene 20 piezas a $500 (resuelto). Sin SKUs ni títulos SEO (ver PR #42).
+13. ⏳ **Publicar y redirigir.** El tema en vivo sigue siendo `kynStudio/main`; `KYNStudioRebranded/main` ya tiene todo lo mergeado hasta el PR #45 (incluidos los modelos `.glb` y el descodificador `.wasm` del constructor, verificado por API). Antes de publicar, anotar las URLs del tema anterior que cambian y crear redirecciones (Navegación › Redirecciones de URL). Quitar la contraseña de la tienda al final.
+14. ✅ **Constructor 3D (PR #45).** "Diseña la tuya" en la galería de las dos Urban Leash, pintado por los círculos de acabado. Pendientes suyos, ninguno bloquea el lanzamiento: probarlo en un iPhone y un Android reales (aquí solo hubo render por software), conectar el slider cuando exista el modelo en kyn-catalogo, y si quieres saber cuánta gente lo usa, agregar un evento de analítica al tocar "Diseña la tuya".
 
 ### P1 · Primera semana (código, este repo)
 
@@ -119,7 +120,8 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 
 ## 4. Checklist del día del lanzamiento
 
-- [ ] Políticas pegadas desde `POLITICAS-PARA-PEGAR.md` y tarifa de envío gratis para pedidos mayores a $1,000 creada (abrir el pie y la pestaña de envío del PDP).
+- [ ] Políticas pegadas desde `POLITICAS-PARA-PEGAR.md` (abrir el pie y la pestaña de envío del PDP).
+- [ ] Umbral de envío gratis alineado: hoy la tarifa arranca en $1,050 y el sitio promete $1,000.
 - [x] Menú "Nosotros" del pie completo.
 - [x] Página Contacto con plantilla `page.contact`.
 - [ ] Enviar un mensaje de prueba desde /pages/contact.
@@ -129,8 +131,9 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 - [ ] Título del video spotlight cambiado ("Algo lindo está por llegar").
 - [ ] Videos resubidos con los nombres nuevos y el tema apuntando a ellos.
 - [ ] Pedido de prueba completo: elegir acabados en una correa de 18 variantes, cambiar cantidad en el carrito, quitar un producto, pagar con Shop Pay y reembolsar.
-- [ ] Probar en iPhone y Android: hero, PDP (miniaturas), carrito, menú.
+- [ ] Probar en iPhone y Android: hero, PDP (miniaturas y "Diseña la tuya"), carrito, menú.
 - [ ] Compartir un enlace de producto por WhatsApp y confirmar que sale la imagen.
+- [ ] Decidir el catálogo: Traffic Handle y el duplicado de la Urban Leash (borrador), precio de la Long Leash 5m Olive District.
 - [ ] Publicar el tema, crear redirecciones, quitar contraseña.
 
 ## 5. Cómo se hizo esta revisión
