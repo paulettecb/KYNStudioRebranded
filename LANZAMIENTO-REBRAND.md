@@ -132,7 +132,7 @@ Orden sugerido: **P0 antes de publicar el tema, P1 la primera semana, P2 despué
 - [x] Logo horizontal en el header (revisar que se vea bien en móvil).
 - [ ] Cuotas de Mercado Pago confirmadas en Configuración › Pagos.
 - [ ] Reseña de la Urban Leash 1.2 m visible en el carrusel de Judge.me de la página de producto (vista previa del tema nuevo).
-- [ ] Título del video spotlight cambiado ("Algo lindo está por llegar").
+- [x] Título del video spotlight: "Algo lindo está por llegar a tu vida."
 - [ ] Videos resubidos con los nombres nuevos y el tema apuntando a ellos.
 - [ ] Pedido de prueba completo: elegir acabados en una correa de 18 variantes, cambiar cantidad en el carrito, quitar un producto, pagar con Shop Pay y reembolsar.
 - [ ] Probar en iPhone y Android: hero, PDP (miniaturas y "Diseña la tuya"), carrito, menú.
