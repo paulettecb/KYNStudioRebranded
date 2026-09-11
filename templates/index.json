@@ -72,7 +72,7 @@
         "cta2_link": "shopify://products/the-urban-collar",
         "cta2_label_font": "sans",
         "cta2_label_size": 16,
-        "image": "shopify://shop_images/collar_new_3.png",
+        "image": "shopify://shop_images/collarkynfondo.png",
         "image_caption": "",
         "placeholder_label": "",
         "caption_font": "display",
@@ -162,6 +162,67 @@
         "cta_link": "shopify://collections/all"
       }
     },
+    "sets": {
+      "type": "bundle-sets",
+      "blocks": {
+        "walk-system": {
+          "type": "set",
+          "settings": {
+            "name": "The Urban Walk System",
+            "tagline": "Correa y crossbody a juego: el paseo de todos los días.",
+            "product_1": "the-urban-leash",
+            "product_2": "the-urban-crossbody",
+            "product_3": "",
+            "product_4": "",
+            "cta_link": ""
+          }
+        },
+        "duo": {
+          "type": "set",
+          "settings": {
+            "name": "The Urban Duo",
+            "tagline": "Dos correas y una crossbody.",
+            "product_1": "the-urban-leash",
+            "product_2": "the-urban-leash",
+            "product_3": "the-urban-crossbody",
+            "product_4": "",
+            "cta_link": ""
+          }
+        },
+        "pack": {
+          "type": "set",
+          "settings": {
+            "name": "The Urban Pack",
+            "tagline": "Tres correas y una crossbody.",
+            "product_1": "the-urban-leash",
+            "product_2": "the-urban-leash",
+            "product_3": "the-urban-leash",
+            "product_4": "the-urban-crossbody",
+            "cta_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "walk-system",
+        "duo",
+        "pack"
+      ],
+      "settings": {
+        "eyebrow": "Arma tu set",
+        "eyebrow_font": "sans",
+        "eyebrow_size": 13,
+        "heading": "Más piezas, más ahorro.",
+        "heading_font": "sans",
+        "heading_size": 48,
+        "spark_word": "ahorro.",
+        "spark_font": "display",
+        "spark_size": 48,
+        "promo_text": "Llévate 2 piezas y ahorra 10%. Con 3 o más, 15%. El descuento se aplica solo en el carrito.",
+        "discount_2": 10,
+        "discount_3": 15,
+        "cta_label": "Armar este set"
+      }
+    },
     "color-story": {
       "type": "color-story",
       "blocks": {
@@ -246,6 +307,7 @@
     },
     "reviews": {
       "type": "reviews",
+      "disabled": true,
       "settings": {
         "bg": "#f0f2fb",
         "eyebrow": "Para los humanos que amamos",
@@ -257,8 +319,7 @@
         "spark_word": "felices!",
         "spark_font": "display",
         "spark_size": 42
-      },
-      "disabled": true
+      }
     },
     "video-spotlight": {
       "type": "video-spotlight",
@@ -305,61 +366,6 @@
         "fineprint_font": "sans",
         "fineprint_size": 13
       }
-    },
-    "sets": {
-      "type": "bundle-sets",
-      "settings": {
-        "eyebrow": "Arma tu set",
-        "eyebrow_font": "sans",
-        "eyebrow_size": 13,
-        "heading": "Más piezas, más ahorro.",
-        "heading_font": "sans",
-        "heading_size": 48,
-        "spark_word": "ahorro.",
-        "spark_font": "display",
-        "spark_size": 48,
-        "promo_text": "Llévate 2 piezas y ahorra 10%. Con 3 o más, 15%. El descuento se aplica solo en el carrito.",
-        "discount_2": 10,
-        "discount_3": 15,
-        "cta_label": "Armar este set"
-      },
-      "blocks": {
-        "walk-system": {
-          "type": "set",
-          "settings": {
-            "name": "The Urban Walk System",
-            "tagline": "Correa y crossbody a juego: el paseo de todos los días.",
-            "product_1": "the-urban-leash",
-            "product_2": "the-urban-crossbody"
-          }
-        },
-        "duo": {
-          "type": "set",
-          "settings": {
-            "name": "The Urban Duo",
-            "tagline": "Dos correas y una crossbody.",
-            "product_1": "the-urban-leash",
-            "product_2": "the-urban-leash",
-            "product_3": "the-urban-crossbody"
-          }
-        },
-        "pack": {
-          "type": "set",
-          "settings": {
-            "name": "The Urban Pack",
-            "tagline": "Tres correas y una crossbody.",
-            "product_1": "the-urban-leash",
-            "product_2": "the-urban-leash",
-            "product_3": "the-urban-leash",
-            "product_4": "the-urban-crossbody"
-          }
-        }
-      },
-      "block_order": [
-        "walk-system",
-        "duo",
-        "pack"
-      ]
     }
   },
   "order": [
