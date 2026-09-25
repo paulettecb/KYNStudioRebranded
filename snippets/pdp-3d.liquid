@@ -9,9 +9,13 @@
   Params:
     - product  {Object}
     - section  {Object}  — usa section.settings.enable_3d / tag_3d / option_corta / option_larga
+                          y mosqueton_mode / nombre_mode (off · visual · order) con sus propiedades
 
   Emite el control Fotos / Diseña la tuya, la capa 3D (oculta hasta que se
-  toca) y un JSON con lo que vive en Shopify. El motor (assets/kyn-3d.js) y
+  toca), la barra de herramientas del constructor (mosquetón opcional y
+  nombre en letras, según los ajustes) y un JSON con lo que vive en Shopify.
+  En modo "order" la elección viaja en el pedido como propiedad del artículo
+  (no cambia el precio). El motor (assets/kyn-3d.js) y
   los modelos solo se descargan al tocar "Diseña la tuya"; sin JavaScript o
   sin WebGL2 la galería se queda como está.
 {%- endcomment -%}
@@ -37,6 +41,10 @@
   if idx_corta < 0 or idx_larga < 0
     assign show_3d = false
   endif
+
+  assign mosq_mode = section.settings.mosqueton_mode | default: 'off'
+  assign nombre_mode = section.settings.nombre_mode | default: 'off'
+  assign nombre_color = section.settings.nombre_color | default: '#D42A2A'
 
   assign largo = product.metafields.kyn.largo_m | default: ''
   if largo == blank
@@ -76,6 +84,38 @@
     </button>
     <span class="pdp-3d__combo" data-kyn3d-combo aria-live="polite"></span>
   </div>
+  {%- if mosq_mode != 'off' or nombre_mode != 'off' -%}
+    <div class="pdp-3d-tools" data-kyn3d-tools hidden>
+      {%- if mosq_mode != 'off' -%}
+        <div class="pdp-3d-tools__group" role="group" aria-label="{{ 'products.constructor.mosqueton_label' | t }}">
+          <span class="pdp-3d-tools__label">{{ 'products.constructor.mosqueton_label' | t }}</span>
+          <div class="pdp-3d-tools__pills">
+            <button type="button" class="pdp-3d-pill" data-kyn3d-mosq="lobster" aria-pressed="true">{{ 'products.constructor.lobster' | t }}</button>
+            <button type="button" class="pdp-3d-pill" data-kyn3d-mosq="carabiner" aria-pressed="false">{{ 'products.constructor.carabiner' | t }}</button>
+          </div>
+        </div>
+      {%- endif -%}
+      {%- if nombre_mode != 'off' -%}
+        <div class="pdp-3d-tools__group pdp-3d-tools__group--name">
+          <label class="pdp-3d-tools__label" for="kyn3d-name-{{ section.id }}">{{ 'products.constructor.name_label' | t }}</label>
+          <div class="pdp-3d-tools__row">
+            <input class="kyn-input pdp-3d-tools__input" type="text" id="kyn3d-name-{{ section.id }}" data-kyn3d-name maxlength="16" autocomplete="off" spellcheck="false" placeholder="{{ 'products.constructor.name_placeholder' | t }}">
+            <div class="pdp-3d-tools__dijes" aria-label="{{ 'products.constructor.name_charms' | t }}">
+              {%- assign dijes = '✿,☾,★,♥' | split: ',' -%}
+              {%- for dije in dijes -%}
+                <button type="button" class="pdp-3d-dije" data-kyn3d-dije="{{ dije }}" aria-label="{{ 'products.constructor.name_add_charm' | t: charm: dije }}">{{ dije }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+          <p class="pdp-3d-tools__note" data-kyn3d-name-note>{{ 'products.constructor.name_hint' | t }}</p>
+          <div class="pdp-3d-tools__ranges" data-kyn3d-name-ranges hidden>
+            <label class="pdp-3d-tools__range"><span>{{ 'products.constructor.name_size' | t }}</span><input type="range" data-kyn3d-name-alto min="16" max="40" step="1" value="26"><output data-kyn3d-name-alto-out>26 mm</output></label>
+            <label class="pdp-3d-tools__range"><span>{{ 'products.constructor.name_pos' | t }}</span><input type="range" data-kyn3d-name-pos min="0" max="100" step="1" value="0"><output data-kyn3d-name-pos-out>{{ 'products.constructor.name_pos_hook' | t }}</output></label>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
   <div class="pdp-seg" role="group" aria-label="{{ 'products.constructor.mode_label' | t }}" data-kyn3d-seg hidden>
     <button type="button" data-kyn3d-mode="photos" aria-pressed="true">{{ 'products.constructor.photos' | t }}</button>
     <button type="button" data-kyn3d-mode="3d" aria-pressed="false">{{ 'products.constructor.design' | t }}</button>
@@ -93,11 +133,23 @@
       "mosqueton-perno.glb": {{ 'kyn3d-mosqueton-perno.glb' | asset_url | json }},
       "mosqueton-gatillo.glb": {{ 'kyn3d-mosqueton-gatillo.glb' | asset_url | json }},
       "d-ring.glb": {{ 'kyn3d-d-ring.glb' | asset_url | json }},
+      "carabiner-uso-rudo.glb": {{ 'kyn3d-carabiner-uso-rudo.glb' | asset_url | json }},
+      "letras-kyn.glb": {{ 'kyn3d-letras-kyn.glb' | asset_url | json }},
       "tornillo-macho.glb": {{ 'kyn3d-tornillo-macho.glb' | asset_url | json }},
       "tornillo-hembra.glb": {{ 'kyn3d-tornillo-hembra.glb' | asset_url | json }}
     },
+    "mosqueton": { "mode": {{ mosq_mode | json }}, "property": {{ section.settings.mosqueton_property | default: 'Mosquetón' | json }} },
+    "nombre": { "mode": {{ nombre_mode | json }}, "property": {{ section.settings.nombre_property | default: 'Nombre en la correa' | json }}, "color": {{ nombre_color | json }} },
     "strings": {
       "thumbLabel": {{ 'products.constructor.thumb_label' | t | json }},
+      "lobster": {{ 'products.constructor.lobster' | t | json }},
+      "carabiner": {{ 'products.constructor.carabiner' | t | json }},
+      "nameHint": {{ 'products.constructor.name_hint' | t | json }},
+      "nameMissing": {{ 'products.constructor.name_missing' | t: chars: '[chars]' | json }},
+      "nameNoFit": {{ 'products.constructor.name_no_fit' | t | json }},
+      "namePosHook": {{ 'products.constructor.name_pos_hook' | t | json }},
+      "namePosPct": {{ 'products.constructor.name_pos_pct' | t: percent: '[percent]' | json }},
+      "nameSizeMm": {{ 'products.constructor.name_size_mm' | t: mm: '[mm]' | json }},
       "loading": {{ 'products.constructor.loading' | t | json }},
       "unsupported": {{ 'products.constructor.unsupported' | t | json }},
       "openHandle": {{ 'products.constructor.open_handle' | t | json }},

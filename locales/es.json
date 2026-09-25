@@ -72,7 +72,22 @@
       "close_handle": "Cerrar agarradera",
       "open_handle": "Abrir agarradera",
       "loading": "Armando tu correa…",
-      "unsupported": "Tu navegador no puede mostrar el 3D."
+      "unsupported": "Tu navegador no puede mostrar el 3D.",
+      "mosqueton_label": "Mosquetón",
+      "lobster": "Lobster",
+      "carabiner": "Carabiner de uso rudo",
+      "name_label": "Su nombre en la correa",
+      "name_placeholder": "Escribe su nombre",
+      "name_charms": "Dijes",
+      "name_add_charm": "Agregar {{ charm }}",
+      "name_hint": "Letras A–Z y los dijes. Aparecen cuando la correa termina de armarse.",
+      "name_missing": "Sin pieza todavía: {{ chars }}",
+      "name_no_fit": "No cabe en la tira: acórtalo o baja el tamaño.",
+      "name_size": "Tamaño",
+      "name_pos": "Posición",
+      "name_pos_hook": "junto al mosquetón",
+      "name_pos_pct": "{{ percent }}% hacia la agarradera",
+      "name_size_mm": "letra de {{ mm }} mm"
     },
     "sets": {
       "loose": "Sueltas",

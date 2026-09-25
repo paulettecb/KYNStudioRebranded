@@ -3,7 +3,10 @@
    descarga al tocar "Diseña la tuya". Los círculos de color del formulario
    pintan la correa: sections/main-product.liquid emite `kyn:variant` cada vez
    que cambia la variante y aquí se traduce a pintarCorta / pintarLarga.
-   Config y textos vienen del JSON que imprime snippets/pdp-3d.liquid. */
+   La barra de herramientas (mosquetón opcional, nombre en letras) sale según
+   los ajustes de la sección; en modo "order" la elección viaja en el pedido
+   como propiedad del artículo. Config y textos vienen del JSON que imprime
+   snippets/pdp-3d.liquid. */
 (function () {
   'use strict';
 
@@ -46,6 +49,8 @@
     var handle = layer.querySelector('[data-kyn3d-handle]');
     var combo = layer.querySelector('[data-kyn3d-combo]');
     var thumbs = document.getElementById('pdp-thumbs-' + sectionId);
+    var tools = section.querySelector('[data-kyn3d-tools]');
+    var form = document.getElementById('product-form-' + sectionId);
     if (!gallery || !seg || !canvas) return;
     if (!webglOk()) return; /* sin WebGL2 la galería se queda como está */
 
@@ -56,8 +61,12 @@
       loading: null,
       corta: cfg.initial && cfg.initial.corta,
       larga: cfg.initial && cfg.initial.larga,
-      handle: true
+      handle: true,
+      mosq: 'lobster',
+      nombre: { texto: '', alto: 26, pos: 0, cabe: true, faltan: [] }
     };
+    var mosqCfg = cfg.mosqueton || { mode: 'off' };
+    var nombreCfg = cfg.nombre || { mode: 'off' };
 
     /* Miniatura "3D" al inicio de la tira: la segunda puerta de entrada */
     var thumb = null;
@@ -79,6 +88,7 @@
     }
 
     seg.hidden = false;
+    gallery.classList.toggle('has-tools', !!tools);
     seg.querySelectorAll('[data-kyn3d-mode]').forEach(function (b) {
       b.addEventListener('click', function () { setMode(b.getAttribute('data-kyn3d-mode')); });
     });
@@ -132,6 +142,121 @@
       canvas.addEventListener('pointerdown', function () { hint.hidden = true; }, { once: true });
     }
 
+    /* Propiedades del artículo: solo cuando el ajuste está en "order" y hay algo que decir */
+    function setProperty(name, value) {
+      if (!form || !name) return;
+      var sel = 'input[type="hidden"][data-kyn3d-prop="' + name.replace(/"/g, '') + '"]';
+      var input = form.querySelector(sel);
+      if (!value) {
+        if (input) input.parentNode.removeChild(input);
+        return;
+      }
+      if (!input) {
+        input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'properties[' + name + ']';
+        input.setAttribute('data-kyn3d-prop', name.replace(/"/g, ''));
+        form.appendChild(input);
+      }
+      input.value = value;
+    }
+
+    /* ── Mosquetón: lobster o carabiner de uso rudo ── */
+    var mosqPills = tools ? tools.querySelectorAll('[data-kyn3d-mosq]') : [];
+    function setMosq(id) {
+      state.mosq = id === 'carabiner' ? 'carabiner' : 'lobster';
+      mosqPills.forEach(function (b) {
+        b.setAttribute('aria-pressed', b.getAttribute('data-kyn3d-mosq') === state.mosq ? 'true' : 'false');
+      });
+      if (state.api) state.api.setMosqueton(state.mosq);
+      if (mosqCfg.mode === 'order') setProperty(mosqCfg.property, state.mosq === 'carabiner' ? (S.carabiner || 'Carabiner') : '');
+    }
+    mosqPills.forEach(function (b) {
+      b.addEventListener('click', function () { setMosq(b.getAttribute('data-kyn3d-mosq')); });
+    });
+
+    /* ── Nombre en letras (paso 4 del constructor) ── */
+    var nameInput = tools ? tools.querySelector('[data-kyn3d-name]') : null;
+    var nameNote = tools ? tools.querySelector('[data-kyn3d-name-note]') : null;
+    var nameRanges = tools ? tools.querySelector('[data-kyn3d-name-ranges]') : null;
+    var altoInput = tools ? tools.querySelector('[data-kyn3d-name-alto]') : null;
+    var altoOut = tools ? tools.querySelector('[data-kyn3d-name-alto-out]') : null;
+    var posInput = tools ? tools.querySelector('[data-kyn3d-name-pos]') : null;
+    var posOut = tools ? tools.querySelector('[data-kyn3d-name-pos-out]') : null;
+    var nameTimer = null;
+    var pasoNombre = false;
+
+    function fmt(tpl, key, val) { return String(tpl || '').replace('[' + key + ']', val); }
+    function posText() { return state.nombre.pos === 0 ? (S.namePosHook || '0') : fmt(S.namePosPct, 'percent', state.nombre.pos); }
+
+    function nameNoteRefresh() {
+      if (!nameNote) return;
+      var n = state.nombre;
+      var err = '';
+      if (n.faltan.length) err = fmt(S.nameMissing, 'chars', n.faltan.join(', '));
+      else if (n.texto && !n.cabe) err = S.nameNoFit || '';
+      nameNote.textContent = err || (S.nameHint || '');
+      nameNote.classList.toggle('is-error', !!err);
+      if (nameInput) nameInput.setAttribute('aria-invalid', err ? 'true' : 'false');
+    }
+
+    function nameProperty() {
+      if (nombreCfg.mode !== 'order') return;
+      var n = state.nombre;
+      setProperty(nombreCfg.property, n.texto ? n.texto + ' · ' + fmt(S.nameSizeMm, 'mm', n.alto) + ' · ' + posText() : '');
+    }
+
+    function setNombreTexto(txt) {
+      var t = String(txt || '').toUpperCase().slice(0, 16);
+      state.nombre.texto = t.trim();
+      if (nameInput && nameInput.value !== t) nameInput.value = t;
+      if (nameRanges) nameRanges.hidden = !state.nombre.texto;
+      if (state.api) {
+        state.nombre.faltan = state.api.analizarNombre(state.nombre.texto).faltan;
+        state.api.setNombreTexto(state.nombre.texto);
+        if (state.nombre.texto && !pasoNombre) { pasoNombre = true; state.api.irPaso(4); }
+        clearTimeout(nameTimer);
+        if (state.nombre.texto) nameTimer = setTimeout(function () { if (state.api) state.api.enfocarNombre(); }, 900);
+      }
+      nameNoteRefresh();
+      nameProperty();
+    }
+    if (nameInput) {
+      nameInput.addEventListener('input', function () { setNombreTexto(nameInput.value); });
+    }
+    if (tools) {
+      tools.querySelectorAll('[data-kyn3d-dije]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          setNombreTexto((nameInput ? nameInput.value : state.nombre.texto) + b.getAttribute('data-kyn3d-dije'));
+          if (nameInput) nameInput.focus();
+        });
+      });
+    }
+    if (altoInput) {
+      altoInput.addEventListener('input', function () {
+        state.nombre.alto = parseInt(altoInput.value, 10) || 26;
+        if (altoOut) altoOut.textContent = fmt(S.nameSizeMm, 'mm', state.nombre.alto).replace(/^letra de /i, '');
+        if (state.api) state.api.setNombre({ alto: state.nombre.alto });
+        nameProperty();
+      });
+    }
+    if (posInput) {
+      posInput.addEventListener('input', function () {
+        state.nombre.pos = parseInt(posInput.value, 10) || 0;
+        if (posOut) posOut.textContent = posText();
+        if (state.api) state.api.setNombre({ pos: state.nombre.pos });
+        nameProperty();
+      });
+    }
+    /* al soltar tamaño o posición, la cámara vuelve a encuadrar el nombre (se mueve a lo largo de la tira) */
+    [altoInput, posInput].forEach(function (el) {
+      if (el) el.addEventListener('change', function () { if (state.api && state.nombre.texto) state.api.enfocarNombre(); });
+    });
+    function onNombreCabe(cabe) {
+      state.nombre.cabe = !!cabe;
+      nameNoteRefresh();
+    }
+
     function mount() {
       state.api = window.KYN3D.mount(canvas, {
         colorCorta: hex(state.corta),
@@ -139,9 +264,14 @@
         largo: String(cfg.largo),
         modelUrl: function (file) { return (cfg.models && cfg.models[file]) || file; },
         dracoPath: cfg.dracoPath,
-        onAgarradera: setHandleUI
+        mosqueton: state.mosq,
+        nombre: { texto: state.nombre.texto, alto: state.nombre.alto, pos: state.nombre.pos, colorHex: nombreCfg.color },
+        onAgarradera: setHandleUI,
+        onNombreCabe: onNombreCabe
       });
       paint();
+      /* lo que se escribió mientras cargaba el motor */
+      if (state.nombre.texto) setNombreTexto(state.nombre.texto);
     }
 
     function fail() {
@@ -166,6 +296,7 @@
       }
       gallery.classList.toggle('is-3d', on);
       layer.hidden = !on;
+      if (tools) tools.hidden = !on;
       seg.querySelectorAll('[data-kyn3d-mode]').forEach(function (b) {
         b.setAttribute('aria-pressed', b.getAttribute('data-kyn3d-mode') === mode ? 'true' : 'false');
       });
