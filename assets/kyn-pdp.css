@@ -61,6 +61,13 @@
 
 .pdp-main-wrap {
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.pdp-main-img,
+.pdp-3d,
+.pdp-seg {
+  grid-area: 1 / 1;
 }
 
 .pdp-main-img__placeholder { width: 100%; height: 100%; }
@@ -577,10 +584,11 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
 
 /* ── Constructor 3D · "Diseña la tuya" (snippets/pdp-3d.liquid) ── */
 .pdp-seg {
-  position: absolute;
-  top: 14px;
-  right: 14px;
+  position: relative;
   z-index: 3;
+  align-self: start;
+  justify-self: end;
+  margin: 14px;
   display: inline-flex;
   gap: 2px;
   padding: 4px;
@@ -607,9 +615,9 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
 .pdp-seg button:focus-visible { outline: 2px solid var(--periwinkle-700); outline-offset: 2px; }
 
 .pdp-3d {
-  position: absolute;
-  inset: 0;
+  position: relative;
   z-index: 2;
+  min-height: 0;
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--periwinkle-50);
@@ -703,12 +711,60 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
 }
 .pdp-thumb--3d svg { width: 22px; height: 22px; }
 
+/* Barra de herramientas del constructor (mosquetón opcional, nombre en letras) */
+.pdp-3d-tools { display: grid; gap: 14px; margin-top: 14px; }
+.pdp-3d-tools[hidden] { display: none; }
+.pdp-3d-tools__group { display: grid; gap: 8px; }
+.pdp-3d-tools__label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-700); }
+.pdp-3d-tools__pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pdp-3d-pill {
+  border: 1.5px solid var(--ink-100);
+  background: var(--white);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-900);
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.pdp-3d-pill:hover { border-color: var(--periwinkle-300); }
+.pdp-3d-pill[aria-pressed="true"] { border-color: var(--ink-900); background: var(--periwinkle-50); }
+.pdp-3d-pill:focus-visible { outline: 2px solid var(--periwinkle-700); outline-offset: 2px; }
+.pdp-3d-tools__row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pdp-3d-tools__input { flex: 1 1 180px; min-width: 0; max-width: 260px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+.pdp-3d-tools__dijes { display: flex; gap: 6px; }
+.pdp-3d-dije {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-100);
+  background: var(--white);
+  color: var(--ink-900);
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+}
+.pdp-3d-dije:hover { border-color: var(--periwinkle-300); background: var(--periwinkle-50); }
+.pdp-3d-dije:focus-visible { outline: 2px solid var(--periwinkle-700); outline-offset: 2px; }
+.pdp-3d-tools__note { margin: 0; font-size: 12px; color: var(--ink-550); }
+.pdp-3d-tools__note.is-error { color: #A23A3A; }
+.pdp-3d-tools__ranges { display: grid; gap: 6px; }
+.pdp-3d-tools__ranges[hidden] { display: none; }
+.pdp-3d-tools__range { display: grid; grid-template-columns: 72px 1fr 150px; align-items: center; gap: 10px; font-size: 12px; color: var(--ink-700); }
+.pdp-3d-tools__range input[type="range"] { width: 100%; min-width: 0; accent-color: var(--periwinkle-500); }
+.pdp-3d-tools__range output { font-weight: 600; color: var(--ink-700); font-variant-numeric: tabular-nums; }
+
 @media (max-width: 900px) {
-  .pdp-gallery.is-3d .pdp-main-wrap { position: sticky; top: var(--pdp-sticky-top, 8px); z-index: 4; }
+  /* el marco se queda pegado bajo el header mientras eliges; con la barra de herramientas abierta ya no cabe, así que no */
+  .pdp-gallery.is-3d:not(.has-tools) .pdp-main-wrap { position: sticky; top: var(--pdp-sticky-top, 8px); z-index: 4; }
   .pdp-gallery.is-3d .pdp-main-img { aspect-ratio: 5 / 4; }
   .pdp-gallery.is-3d .pdp-3d { box-shadow: var(--shadow-md); }
   .pdp-seg button { padding: 7px 11px; font-size: 12px; }
   .pdp-3d__hint { display: none; }
+  .pdp-3d-tools { gap: 10px; margin-top: 10px; }
+  .pdp-3d-tools__range { grid-template-columns: 64px 1fr 120px; }
 }
 /* En un marco angosto (celular, tablets) el botón de agarradera y el combo se
    encimaban; los nombres ya se leen en el formulario, así que quedan los puntos */
@@ -724,14 +780,17 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
 @media (max-width: 900px) {
   .pdp-wrap {
     grid-template-columns: 1fr;
-    gap: 32px;
     padding: 24px 20px 64px;
   }
+  /* En móvil la galería se disuelve en el grid de la página: así el marco 3D
+     sticky tiene como contenedor todo el .pdp-wrap (galería + formulario) y
+     de verdad se queda arriba mientras eliges acabados; dentro de la galería
+     sola no tenía dónde quedarse. */
   .pdp-gallery {
-    position: static;
-    grid-template-columns: 1fr;
-    gap: 12px;
+    display: contents;
   }
+  .pdp-wrap { gap: 12px; }
+  .pdp-info { order: 3; margin-top: 20px; }
   .pdp-thumbs {
     flex-direction: row;
     order: 2;
@@ -740,7 +799,8 @@ textarea.kyn-input { resize: vertical; min-height: 60px; }
     scrollbar-width: thin;
     padding-bottom: 4px;
   }
-  .pdp-wrap { overflow-x: hidden; }
+  /* clip, no hidden: hidden vuelve al wrap un contenedor de scroll y el marco sticky del 3D se corría sobre las miniaturas */
+  .pdp-wrap { overflow-x: clip; }
   .pdp-thumb {
     width: 60px;
     height: 72px;

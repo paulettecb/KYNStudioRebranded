@@ -72,7 +72,22 @@
       "close_handle": "Close the handle",
       "open_handle": "Open the handle",
       "loading": "Assembling your leash…",
-      "unsupported": "Your browser can't show the 3D view."
+      "unsupported": "Your browser can't show the 3D view.",
+      "mosqueton_label": "Clasp",
+      "lobster": "Lobster",
+      "carabiner": "Heavy-duty carabiner",
+      "name_label": "Their name on the leash",
+      "name_placeholder": "Type the name",
+      "name_charms": "Charms",
+      "name_add_charm": "Add {{ charm }}",
+      "name_hint": "Letters A–Z and the charms. They appear once the leash is assembled.",
+      "name_missing": "No piece yet for: {{ chars }}",
+      "name_no_fit": "It doesn't fit on the strap: shorten it or lower the size.",
+      "name_size": "Size",
+      "name_pos": "Position",
+      "name_pos_hook": "next to the clasp",
+      "name_pos_pct": "{{ percent }}% toward the handle",
+      "name_size_mm": "{{ mm }} mm letters"
     },
     "sets": {
       "loose": "Separately",

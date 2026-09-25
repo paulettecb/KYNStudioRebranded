@@ -61,7 +61,8 @@ Two Liquid rules that already bit this theme once:
 - **What drives it:** the normal variant swatches. `sections/main-product.liquid` dispatches a `kyn:variant` event on every variant change; `assets/kyn-3d-bridge.js` maps the selected values to hex through `snippets/color-hex.liquid` and repaints the 3D leash. Nothing to save: what the shopper sees is the variant that goes to the cart.
 - **Length:** locked per product. Read from the `kyn.largo_m` metafield when present, otherwise `1.2` if the handle/title mentions 1.2, else `1.6`.
 - **Settings:** Customizer › Product information › *Constructor 3D* — enable/disable, activating tag, and the option names for the short strap (handle) and long strap.
-- **Weight:** the engine (626 KB, 165 KB gzip), decoder and models download only when someone opens "Diseña la tuya"; the product page itself does not get heavier.
+- **Clasp and name (off by default):** the same settings block has *Mosquetón* (lobster / heavy-duty carabiner) and *Nombre en letras* (A–Z plus the ✿ ☾ ★ ♥ charms, with size and position). Each can be hidden, shown for preview only, or sent with the order as a line-item property (`Mosquetón`, `Nombre en la correa`). Neither changes the price; if one should, make it a product option and wire it like the finishes.
+- **Weight:** the engine (632 KB, 168 KB gzip), decoder and models download only when someone opens "Diseña la tuya"; the product page itself does not get heavier.
 
 ## Notes on fonts & swashes
 

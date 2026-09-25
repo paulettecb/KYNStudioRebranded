@@ -1,18 +1,31 @@
 // KYN · Motor 3D de la Urban Leash para el tema de Shopify.
 //
 // Es la escena del constructor (kyn-catalogo/src/components/ConstructorKyn.tsx)
-// sin la interfaz de Preact: solo el ensamble, la coreografía de armado, la
-// agarradera y el recoloreo. GENERADO por constructor/extract.py: la
-// coreografía se edita en kyn-catalogo y se vuelve a extraer, no aquí.
+// sin la interfaz de Preact: ensamble, coreografía de armado, agarradera,
+// mosquetón opcional (lobster / carabiner), nombre en letras y recoloreo.
+// GENERADO por constructor/extract.py: la coreografía se edita en
+// kyn-catalogo y se vuelve a extraer, no aquí.
 //
-// Uso (ver sections/main-product.liquid):
+// Uso (ver assets/kyn-3d-bridge.js):
 //   const api = KYN3D.mount(canvas, { colorCorta, colorLarga, largo, modelUrl, dracoPath });
-//   api.pintarCorta('#8a5a3c'); api.pintarLarga('#5f6b32'); api.setAgarradera(true); api.destroy();
+//   api.pintarCorta('#8a5a3c'); api.setMosqueton('carabiner'); api.setNombreTexto('KENNA');
+//   api.irPaso(4); api.enfocarNombre(); api.pause(); api.resume(); api.destroy();
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+
+export type Kyn3DMosqueton = 'lobster' | 'carabiner';
+
+export type Kyn3DNombre = {
+  /** piezas de la tira; null = espacio (ver analizarNombre) */
+  piezas?: (string | null)[];
+  /** alto de letra en mm (16–40; 26 = tal cual sale de Tinkercad) */
+  alto?: number;
+  /** 0 = junto al mosquetón, 100 = lo más lejos que cabe, hacia la agarradera */
+  pos?: number;
+};
 
 export type Kyn3DOptions = {
   /** hex de la tira corta (Primary Finish) */
@@ -25,10 +38,16 @@ export type Kyn3DOptions = {
   modelUrl: (file: string) => string;
   /** carpeta (con / final) donde viven draco_wasm_wrapper.js y draco_decoder.wasm */
   dracoPath: string;
+  /** mosquetón de la punta de la tira larga (default 'lobster') */
+  mosqueton?: Kyn3DMosqueton;
+  /** nombre inicial en letras (opcional) */
+  nombre?: { texto?: string; alto?: number; pos?: number; colorHex?: string };
   /** reproducir la coreografía de armado al montar (default true) */
   autoArmar?: boolean;
   /** la escena cierra sola la agarradera al final del armado; avisa para que el botón lo refleje */
   onAgarradera?: (on: boolean) => void;
+  /** avisa si el nombre cabe en la tira con el alto y la posición actuales */
+  onNombreCabe?: (cabe: boolean) => void;
 };
 
 export type Kyn3DApi = {
@@ -36,6 +55,15 @@ export type Kyn3DApi = {
   pintarLarga: (hex: string) => void;
   pintarNombre: (hex: string) => void;
   setAgarradera: (on: boolean) => void;
+  setMosqueton: (id: Kyn3DMosqueton) => void;
+  setNombre: (cfg: Kyn3DNombre) => void;
+  /** texto libre -> piezas (A–Z, espacios y los dijes ✿ ☾ ★ ♥); lo demás se ignora */
+  setNombreTexto: (txt: string) => void;
+  /** qué piezas produce un texto y qué caracteres no tienen pieza todavía */
+  analizarNombre: (txt: string) => { piezas: (string | null)[]; faltan: string[] };
+  /** la cámara encuadra el nombre (solo con la pieza armada y el paso 4 activo) */
+  enfocarNombre: () => void;
+  /** 2 y 3: coreografía de armado; 4: paso del nombre (las letras aparecen al terminar el armado) */
   irPaso: (n: number) => void;
   /** detiene el render (la galería volvió a Fotos); resume lo reanuda */
   pause: () => void;
@@ -50,6 +78,23 @@ const LARGOS = [
   { id: '1.2', label: '1.2 m', larga: 1.0 },
   { id: '1.6', label: '1.6 m', larga: 1.33 },
 ] as const;
+
+// El mosquetón de la punta de la tira larga (el que va al collar). El lobster
+// es el de siempre; el carabiner de uso rudo es la alternativa opcional.
+//   alto  — largo real de la pieza. El carabiner se escaló para que el hueco
+//           de su ojo mida ~2.2 cm: la tira de 19 mm pasa con holgura.
+//   giro  — el lobster trae el ojo arriba y se voltea; el carabiner ya lo
+//           trae abajo.
+//   sobre — del eje del doblez al centro del herraje: la barra del ojo tiene
+//           que caer justo dentro de la vuelta de la cinta. El del carabiner
+//           sale de medir su malla (la barra está al 2.6% de su alto).
+const MOSQUETONES = [
+  { id: 'lobster', label: 'Lobster', src: 'mosqueton-gatillo.glb', alto: 0.075, giro: Math.PI, sobre: 0.033 },
+  { id: 'carabiner', label: 'Carabiner', src: 'carabiner-uso-rudo.glb', alto: 0.088, giro: 0, sobre: 0.0417 },
+] as const;
+type MosqId = (typeof MOSQUETONES)[number]['id'];
+// Cuánto tarda el cambio de mosquetón en vivo (segundos reales).
+const CAMBIO_MOSQ = 0.45;
 
 const HW = 0.0095, HT = 0.001, RC = 0.0008;
 // La tira corta es igual en los dos modelos; la larga la elige quien compra
@@ -129,11 +174,39 @@ const CAIDA_PISO_ONDAS = 1.5; // periodo y medio → dos ondas bien echadas
 // A 1 duraba ~18 s de punta a punta, que se sentía eterno.
 const RITMO = 3;
 
-// Apagado a pedido de Paulette: la placa del nombre no quedó bien y le
-// estorbaba para usar el constructor. El código queda intacto (aquí y en
-// el efecto de abajo) por si se retoma después — solo hay que poner esto
-// en true.
-const MOSTRAR_NOMBRE = false;
+// El abecedario de Tinkercad (letras_kyn.glb, separado pieza por pieza en
+// public/models/letras-kyn.glb): A–Z y cuatro dijes. Cada pieza trae su
+// canal de 20 mm para la tira y viene centrada en él.
+const DIJES: Record<string, string> = { '✿': 'flor', '☾': 'luna', '★': 'estrella', '♥': 'corazon' };
+// Lo que se escribió → piezas. null = espacio. Los acentos se quitan (Á→A);
+// lo que no tiene pieza (Ñ, números…) se reporta aparte.
+function piezasDe(txt: string) {
+  const piezas: (string | null)[] = [];
+  const faltan: string[] = [];
+  for (const ch of txt) {
+    if (DIJES[ch]) piezas.push(DIJES[ch]);
+    else if (ch === ' ') piezas.push(null);
+    else {
+      const l = ch === 'Ñ' ? ch : ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (/^[A-Z]$/.test(l)) piezas.push(l);
+      else if (!faltan.includes(ch)) faltan.push(ch);
+    }
+  }
+  // sin espacios sobrantes en las puntas
+  while (piezas[0] === null) piezas.shift();
+  while (piezas.length && piezas[piezas.length - 1] === null) piezas.pop();
+  return { piezas, faltan };
+}
+// Colores de las letras. Provisionales (los primarios) hasta que se sepa
+// qué material habrá; para cambiarlos basta esta lista.
+const LETRA_COLORES = [
+  { slug: 'rojo', name: 'Rojo', hex: '#D42A2A' },
+  { slug: 'amarillo', name: 'Amarillo', hex: '#F4C51C' },
+  { slug: 'azul', name: 'Azul', hex: '#1F4FB8' },
+];
+// Alto de letra: el de las piezas tal cual salen de Tinkercad es ~26 mm.
+const ALTO_BASE = 26;
+const ALTO_MIN = 16, ALTO_MAX = 40;
 
 const suave = (x: number) => {
   const c = Math.min(1, Math.max(0, x));
@@ -199,8 +272,12 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
     // Nombre atravesado en la tira larga (prueba "Kenna"): pegado al tramo
     // recto justo antes del doblez, para que quede "casi llegando" al
     // mosquetón sin meterse en la zona que se dobla ni pisar sus tornillos.
-    const NOMBRE_Y = DOBLEZ_LARGA - 0.17;
-    const NOMBRE_MITAD = 0.0645; // medio largo real de la placa (12.9 cm)
+    // Tramo de la larga donde pueden ir letras (marco local, y hacia la
+    // punta): desde un dedito antes de donde termina la colita doblada del
+    // gatillo (10 cm después del doblez) hasta un dedito después del
+    // tornillo de arriba de la unión con la corta.
+    const LIBRE_ALTO = -0.2 - 0.006;
+    const LIBRE_BAJO = TORN_UNION[0] + 0.012 - LARGA_TIP;
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -243,6 +320,12 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
     const baseCorta = (geoCorta.attributes.position.array as Float32Array).slice();
     const corta = new THREE.Mesh(geoCorta, matCorta);
     corta.position.y = CORTA_Y;
+    // Las dos cintas se deforman vértice por vértice cada cuadro, pero three
+    // calcula su esfera de recorte UNA vez, con la cinta recta. Ya doblada
+    // (la gota del asa, la caída al piso) se sale de esa esfera, y al
+    // acercarse a un mosquetón three creía que la cinta estaba fuera de
+    // cuadro y dejaba de dibujarla: el herraje quedaba flotando solo.
+    corta.frustumCulled = false;
     scene.add(corta);
 
     // ---- tira larga (llega en el paso 2) ----
@@ -252,6 +335,7 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
     const geoLarga = cintaGeometry(L_LARGA, 300);
     const baseLarga = (geoLarga.attributes.position.array as Float32Array).slice();
     const larga = new THREE.Mesh(geoLarga, matLarga);
+    larga.frustumCulled = false; // ver la corta
     larga.visible = false;
     scene.add(larga);
 
@@ -673,13 +757,17 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
       return { x: q(xs), y: q(ys), z: q(zs), th: q(ths), phi: q(phis) };
     }
 
-    function formarLarga(phi: number, caida = 0) {
-      const pos = geoLarga.attributes.position;
+    // Dónde cae un punto de la tira larga (en su marco local, con la cinta
+    // recta) ya con el doblez del gatillo y la caída aplicados. Es la MISMA
+    // cuenta para la cinta y para todo lo que va pegado a ella vértice por
+    // vértice (las letras del nombre), así nada se despega de la curva.
+    const CURVA = [0, 0, 0];
+    function curvaLarga(bx: number, by: number, bz: number, phi: number, caida: number) {
       const yh = -0.1; // doblez a 10 cm de su punta de 4 barrenos (local)
       const yD = CAIDA_Y0 - LARGA_TIP; // arranque de la caída, en marco local
-      for (let i = 0; i < pos.count; i++) {
-        let py = baseLarga[i * 3 + 1];
-        let pz = baseLarga[i * 3 + 2];
+      {
+        let py = by;
+        let pz = bz;
         const dy = py - yh; // >0 arriba del doblez (la punta que da la vuelta)
         if (dy > 0 && phi > 0) {
           const ang = phi * Math.min(dy / ZONA, 1);
@@ -694,7 +782,7 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
         // les toca el mismo tramo y no se separan). El grosor (pz) rota con
         // el levantamiento y el ancho (px) con el rumbo del piso — el marco
         // completo, no un dibujo plano.
-        let px = baseLarga[i * 3];
+        let px = bx;
         const sC = py - yD;
         if (caida > 0 && sC > 0) {
           const c = enCaida(sC);
@@ -707,12 +795,71 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
           py += (py2 - py) * caida;
           pz += (pz2 - pz) * caida;
         }
-        pos.setXYZ(i, px, py, pz);
+        CURVA[0] = px; CURVA[1] = py; CURVA[2] = pz;
+      }
+      return CURVA;
+    }
+
+    // última forma de la larga, para que el nombre la copie cuando llegue
+    const formaLarga = { phi: 0, caida: 0 };
+    let nombreSucio = true;
+    function formarLarga(phi: number, caida = 0) {
+      const pos = geoLarga.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const c = curvaLarga(baseLarga[i * 3], baseLarga[i * 3 + 1], baseLarga[i * 3 + 2], phi, caida);
+        pos.setXYZ(i, c[0], c[1], c[2]);
       }
       pos.needsUpdate = true;
       geoLarga.computeVertexNormals();
+      formaLarga.phi = phi;
+      formaLarga.caida = caida;
+      nombreSucio = true;
     }
     formarLarga(0);
+
+    // Las letras del nombre sobre la curva de la cinta. Cada letra es una
+    // pieza RÍGIDA de latón: no se dobla con la tira (doblar vértice por
+    // vértice las chicleaba donde la cinta hace curva), sino que se asienta
+    // entera según el rumbo de la cinta en su centro — como una letra de
+    // verdad ensartada en una correa que da vuelta. desliz las corre a lo
+    // largo de la tira (entran deslizándose hacia su lugar).
+    const F_P = new THREE.Vector3(), F_T = new THREE.Vector3();
+    const F_W = new THREE.Vector3(), F_N = new THREE.Vector3();
+    function marcoEnLarga(y: number) {
+      const { phi, caida } = formaLarga;
+      const h = 0.002;
+      const c0 = curvaLarga(0, y, 0, phi, caida);
+      F_P.set(c0[0], c0[1], c0[2]);
+      const a = curvaLarga(0, y + h, 0, phi, caida);
+      F_T.set(a[0], a[1], a[2]);
+      const b = curvaLarga(0, y - h, 0, phi, caida);
+      F_T.sub(F_W.set(b[0], b[1], b[2])).normalize(); // a lo largo
+      const w = curvaLarga(h, y, 0, phi, caida);
+      F_W.set(w[0], w[1], w[2]).sub(F_P);
+      F_W.addScaledVector(F_T, -F_W.dot(F_T)).normalize(); // a lo ancho
+      F_N.crossVectors(F_W, F_T); // el grosor: x × y = z, como en la cinta recta
+    }
+    function formarNombre(desliz: number) {
+      if (!nombre) return;
+      const pos = nombre.mesh.geometry.attributes.position;
+      const { base: b, letras, deLetra } = nombre;
+      for (let l = 0; l < letras.length; l++) {
+        const yc = letras[l];
+        marcoEnLarga(yc + desliz);
+        for (let i = 0; i < pos.count; i++) {
+          if (deLetra[i] !== l) continue;
+          const x = b[i * 3], y = b[i * 3 + 1] - yc, z = b[i * 3 + 2];
+          pos.setXYZ(
+            i,
+            F_P.x + x * F_W.x + y * F_T.x + z * F_N.x,
+            F_P.y + x * F_W.y + y * F_T.y + z * F_N.y,
+            F_P.z + x * F_W.z + y * F_T.z + z * F_N.z,
+          );
+        }
+      }
+      pos.needsUpdate = true;
+    }
+
 
     // Los herrajes de la punta (gatillo + 2 tornillos con sus barrenos)
     // viajan sobre la misma tabla, con el mismo marco: primero su vuelta
@@ -737,38 +884,11 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
         Q_TMP.setFromEuler(new THREE.Euler(0, c.phi * caida, 0));
         o.quaternion.premultiply(Q_TMP);
       };
-      if (gatillo) dobla(gatillo.g, DOBLEZ_LARGA + 0.033, Math.PI, Z_EJE + LARGA_Z);
-      // La placa del nombre es larga (12.9 cm) contra una curva que da vueltas
-      // fuertes en ese tramo: dobla() sigue la tangente de UN solo punto (el
-      // centro), y a esa escala la punta se despega de la cinta (la K se salía
-      // por completo). Es rígida — no se puede curvar sola — así que en vez de
-      // adivinar su ángulo se ANCLAN sus dos puntas (K y A) a sus posiciones
-      // reales sobre la curva y se arma la cuerda entre ellas: así ninguna
-      // punta se sale, aunque el tramo de en medio no siga la curva exacta
-      // (una placa rígida tampoco lo haría en la vida real).
-      if (nombre) {
-        const puntoEn = (baseY: number) => {
-          const sC = baseY - CAIDA_Y0;
-          if (sC <= 0) return new THREE.Vector3(0, baseY, LARGA_Z);
-          const c = enCaida(sC);
-          return new THREE.Vector3(
-            c.x * caida,
-            baseY + (CAIDA_Y0 + c.y - baseY) * caida,
-            LARGA_Z + c.z * caida,
-          );
-        };
-        const pA = puntoEn(NOMBRE_Y - NOMBRE_MITAD); // lado de la K
-        const pB = puntoEn(NOMBRE_Y + NOMBRE_MITAD); // lado de la A
-        const sCmid = NOMBRE_Y - CAIDA_Y0;
-        const phiMid = sCmid > 0 ? enCaida(sCmid).phi * caida : 0;
-        const yAxis = pB.clone().sub(pA).normalize();
-        const xRef = new THREE.Vector3(Math.cos(phiMid), 0, -Math.sin(phiMid));
-        const zAxis = new THREE.Vector3().crossVectors(xRef, yAxis).normalize();
-        const xAxis = new THREE.Vector3().crossVectors(yAxis, zAxis).normalize();
-        nombre.g.position.copy(pA).add(pB).multiplyScalar(0.5);
-        nombre.g.quaternion.setFromRotationMatrix(
-          new THREE.Matrix4().makeBasis(xAxis, yAxis, zAxis),
-        );
+      // Los dos mosquetones viajan igual; el que entra o sale en un cambio va
+      // levantado sobre la misma curva, así se desliza por la cinta.
+      for (const M of MOSQUETONES) {
+        const p = ganchos[M.id];
+        if (p) dobla(p.g, DOBLEZ_LARGA + M.sobre + levanteGancho[M.id], M.giro, Z_EJE + LARGA_Z);
       }
       for (const i of [4, 5]) {
         const m = machos[i], h = hembras[i], ag = agujeros[i];
@@ -812,9 +932,33 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
     const carga = (src: string) =>
       new Promise<THREE.Group>((res, rej) => loader.load(src, (x) => res(x.scene), undefined, rej));
 
-    let perno: Pz | null = null, gatillo: Pz | null = null, dring: Pz | null = null;
-    let nombre = null as Pz | null; // la placa del nombre está apagada (MOSTRAR_NOMBRE); nunca se carga
-    let nombreHex = '#D9B36A';
+    let perno: Pz | null = null, dring: Pz | null = null;
+    // Mosquetón de la punta de la larga: se cargan los dos y se muestra el
+    // elegido. mezcla va de 0 a 1 (por tiempo) para cambiarlos en vivo.
+    const ganchos: Partial<Record<MosqId, Pz>> = {};
+    let ganchoSel: MosqId = opts.mosqueton === 'carabiner' ? 'carabiner' : 'lobster';
+    const mezcla: Record<MosqId, number> = { lobster: 0, carabiner: 0 };
+    mezcla[ganchoSel] = 1;
+    const levanteGancho: Record<MosqId, number> = { lobster: 0, carabiner: 0 };
+    // El nombre (paso 4): una malla hija de la tira larga cuyos vértices se
+    // recalculan con curvaLarga — no un objeto rígido encima.
+    let nombre: {
+      mesh: THREE.Mesh;
+      base: Float32Array;
+      mats: THREE.MeshStandardMaterial[];
+      letras: number[]; // centro de cada letra, a lo largo de la tira
+      deLetra: Int16Array; // a qué letra pertenece cada vértice
+    } | null = null;
+    let nombreHex = opts.nombre?.colorHex ?? LETRA_COLORES[0].hex;
+    // lo que hay que armar: piezas, alto de letra (mm) y posición (0–100)
+    const nombreCfg = {
+      piezas: piezasDe((opts.nombre?.texto ?? '').toUpperCase().trim()).piezas,
+      alto: Math.min(ALTO_MAX, Math.max(ALTO_MIN, opts.nombre?.alto ?? ALTO_BASE)),
+      pos: Math.min(100, Math.max(0, opts.nombre?.pos ?? 0)),
+    };
+    let nombreTramo = { ini: 0, fin: 0 }; // dónde quedó, en marco local
+    let paso4 = false; // el ritual ya llegó al paso del nombre
+    let mezclaNombre = 0, nombrePrev = -1;
     // tornillos: [0,1]=perno · [2,3]=unión · [4,5]=gatillo
     const machos: Pz[] = [], hembras: Pz[] = [];
     // los tornillos deben quedar prensados contra la tira (grosor total
@@ -844,17 +988,20 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
       perno.g.position.set(0, DOBLEZ_CORTA - 0.033, Z_EJE);
       scene.add(perno.g);
     });
-    carga(opts.modelUrl('mosqueton-gatillo.glb')).then((m) => {
-      gatillo = preparar(m, 0.075);
-      // el modelo trae el ojo ARRIBA; aquí cuelga la correa de él, así
-      // que se voltea para que el ojo abrace el doblez y el cuerpo suba.
-      // Ojo: se gira el GRUPO ya centrado (no la malla cruda) — girar la
-      // malla cruda la voltea alrededor del origen del GLB, que no cae en
-      // su centro, y eso la desplaza unos milímetros ("fantasma" en la tira).
-      gatillo.g.rotation.z = Math.PI;
-      gatillo.g.position.set(0, DOBLEZ_LARGA + 0.033, Z_EJE + LARGA_Z);
-      scene.add(gatillo.g);
-    });
+    for (const M of MOSQUETONES) {
+      carga(opts.modelUrl(M.src)).then((m) => {
+        const p = preparar(m, M.alto);
+        // el lobster trae el ojo ARRIBA; aquí cuelga la correa de él, así
+        // que se voltea para que el ojo abrace el doblez y el cuerpo suba.
+        // Ojo: se gira el GRUPO ya centrado (no la malla cruda) — girar la
+        // malla cruda la voltea alrededor del origen del GLB, que no cae en
+        // su centro, y eso la desplaza unos milímetros ("fantasma" en la tira).
+        p.g.rotation.z = M.giro;
+        p.g.position.set(0, DOBLEZ_LARGA + M.sobre, Z_EJE + LARGA_Z);
+        scene.add(p.g);
+        ganchos[M.id] = p;
+      });
+    }
     carga(opts.modelUrl('d-ring.glb')).then((m) => {
       const box = new THREE.Box3().setFromObject(m);
       const c = box.getCenter(new THREE.Vector3());
@@ -912,6 +1059,86 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
       };
       acomodarAro();
     });
+    // El abecedario se carga una vez; cada pieza queda como geometría base
+    // (metros, centrada en su canal: x a lo largo de la palabra, y el alto de
+    // la letra, z el grosor).
+    const glifos = new Map<string, { geo: THREE.BufferGeometry; ancho: number }>();
+    const matNombre = new THREE.MeshStandardMaterial({
+      color: nombreHex, roughness: 0.45, metalness: 0,
+      // caras planas (Tinkercad no trae normales) y así no hay que
+      // recalcularlas al acomodar las letras
+      flatShading: true, transparent: true, opacity: 0,
+    });
+    carga(opts.modelUrl('letras-kyn.glb')).then((g) => {
+      g.traverse((n) => {
+        const m = n as THREE.Mesh;
+        if (m.isMesh) {
+          const geo = m.geometry.clone();
+          geo.deleteAttribute('normal');
+          glifos.set(m.name, { geo, ancho: (m.userData.ancho as number) ?? 0.02 });
+        }
+      });
+      armarNombre();
+    });
+
+    // Arma el nombre como UNA malla hija de la tira larga, en su marco local
+    // con la cinta recta: la última pieza junto al mosquetón y la palabra
+    // creciendo hacia la agarradera, lo que mida. Luego formarNombre asienta
+    // cada letra sobre la curva.
+    function armarNombre() {
+      if (!glifos.size) return;
+      const s = nombreCfg.alto / ALTO_BASE;
+      const hueco = 0.0015 * s, espacio = 0.008 * s;
+      const anchos = nombreCfg.piezas.map((p) => (p ? (glifos.get(p)?.ancho ?? 0) * s : espacio));
+      const largo = anchos.reduce((a, b) => a + b, 0) + hueco * Math.max(0, anchos.length - 1);
+      const recorrido = LIBRE_ALTO - LIBRE_BAJO - largo;
+      opts.onNombreCabe?.(recorrido >= 0);
+      const fin = LIBRE_ALTO - Math.max(0, recorrido) * (nombreCfg.pos / 100);
+      const ini = fin - largo;
+      nombreTramo = { ini, fin };
+      const pos: number[] = [], idx: number[] = [], letras: number[] = [], deLetra: number[] = [];
+      let y = ini;
+      nombreCfg.piezas.forEach((p, i) => {
+        const w = anchos[i];
+        const gl = p ? glifos.get(p) : null;
+        if (gl) {
+          const yc = y + w / 2;
+          const l = letras.length;
+          letras.push(yc);
+          const P = gl.geo.attributes.position;
+          const o = pos.length / 3;
+          for (let v = 0; v < P.count; v++) {
+            // pieza → tira: su largo va a lo largo de la cinta (y), su alto a
+            // lo ancho (x) y su grosor queda igual, para que el canal siga
+            // abrazando los 2 mm de la tira aunque la letra crezca.
+            pos.push(-P.getY(v) * s, yc + P.getX(v) * s, P.getZ(v));
+            deLetra.push(l);
+          }
+          const I = gl.geo.index;
+          if (I) for (let k = 0; k < I.count; k++) idx.push(o + I.getX(k));
+          else for (let k = 0; k < P.count; k++) idx.push(o + k);
+        }
+        y += w + hueco;
+      });
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      geo.setIndex(idx);
+      if (nombre) {
+        nombre.mesh.geometry.dispose();
+        nombre.mesh.geometry = geo;
+      } else {
+        const mesh = new THREE.Mesh(geo, matNombre);
+        mesh.frustumCulled = false; // se deforma, igual que las cintas
+        mesh.visible = false;
+        larga.add(mesh);
+        nombre = { mesh, base: new Float32Array(0), mats: [matNombre], letras: [], deLetra: new Int16Array(0) };
+      }
+      nombre.base = new Float32Array(pos);
+      nombre.letras = letras;
+      nombre.deLetra = Int16Array.from(deLetra);
+      nombreSucio = true;
+      nombrePrev = -1;
+    }
     carga(opts.modelUrl('tornillo-macho.glb')).then((m) => {
       const a = preparar(m, 0.0075);
       a.g.children[0].rotation.x = -Math.PI / 2; // el poste hacia -z
@@ -979,23 +1206,54 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
           decabeza: true,
         };
       })(),
+      // Paso 4: de cerca y casi de frente al nombre, girada para que se lea
+      // de izquierda a derecha. Se calcula al volar (ver volar), sobre la
+      // pieza ya acostada; en vez de rodar trae su propio 'arriba'.
+      nombre: { pos: new THREE.Vector3(), mira: new THREE.Vector3(), up: new THREE.Vector3() },
     };
     camera.position.copy(CAMS.p1.pos);
     controls.target.copy(CAMS.p1.mira);
     controls.update();
     const desde = { pos: new THREE.Vector3(), mira: new THREE.Vector3() };
-    let rumbo: { pos: THREE.Vector3; mira: THREE.Vector3; decabeza?: boolean } | null = null;
+    let rumbo: { pos: THREE.Vector3; mira: THREE.Vector3; decabeza?: boolean; up?: THREE.Vector3 } | null = null;
     let rumboT0 = 0, rumboDur = 1;
     // 'arriba' de la cámara al empezar y al terminar el vuelo, en radianes de
     // giro sobre el eje de visión: 0 = normal, π = de cabeza. Se rueda en vez
     // de interpolar el vector, que a la mitad se quedaría en cero.
     let rollDesde = 0, rollHasta = 0;
+    // para las tomas con 'arriba' propio: se gira de un arriba al otro
+    const upDesde = new THREE.Vector3(), upGiro = new THREE.Quaternion();
+    const Q_ID = new THREE.Quaternion(), Q_UP = new THREE.Quaternion();
     function volar(a: keyof typeof CAMS, ahora: number, dur = 1.2) {
+      if (a === 'nombre') {
+        // Sobre la pieza ya armada y acostada (doblez y caída completos).
+        const yN = (nombreTramo.ini + nombreTramo.fin) / 2;
+        const largoN = nombreTramo.fin - nombreTramo.ini;
+        // (curvaLarga devuelve siempre el mismo arreglo: se copia antes de
+        // pedir el siguiente punto)
+        const c = new THREE.Vector3().fromArray(curvaLarga(0, yN, 0, Math.PI, 1));
+        const mira = CAMS.nombre.mira.set(c.x, c.y + LARGA_TIP, c.z + LARGA_Z);
+        const lee = new THREE.Vector3().fromArray(curvaLarga(0, yN + 0.01, 0, Math.PI, 1)).sub(c).normalize(); // K → A
+        // Se ve por la cara donde el nombre se lee al derecho (por debajo del
+        // piso de la escena, como el encuadre final), un poco ladeada hacia el
+        // lado de siempre para que las letras tengan volumen.
+        const lado = new THREE.Vector3(0.56, 0, 1.07);
+        lado.addScaledVector(lee, -lado.dot(lee)).normalize();
+        const hacia = new THREE.Vector3(0, -1, 0).addScaledVector(lado, 0.55).normalize();
+        // lo bastante lejos para que quepa todo el nombre
+        CAMS.nombre.pos.copy(mira).addScaledVector(hacia, Math.max(0.2, largoN * 1.35 + 0.06));
+        // 'arriba' tal que la derecha de la pantalla sea la dirección K → A
+        CAMS.nombre.up.crossVectors(hacia, lee).normalize();
+      }
       desde.pos.copy(camera.position);
       desde.mira.copy(controls.target);
       rumbo = CAMS[a];
       rollDesde = rollHasta;
       rollHasta = 'decabeza' in CAMS[a] ? Math.PI : 0;
+      if ('up' in CAMS[a]) {
+        upDesde.copy(camera.up);
+        upGiro.setFromUnitVectors(upDesde, CAMS[a].up as THREE.Vector3);
+      }
       rumboT0 = ahora;
       rumboDur = dur / RITMO;
       controls.enabled = false;
@@ -1015,15 +1273,27 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
     let agarraderaOn = false;
     let aro = 0, aroPrev = -1;
 
-    const api: Omit<Kyn3DApi, 'destroy' | 'pause' | 'resume'> = {
+    const api: Omit<Kyn3DApi, 'destroy' | 'pause' | 'resume' | 'setNombreTexto' | 'analizarNombre'> = {
       pintarCorta: (hex) => matCorta.color.set(hex),
       pintarLarga: (hex) => matLarga.color.set(hex),
       pintarNombre: (hex) => {
         nombreHex = hex;
-        nombre?.mats.forEach((m) => (m as THREE.MeshPhysicalMaterial).color.set(hex));
+        nombre?.mats.forEach((m) => m.color.set(hex));
+      },
+      setNombre: (cfg) => {
+        Object.assign(nombreCfg, cfg);
+        armarNombre();
+      },
+      enfocarNombre: () => {
+        if (paso4 && hitos3.g2) volar('nombre', reloj.getElapsedTime(), 0.9);
       },
       setAgarradera: (on) => {
         agarraderaOn = on;
+      },
+      setMosqueton: (id) => {
+        ganchoSel = id;
+        // antes del paso 3 no se ve ningún mosquetón: se cambia sin transición
+        if (fase < 3) for (const M of MOSQUETONES) mezcla[M.id] = M.id === id ? 1 : 0;
       },
       irPaso: (n) => {
         const ahora = reloj.getElapsedTime();
@@ -1037,6 +1307,10 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
           t3i = ahora;
           agarraderaOn = false; // la pieza llega abierta; tú la cierras
           volar('union', ahora, 1.0);
+        } else if (n === 4 && fase === 3 && !paso4) {
+          paso4 = true;
+          // si el armado todavía no termina, el vuelo final lo hace al nombre
+          if (hitos3.g2) volar('nombre', ahora, 1.4);
         }
       },
     };
@@ -1096,6 +1370,8 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
         }
       } else if (fase === 3) {
         const t3 = quieto ? 99 : (t - t3i) * RITMO;
+        // Por tiempo, no por cuadro (ver el cierre de la agarradera abajo).
+        const dt = Math.min(0.1, Math.max(0, t - tPrev));
         // la larga se asienta en la unión
         const asienta = suave(t3 / 0.9);
         larga.position.set(0, LARGA_TIP, LARGA_Z + 0.05 * (1 - asienta) * 0);
@@ -1117,17 +1393,21 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
           hitos3.volGat = true;
           volar('gatillo', t, 0.9);
         }
-        if (gatillo) {
-          const a = suave((t3 - 4.6) / 0.9);
-          gatillo.g.visible = a > 0;
-          gatillo.g.position.y = DOBLEZ_LARGA + 0.037 + 0.06 * (1 - a);
-          gatillo.mats.forEach((m) => (m.opacity = a));
-        }
-        if (nombre) {
-          const a = suave((t3 - 6.0) / 1.0);
-          nombre.g.visible = a > 0;
-          nombre.g.position.y = NOMBRE_Y + 0.06 * (1 - a);
-          nombre.mats.forEach((m) => (m.opacity = a));
+        // El mosquetón baja a su doblez. Si se cambia ya armada, el que sale
+        // se desvanece subiendo por la cinta y el que entra baja igual que
+        // en el montaje.
+        const aG = suave((t3 - 4.6) / 0.9);
+        for (const M of MOSQUETONES) {
+          const meta = M.id === ganchoSel ? 1 : 0;
+          const avance = quieto ? 1 : dt / CAMBIO_MOSQ;
+          mezcla[M.id] += Math.max(-avance, Math.min(avance, meta - mezcla[M.id]));
+          const p = ganchos[M.id];
+          if (!p) continue;
+          const a = aG * suave(mezcla[M.id]);
+          p.g.visible = a > 0;
+          p.mats.forEach((m) => (m.opacity = a));
+          levanteGancho[M.id] = 0.06 * (1 - a);
+          p.g.position.y = DOBLEZ_LARGA + M.sobre + levanteGancho[M.id];
         }
         const phiL = Math.PI * suave((t3 - 5.5) / 1.7);
         // la caída entra al final, junto con el cierre y el vuelo de cámara
@@ -1140,13 +1420,30 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
         animaTornillo(4, suave((t3 - 7.3) / 1.1));
         animaTornillo(5, suave((t3 - 7.9) / 1.1));
         ponerCaida(caida);
+        // El nombre entra en el paso 4, deslizándose por la cinta hasta su
+        // lugar; se va igual si se borra o se cambia por uno sin pieza.
+        {
+          const metaN = paso4 && nombreCfg.piezas.length > 0 && hitos3.g2 ? 1 : 0;
+          const avN = quieto ? 1 : dt / CAMBIO_MOSQ;
+          mezclaNombre += Math.max(-avN, Math.min(avN, metaN - mezclaNombre));
+          if (nombre) {
+            const a = suave(mezclaNombre);
+            nombre.mesh.visible = a > 0;
+            nombre.mats.forEach((m) => (m.opacity = a));
+            if (a > 0 && (nombreSucio || Math.abs(a - nombrePrev) > 1e-4)) {
+              formarNombre(0.05 * (1 - a));
+              nombreSucio = false;
+            }
+            nombrePrev = a;
+          }
+        }
         if (!hitos3.g2 && t3 > 9.2) {
           hitos3.g2 = true;
           // el último paso del ritual: la correa se cierra sola mientras la
           // cámara se acomoda. Nadie tiene que adivinar que hay un botón.
           agarraderaOn = true;
           opts.onAgarradera?.(true);
-          volar('final', t, 1.8);
+          volar(paso4 ? 'nombre' : 'final', t, 1.8);
         }
         // Respiro final de toda la pieza. Va en la ESCENA, no en las cintas:
         // los herrajes cuelgan de la escena, así que rotando solo corta/larga
@@ -1162,7 +1459,6 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
         // Por tiempo, no por cuadro: con 0.07 por frame el cierre tardaba lo
         // que tardara el equipo en dibujar, y en una máquina lenta se quedaba
         // a medias. Ahora cierra en ~0.6 s dibuje a 60 fps o a 5.
-        const dt = Math.min(0.1, Math.max(0, t - tPrev));
         aro += (metaAro - aro) * (quieto ? 1 : Math.min(1, dt * 4 * RITMO));
         if (Math.abs(aro - aroPrev) > 1e-4) {
           formarCortaAro(t, 0, Math.PI, aro);
@@ -1177,8 +1473,13 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
         const g = suave((t - rumboT0) / rumboDur);
         camera.position.lerpVectors(desde.pos, rumbo.pos, g);
         controls.target.lerpVectors(desde.mira, rumbo.mira, g);
-        const roll = rollDesde + (rollHasta - rollDesde) * g;
-        camera.up.set(Math.sin(roll), Math.cos(roll), 0);
+        if (rumbo.up) {
+          Q_UP.slerpQuaternions(Q_ID, upGiro, g);
+          camera.up.copy(upDesde).applyQuaternion(Q_UP);
+        } else {
+          const roll = rollDesde + (rollHasta - rollDesde) * g;
+          camera.up.set(Math.sin(roll), Math.cos(roll), 0);
+        }
         camera.lookAt(controls.target);
         if (g >= 1) {
           rumbo = null;
@@ -1195,9 +1496,10 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
 
     let destruido = false;
     // arranca armada: la pieza llega ensamblada (paso 3), salvo autoArmar=false
-    const p0 = opts.autoArmar === false ? 1 : 3;
+    const p0 = opts.autoArmar === false ? 1 : 3; // el paso 4 (nombre) lo dispara quien monta, cuando hay nombre
     if (p0 >= 2) api.irPaso(2);
     if (p0 >= 3) setTimeout(() => { if (!destruido) api.irPaso(3); }, 8000 / RITMO);
+    if (p0 >= 4) setTimeout(() => { if (!destruido) api.irPaso(4); }, 9000 / RITMO);
     const destroy = () => {
       if (destruido) return;
       destruido = true;
@@ -1210,8 +1512,10 @@ export function mount(canvas: HTMLCanvasElement, opts: Kyn3DOptions): Kyn3DApi {
     };
     const pause = () => { if (!destruido) renderer.setAnimationLoop(null); };
     const resume = () => { if (!destruido) renderer.setAnimationLoop(loop); };
-    return { ...api, pause, resume, destroy };
+    const setNombreTexto = (txt: string) => api.setNombre({ piezas: piezasDe(txt.toUpperCase().trim()).piezas });
+    const analizarNombre = (txt: string) => piezasDe(txt.toUpperCase().trim());
+    return { ...api, setNombreTexto, analizarNombre, pause, resume, destroy };
 
 }
 
-export const version = '0.1.0';
+export const version = '0.2.0';
