@@ -23,8 +23,12 @@ agarradera + mosquetón opcional + nombre en letras + recoloreo, ~632 KB,
   ajustes `mosqueton_mode` y `nombre_mode`: `off` (default), `visual` (solo
   para verlo) u `order` (viaja en el pedido como propiedad del artículo:
   `properties[Mosquetón]`, `properties[Nombre en la correa]`). Ninguno cambia
-  el precio; si alguno va a costar más, conviene volverlo opción del producto
-  y conectarlo como los acabados.
+  el precio.
+- Si el producto **vende el mosquetón como opción** (ajuste `option_mosqueton`,
+  default "Mosquetón"), sus valores mandan sobre el 3D igual que los acabados:
+  un valor que contenga "carabin" pinta el carabiner, cualquier otro el
+  lobster. Los pills de la barra no se muestran y no se agrega ninguna
+  propiedad: la variante ya lo dice y el precio sale de Shopify.
 
 ## Cómo se regenera
 

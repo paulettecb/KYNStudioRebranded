@@ -66,6 +66,10 @@
       nombre: { texto: '', alto: 26, pos: 0, cabe: true, faltan: [] }
     };
     var mosqCfg = cfg.mosqueton || { mode: 'off' };
+    /* el producto vende el mosquetón como opción: el valor elegido decide cuál se ve */
+    var mosqFromOption = typeof cfg.idxMosq === 'number' && cfg.idxMosq >= 0;
+    function mosqIdFor(value) { return /carabin/i.test(String(value || '')) ? 'carabiner' : 'lobster'; }
+    if (mosqFromOption && cfg.initial && cfg.initial.mosq) state.mosq = mosqIdFor(cfg.initial.mosq);
     var nombreCfg = cfg.nombre || { mode: 'off' };
 
     /* Miniatura "3D" al inicio de la tira: la segunda puerta de entrada */
@@ -322,6 +326,7 @@
       if (String(d.sectionId) !== String(sectionId) || !d.selected) return;
       state.corta = d.selected[cfg.idxCorta] || state.corta;
       state.larga = d.selected[cfg.idxLarga] || state.larga;
+      if (mosqFromOption && d.selected[cfg.idxMosq] !== undefined) setMosq(mosqIdFor(d.selected[cfg.idxMosq]));
       paint();
       if (state.mode === '3d' && thumb) {
         /* updateVariantUI marca la miniatura de la foto de la variante; en 3D manda la nuestra */
