@@ -1,6 +1,10 @@
 {%- comment -%}
   Constructor 3D en la galería del producto ("Diseña la tuya").
 
+  Si el producto tiene la opción "Mosquetón" (ajustable), sus valores mandan
+  sobre el 3D como los acabados: un valor que contenga "carabin" pinta el
+  carabiner, cualquier otro el lobster.
+
   Se muestra cuando el ajuste "Constructor 3D" está activo, el producto tiene
   la etiqueta configurada (constructor-3d) y tiene las dos opciones de
   acabado: la tira corta (agarradera) y la tira larga. Los mismos círculos de
@@ -28,14 +32,18 @@
 
   assign name_corta = section.settings.option_corta | default: 'Primary Finish' | downcase | strip
   assign name_larga = section.settings.option_larga | default: 'Secondary Finish' | downcase | strip
+  assign name_mosq = section.settings.option_mosqueton | default: 'Mosquetón' | downcase | strip
   assign idx_corta = -1
   assign idx_larga = -1
+  assign idx_mosq = -1
   for option in product.options_with_values
     assign oname = option.name | downcase | strip
     if oname == name_corta
       assign idx_corta = forloop.index0
     elsif oname == name_larga
       assign idx_larga = forloop.index0
+    elsif oname == name_mosq
+      assign idx_mosq = forloop.index0
     endif
   endfor
   if idx_corta < 0 or idx_larga < 0
@@ -43,6 +51,13 @@
   endif
 
   assign mosq_mode = section.settings.mosqueton_mode | default: 'off'
+  if idx_mosq >= 0
+    comment
+      El producto ya vende el mosquetón como opción: los pills del formulario
+      mandan y el 3D los sigue (como los acabados). Nada de propiedades extra.
+    endcomment
+    assign mosq_mode = 'option'
+  endif
   assign nombre_mode = section.settings.nombre_mode | default: 'off'
   assign nombre_color = section.settings.nombre_color | default: '#D42A2A'
 
@@ -86,7 +101,7 @@
   </div>
   {%- if mosq_mode != 'off' or nombre_mode != 'off' -%}
     <div class="pdp-3d-tools" data-kyn3d-tools hidden>
-      {%- if mosq_mode != 'off' -%}
+      {%- if mosq_mode == 'visual' or mosq_mode == 'order' -%}
         <div class="pdp-3d-tools__group" role="group" aria-label="{{ 'products.constructor.mosqueton_label' | t }}">
           <span class="pdp-3d-tools__label">{{ 'products.constructor.mosqueton_label' | t }}</span>
           <div class="pdp-3d-tools__pills">
@@ -125,8 +140,9 @@
     "largo": {{ largo | json }},
     "idxCorta": {{ idx_corta }},
     "idxLarga": {{ idx_larga }},
+    "idxMosq": {{ idx_mosq }},
     "finishes": {{ finishes_json }},
-    "initial": { "corta": {{ cv.options[idx_corta] | json }}, "larga": {{ cv.options[idx_larga] | json }} },
+    "initial": { "corta": {{ cv.options[idx_corta] | json }}, "larga": {{ cv.options[idx_larga] | json }}{% if idx_mosq >= 0 %}, "mosq": {{ cv.options[idx_mosq] | json }}{% endif %} },
     "engine": {{ 'kyn-3d.js' | asset_url | json }},
     "dracoPath": {{ draco_path | json }},
     "models": {
