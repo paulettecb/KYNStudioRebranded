@@ -174,6 +174,26 @@
     mosqPills.forEach(function (b) {
       b.addEventListener('click', function () { setMosq(b.getAttribute('data-kyn3d-mosq')); });
     });
+    /* Si el .glb del carabiner no está en el tema, el motor deja la punta sin
+       mosquetón: se quita la opción y se queda el lobster. */
+    var carabinerChecked = false;
+    function checkCarabiner() {
+      if (carabinerChecked || !mosqPills.length || !window.fetch) return;
+      carabinerChecked = true;
+      var url = cfg.models && cfg.models['carabiner-uso-rudo.glb'];
+      function quitar() {
+        setMosq('lobster');
+        var group = mosqPills[0].closest('.pdp-3d-tools__group');
+        if (group) group.hidden = true;
+        if (tools && !tools.querySelector('.pdp-3d-tools__group:not([hidden])')) {
+          tools.hidden = true;
+          tools.setAttribute('data-kyn3d-empty', '');
+          gallery.classList.remove('has-tools');
+        }
+      }
+      if (!url) { quitar(); return; }
+      fetch(url, { method: 'HEAD' }).then(function (r) { if (!r.ok) quitar(); }, function () {});
+    }
 
     /* ── Nombre en letras (paso 4 del constructor) ── */
     var nameInput = tools ? tools.querySelector('[data-kyn3d-name]') : null;
@@ -296,7 +316,7 @@
       }
       gallery.classList.toggle('is-3d', on);
       layer.hidden = !on;
-      if (tools) tools.hidden = !on;
+      if (tools) tools.hidden = !on || tools.hasAttribute('data-kyn3d-empty');
       seg.querySelectorAll('[data-kyn3d-mode]').forEach(function (b) {
         b.setAttribute('aria-pressed', b.getAttribute('data-kyn3d-mode') === mode ? 'true' : 'false');
       });
@@ -308,6 +328,7 @@
         if (state.api) state.api.pause();
         return;
       }
+      checkCarabiner();
       if (state.api) { state.api.resume(); return; }
       if (state.loading) return;
       setStatus(S.loading || '');
