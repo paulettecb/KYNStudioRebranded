@@ -18,6 +18,10 @@
   (no cambia el precio). El motor (assets/kyn-3d.js) y
   los modelos solo se descargan al tocar "Diseña la tuya"; sin JavaScript o
   sin WebGL2 la galería se queda como está.
+
+  Si el producto tiene una opción de mosquetón (su nombre contiene
+  "mosquet", "carabiner", "clasp" o "hook"), la variante elegida manda: un
+  valor con "carabiner" pone el carabiner de uso rudo en el 3D.
 {%- endcomment -%}
 {%- liquid
   assign show_3d = false
@@ -30,12 +34,15 @@
   assign name_larga = section.settings.option_larga | default: 'Secondary Finish' | downcase | strip
   assign idx_corta = -1
   assign idx_larga = -1
+  assign idx_mosq = -1
   for option in product.options_with_values
     assign oname = option.name | downcase | strip
     if oname == name_corta
       assign idx_corta = forloop.index0
     elsif oname == name_larga
       assign idx_larga = forloop.index0
+    elsif oname contains 'mosquet' or oname contains 'carabiner' or oname contains 'clasp' or oname contains 'hook'
+      assign idx_mosq = forloop.index0
     endif
   endfor
   if idx_corta < 0 or idx_larga < 0
@@ -126,7 +133,8 @@
     "idxCorta": {{ idx_corta }},
     "idxLarga": {{ idx_larga }},
     "finishes": {{ finishes_json }},
-    "initial": { "corta": {{ cv.options[idx_corta] | json }}, "larga": {{ cv.options[idx_larga] | json }} },
+    "idxMosq": {{ idx_mosq }},
+    "initial": { "corta": {{ cv.options[idx_corta] | json }}, "larga": {{ cv.options[idx_larga] | json }}{% if idx_mosq >= 0 %}, "mosq": {{ cv.options[idx_mosq] | json }}{% endif %} },
     "engine": {{ 'kyn-3d.js' | asset_url | json }},
     "dracoPath": {{ draco_path | json }},
     "models": {

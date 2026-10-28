@@ -55,6 +55,9 @@
     if (!webglOk()) return; /* sin WebGL2 la galería se queda como está */
 
     var S = cfg.strings || {};
+    /* valor de la opción de mosquetón del producto -> id del motor */
+    function mosqDe(v) { return /carabiner/i.test(v || '') ? 'carabiner' : 'lobster'; }
+    var idxMosq = typeof cfg.idxMosq === 'number' ? cfg.idxMosq : -1;
     var state = {
       mode: 'photos',
       api: null,
@@ -62,7 +65,7 @@
       corta: cfg.initial && cfg.initial.corta,
       larga: cfg.initial && cfg.initial.larga,
       handle: true,
-      mosq: 'lobster',
+      mosq: mosqDe(cfg.initial && cfg.initial.mosq),
       nombre: { texto: '', alto: 26, pos: 0, cabe: true, faltan: [] }
     };
     var mosqCfg = cfg.mosqueton || { mode: 'off' };
@@ -163,13 +166,14 @@
 
     /* ── Mosquetón: lobster o carabiner de uso rudo ── */
     var mosqPills = tools ? tools.querySelectorAll('[data-kyn3d-mosq]') : [];
-    function setMosq(id) {
+    function setMosq(id, porVariante) {
       state.mosq = id === 'carabiner' ? 'carabiner' : 'lobster';
       mosqPills.forEach(function (b) {
         b.setAttribute('aria-pressed', b.getAttribute('data-kyn3d-mosq') === state.mosq ? 'true' : 'false');
       });
       if (state.api) state.api.setMosqueton(state.mosq);
-      if (mosqCfg.mode === 'order') setProperty(mosqCfg.property, state.mosq === 'carabiner' ? (S.carabiner || 'Carabiner') : '');
+      /* con la opción de mosquetón en el producto, la variante ya lo dice en el pedido */
+      if (mosqCfg.mode === 'order' && !porVariante && idxMosq < 0) setProperty(mosqCfg.property, state.mosq === 'carabiner' ? (S.carabiner || 'Carabiner') : '');
     }
     mosqPills.forEach(function (b) {
       b.addEventListener('click', function () { setMosq(b.getAttribute('data-kyn3d-mosq')); });
@@ -343,6 +347,7 @@
       if (String(d.sectionId) !== String(sectionId) || !d.selected) return;
       state.corta = d.selected[cfg.idxCorta] || state.corta;
       state.larga = d.selected[cfg.idxLarga] || state.larga;
+      if (idxMosq >= 0 && d.selected[idxMosq]) setMosq(mosqDe(d.selected[idxMosq]), true);
       paint();
       if (state.mode === '3d' && thumb) {
         /* updateVariantUI marca la miniatura de la foto de la variante; en 3D manda la nuestra */
