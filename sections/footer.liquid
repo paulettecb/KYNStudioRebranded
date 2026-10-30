@@ -58,7 +58,7 @@
     </div>
 
     <div class="site-footer__bottom">
-      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}{% if section.settings.bottom_left != blank %} · {{ section.settings.bottom_left }}{% endif %}</span>
+      <span>© {{ 'now' | date: '%Y' }} {{ section.settings.legal_name | default: shop.name }}{% if section.settings.bottom_left != blank %} · {{ section.settings.bottom_left }}{% endif %}</span>
       <span class="site-footer__bottom-links">
         {%- if shop.privacy_policy != blank -%}
           <a href="{{ shop.privacy_policy.url }}">{{ shop.privacy_policy.title }}</a>
@@ -134,6 +134,7 @@
     { "type": "range", "id": "link_size", "label": "Link size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14 },
 
     { "type": "header", "content": "Bottom row" },
+    { "type": "text", "id": "legal_name", "label": "Legal business name", "default": "KYN Studio Mx", "info": "Shown after the ©. Must match the business name registered with Meta / payment providers." },
     { "type": "text", "id": "bottom_left", "label": "Bottom left text", "default": "Hecho a mano en México, en lotes pequeños." },
     { "type": "text", "id": "bottom_right", "label": "Bottom right text", "info": "The privacy policy link is added automatically when it exists." },
     { "type": "select", "id": "bottom_font", "label": "Bottom row font", "default": "sans",
