@@ -69,6 +69,9 @@
         {%- endif -%}
       </span>
     </div>
+    {%- if section.settings.trademark_notice != blank -%}
+      <p class="site-footer__trademark">{{ section.settings.trademark_notice }}</p>
+    {%- endif -%}
   </div>
 </footer>
 
@@ -76,6 +79,11 @@
   #site-footer-{{ section.id }} .site-footer__brand p{
     font-family: {{ tagline_font }};
     font-size: {{ section.settings.tagline_size }}px;
+  }
+  #site-footer-{{ section.id }} .site-footer__trademark{
+    margin: 12px 0 0;
+    font-size: {{ section.settings.bottom_size }}px;
+    opacity: .7;
   }
   #site-footer-{{ section.id }} .site-footer__heading{
     font-family: {{ heading_font }};
@@ -135,6 +143,7 @@
 
     { "type": "header", "content": "Bottom row" },
     { "type": "text", "id": "legal_name", "label": "Legal business name", "default": "KYN Studio Mx", "info": "Shown after the ©. Must match the business name registered with Meta / payment providers." },
+    { "type": "text", "id": "trademark_notice", "label": "Trademark notice", "default": "KYN Studio® es marca registrada. Biothane® es marca registrada de su respectivo titular.", "info": "Use ® only for marks that are registered. Leave blank to hide the line." },
     { "type": "text", "id": "bottom_left", "label": "Bottom left text", "default": "Hecho a mano en México, en lotes pequeños." },
     { "type": "text", "id": "bottom_right", "label": "Bottom right text", "info": "The privacy policy link is added automatically when it exists." },
     { "type": "select", "id": "bottom_font", "label": "Bottom row font", "default": "sans",
